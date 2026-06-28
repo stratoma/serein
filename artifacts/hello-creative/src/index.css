@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+/* ── Brand tokens ── */
+:root {
+  --hc-ink-primary:    #2D3142;
+  --hc-accent-premium: #7A2E3A;
+  --hc-neutral-warm:   #D4AFB9;
+  --hc-support-cool:   #4F5D75;
+  --hc-neutral-soft:   #BFC0C0;
+  --hc-accent-signal:  #DE6449;
+  --hc-paper:          #FFFFFF;
+  --hc-paper-soft:     #FAFAF9;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--hc-ink-primary);
+  background: var(--hc-paper);
+  -webkit-font-smoothing: antialiased;
+}
