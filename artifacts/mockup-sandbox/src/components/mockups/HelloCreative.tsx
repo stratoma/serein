@@ -89,294 +89,128 @@ const pathways = [
   },
 ];
 
+const navLinks = ["About", "Work With Us", "Events", "Writing", "Contact"];
+
 function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <nav
-      style={{
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: "#FFFFFF",
-        borderBottom: "1px solid #BFC0C0",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          padding: "0 2rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          height: 72,
-        }}
-      >
-        <a
-          href="#"
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "1.15rem",
-            fontWeight: 400,
-            color: "#2D3142",
-            textDecoration: "none",
-            letterSpacing: "0.02em",
-          }}
-        >
-          Hello Creative & Co.
+    <nav className="hc-nav">
+      <div className="hc-nav-inner">
+        <a href="#" className="hc-logo">
+          Hello Creative &amp; Co.
         </a>
 
-        <div
-          className="hc-nav-links"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "2.25rem",
-          }}
+        {/* Desktop links */}
+        <div className="hc-nav-links-desktop">
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href={`#${link.toLowerCase().replace(/ /g, "-")}`}
+              className="hc-nav-link"
+            >
+              {link}
+            </a>
+          ))}
+          <a href="#contact" className="hc-nav-cta">
+            Start a Conversation
+          </a>
+        </div>
+
+        {/* Hamburger button — mobile only */}
+        <button
+          className="hc-hamburger"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          onClick={() => setMenuOpen(!menuOpen)}
         >
-          {["About", "Work With Us", "Events", "Writing", "Contact"].map(
-            (link) => (
-              <a
-                key={link}
-                href={`#${link.toLowerCase().replace(/ /g, "-")}`}
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: "0.8125rem",
-                  fontWeight: 400,
-                  color: "#4F5D75",
-                  textDecoration: "none",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  transition: "color 0.2s ease",
-                }}
-                onMouseEnter={(e) =>
-                  ((e.target as HTMLElement).style.color = "#2D3142")
-                }
-                onMouseLeave={(e) =>
-                  ((e.target as HTMLElement).style.color = "#4F5D75")
-                }
-              >
-                {link}
-              </a>
-            )
+          {menuOpen ? (
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="16" y1="4" x2="4" y2="16" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+              <line x1="3" y1="6" x2="17" y2="6" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" strokeWidth="1.5" />
+              <line x1="3" y1="14" x2="17" y2="14" stroke="currentColor" strokeWidth="1.5" />
+            </svg>
           )}
+        </button>
+      </div>
+
+      {/* Mobile drawer */}
+      {menuOpen && (
+        <div className="hc-mobile-menu">
+          {navLinks.map((link) => (
+            <a
+              key={link}
+              href={`#${link.toLowerCase().replace(/ /g, "-")}`}
+              className="hc-mobile-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              {link}
+            </a>
+          ))}
           <a
             href="#contact"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: "0.8125rem",
-              fontWeight: 500,
-              color: "#7A2E3A",
-              textDecoration: "none",
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              borderBottom: "1.5px solid #7A2E3A",
-              paddingBottom: "2px",
-              transition: "opacity 0.2s ease",
-            }}
-            onMouseEnter={(e) =>
-              ((e.target as HTMLElement).style.opacity = "0.7")
-            }
-            onMouseLeave={(e) =>
-              ((e.target as HTMLElement).style.opacity = "1")
-            }
+            className="hc-mobile-cta"
+            onClick={() => setMenuOpen(false)}
           >
             Start a Conversation
           </a>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
 
 function Hero() {
   return (
-    <section
-      id="about"
-      style={{
-        background: "#FFFFFF",
-        padding: "7rem 2rem 6rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 880,
-          margin: "0 auto",
-        }}
-      >
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.75rem",
-            fontWeight: 500,
-            color: "#7A2E3A",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: "2.5rem",
-          }}
-        >
-          Founded by M. Louis
-        </p>
-        <h1
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(2.4rem, 5vw, 3.75rem)",
-            fontWeight: 400,
-            color: "#2D3142",
-            lineHeight: 1.18,
-            letterSpacing: "-0.01em",
-            marginBottom: "2rem",
-            maxWidth: 820,
-          }}
-        >
+    <section id="about" className="hc-section hc-hero">
+      <div className="hc-container">
+        <p className="hc-eyebrow">Founded by M. Louis</p>
+        <h1 className="hc-hero-headline">
           Identity, leadership, and collaboration architecture for women leaders
           and the institutions that support them.
         </h1>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "1.125rem",
-            fontWeight: 400,
-            color: "#4F5D75",
-            lineHeight: 1.7,
-            maxWidth: 640,
-            marginBottom: "3rem",
-          }}
-        >
-          Hello Creative & Co. helps women leaders and mission-driven
+        <p className="hc-hero-sub">
+          Hello Creative &amp; Co. helps women leaders and mission-driven
           organizations move from identity clarity to leadership architecture to
           values-aligned collaboration systems.
         </p>
-        <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap" }}>
-          <HeroButton href="#work-with-us" primary>
+        <div className="hc-hero-ctas">
+          <a href="#work-with-us" className="hc-btn-primary">
             Work With Us
-          </HeroButton>
-          <HeroButton href="#writing">Read the Notes</HeroButton>
+          </a>
+          <a href="#writing" className="hc-btn-outline">
+            Read the Notes
+          </a>
         </div>
       </div>
     </section>
   );
 }
 
-function HeroButton({
-  children,
-  href,
-  primary,
-}: {
-  children: React.ReactNode;
-  href: string;
-  primary?: boolean;
-}) {
-  const [hovered, setHovered] = useState(false);
-
-  const base: React.CSSProperties = {
-    display: "inline-block",
-    fontFamily: "'Inter', system-ui, sans-serif",
-    fontSize: "0.8125rem",
-    fontWeight: 500,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-    textDecoration: "none",
-    padding: "0.875rem 2rem",
-    border: "1.5px solid",
-    transition: "all 0.2s ease",
-    cursor: "pointer",
-  };
-
-  if (primary) {
-    return (
-      <a
-        href={href}
-        style={{
-          ...base,
-          background: hovered ? "#5f2430" : "#7A2E3A",
-          borderColor: hovered ? "#5f2430" : "#7A2E3A",
-          color: "#FFFFFF",
-        }}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        {children}
-      </a>
-    );
-  }
-
-  return (
-    <a
-      href={href}
-      style={{
-        ...base,
-        background: "transparent",
-        borderColor: hovered ? "#2D3142" : "#BFC0C0",
-        color: "#2D3142",
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {children}
-    </a>
-  );
-}
-
 function Divider() {
   return (
-    <div
-      style={{
-        maxWidth: 1200,
-        margin: "0 auto",
-        padding: "0 2rem",
-      }}
-    >
-      <div style={{ height: 1, background: "#BFC0C0" }} />
+    <div className="hc-container">
+      <div className="hc-divider" />
     </div>
   );
 }
 
 function Positioning() {
   return (
-    <section
-      style={{
-        background: "#FAFAF9",
-        padding: "5rem 2rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "4rem",
-          alignItems: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(1.75rem, 3vw, 2.5rem)",
-            fontWeight: 400,
-            color: "#2D3142",
-            lineHeight: 1.25,
-            letterSpacing: "-0.01em",
-          }}
-        >
+    <section className="hc-section hc-paper-soft">
+      <div className="hc-container hc-grid-2">
+        <h2 className="hc-section-headline">
           A studio for identity, leadership, and institutional design.
         </h2>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "1rem",
-            fontWeight: 400,
-            color: "#4F5D75",
-            lineHeight: 1.8,
-          }}
-        >
-          Hello Creative & Co. sits at the intersection of strategic design,
-          leadership development, creative intelligence, and systems thinking.
-          We support women and organizations as they clarify who they are, how
-          they lead, and what structures they need in order to grow with
-          integrity.
+        <p className="hc-body-text">
+          Hello Creative &amp; Co. sits at the intersection of strategic design,
+          leadership development, creative intelligence, and systems thinking. We
+          support women and organizations as they clarify who they are, how they
+          lead, and what structures they need in order to grow with integrity.
         </p>
       </div>
     </section>
@@ -385,41 +219,13 @@ function Positioning() {
 
 function OfferPathways() {
   return (
-    <section id="work-with-us" style={{ background: "#FFFFFF", padding: "5rem 2rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.75rem",
-            fontWeight: 500,
-            color: "#7A2E3A",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: "1rem",
-          }}
-        >
-          Ways to work together
-        </p>
-        <h2
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-            fontWeight: 400,
-            color: "#2D3142",
-            marginBottom: "3rem",
-            letterSpacing: "-0.01em",
-          }}
-        >
+    <section id="work-with-us" className="hc-section hc-paper">
+      <div className="hc-container">
+        <p className="hc-eyebrow">Ways to work together</p>
+        <h2 className="hc-section-headline" style={{ marginBottom: "3rem" }}>
           The work takes many forms.
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "0",
-            border: "1px solid #BFC0C0",
-          }}
-        >
+        <div className="hc-pathway-grid">
           {pathways.map((p, i) => (
             <PathwayCard key={i} pathway={p} />
           ))}
@@ -438,55 +244,14 @@ function PathwayCard({
 
   return (
     <div
-      style={{
-        padding: "2.5rem",
-        borderRight: "1px solid #BFC0C0",
-        background: hovered ? "#FAFAF9" : "#FFFFFF",
-        transition: "background 0.2s ease",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-      }}
+      className="hc-pathway-card"
+      style={{ background: hovered ? "var(--hc-paper-soft)" : "var(--hc-paper)" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <h3
-        style={{
-          fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: "1.25rem",
-          fontWeight: 400,
-          color: "#2D3142",
-          letterSpacing: "-0.01em",
-        }}
-      >
-        {pathway.title}
-      </h3>
-      <p
-        style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: "0.9rem",
-          color: "#4F5D75",
-          lineHeight: 1.7,
-          flex: 1,
-        }}
-      >
-        {pathway.description}
-      </p>
-      <a
-        href="#contact"
-        style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: "0.75rem",
-          fontWeight: 500,
-          color: "#7A2E3A",
-          textDecoration: "none",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "0.4rem",
-        }}
-      >
+      <h3 className="hc-card-title">{pathway.title}</h3>
+      <p className="hc-card-body">{pathway.description}</p>
+      <a href="#contact" className="hc-link-arrow">
         {pathway.cta} →
       </a>
     </div>
@@ -495,78 +260,17 @@ function PathwayCard({
 
 function Frameworks() {
   return (
-    <section
-      style={{
-        background: "#2D3142",
-        padding: "5rem 2rem",
-      }}
-    >
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.75rem",
-            fontWeight: 500,
-            color: "#D4AFB9",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: "1rem",
-          }}
-        >
-          Point of View
-        </p>
-        <h2
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-            fontWeight: 400,
-            color: "#FFFFFF",
-            marginBottom: "3.5rem",
-            letterSpacing: "-0.01em",
-            maxWidth: 560,
-          }}
-        >
+    <section className="hc-section hc-dark">
+      <div className="hc-container">
+        <p className="hc-eyebrow hc-eyebrow-light">Point of View</p>
+        <h2 className="hc-section-headline hc-headline-light" style={{ maxWidth: 560, marginBottom: "3.5rem" }}>
           The work is guided by a clear point of view.
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-            gap: "0",
-            borderTop: "1px solid rgba(191,192,192,0.25)",
-          }}
-        >
+        <div className="hc-framework-grid">
           {frameworks.map((f, i) => (
-            <div
-              key={i}
-              style={{
-                padding: "2rem 2rem 2rem 0",
-                borderBottom: "1px solid rgba(191,192,192,0.25)",
-                paddingRight: "2.5rem",
-              }}
-            >
-              <h3
-                style={{
-                  fontFamily: "'DM Serif Display', Georgia, serif",
-                  fontSize: "1.1rem",
-                  fontWeight: 400,
-                  color: "#D4AFB9",
-                  marginBottom: "0.75rem",
-                  letterSpacing: "0.01em",
-                }}
-              >
-                {f.name}
-              </h3>
-              <p
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: "0.875rem",
-                  color: "rgba(255,255,255,0.7)",
-                  lineHeight: 1.75,
-                }}
-              >
-                {f.description}
-              </p>
+            <div key={i} className="hc-framework-item">
+              <h3 className="hc-framework-title">{f.name}</h3>
+              <p className="hc-framework-body">{f.description}</p>
             </div>
           ))}
         </div>
@@ -580,178 +284,51 @@ function Events() {
   const [submitted, setSubmitted] = useState(false);
 
   return (
-    <section id="events" style={{ background: "#FFFFFF", padding: "5rem 2rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.75rem",
-            fontWeight: 500,
-            color: "#7A2E3A",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: "1rem",
-          }}
-        >
-          Upcoming Events
-        </p>
-        <h2
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-            fontWeight: 400,
-            color: "#2D3142",
-            marginBottom: "3rem",
-            letterSpacing: "-0.01em",
-          }}
-        >
+    <section id="events" className="hc-section hc-paper">
+      <div className="hc-container">
+        <p className="hc-eyebrow">Upcoming Events</p>
+        <h2 className="hc-section-headline" style={{ marginBottom: "3rem" }}>
           Conversations worth having.
         </h2>
 
-        {events.length > 0 ? (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "1px",
-              background: "#BFC0C0",
-              border: "1px solid #BFC0C0",
-              marginBottom: "3rem",
-            }}
-          >
+        {events.length > 0 && (
+          <div className="hc-events-grid">
             {events.map((event, i) => (
-              <div
-                key={i}
-                style={{
-                  background: "#FFFFFF",
-                  padding: "2.5rem",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "1rem",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "0.75rem",
-                    alignItems: "center",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "'Inter', system-ui, sans-serif",
-                      fontSize: "0.7rem",
-                      fontWeight: 500,
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase",
-                      color: "#FFFFFF",
-                      background: "#4F5D75",
-                      padding: "0.2rem 0.6rem",
-                    }}
-                  >
-                    {event.format}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "'Inter', system-ui, sans-serif",
-                      fontSize: "0.8rem",
-                      color: "#BFC0C0",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {event.date}
-                  </span>
+              <div key={i} className="hc-event-card">
+                <div className="hc-event-meta">
+                  <span className="hc-event-format">{event.format}</span>
+                  <span className="hc-event-date">{event.date}</span>
                 </div>
-                <h3
-                  style={{
-                    fontFamily: "'DM Serif Display', Georgia, serif",
-                    fontSize: "1.25rem",
-                    fontWeight: 400,
-                    color: "#2D3142",
-                    lineHeight: 1.3,
-                  }}
-                >
-                  {event.title}
-                </h3>
-                <p
-                  style={{
-                    fontFamily: "'Inter', system-ui, sans-serif",
-                    fontSize: "0.9rem",
-                    color: "#4F5D75",
-                    lineHeight: 1.7,
-                    flex: 1,
-                  }}
-                >
-                  {event.description}
-                </p>
-                <a
-                  href={event.link}
-                  style={{
-                    fontFamily: "'Inter', system-ui, sans-serif",
-                    fontSize: "0.75rem",
-                    fontWeight: 500,
-                    color: "#7A2E3A",
-                    textDecoration: "none",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                  }}
-                >
+                <h3 className="hc-card-title">{event.title}</h3>
+                <p className="hc-card-body">{event.description}</p>
+                <a href={event.link} className="hc-link-arrow">
                   {event.cta} →
                 </a>
               </div>
             ))}
           </div>
-        ) : (
-          <p
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: "1rem",
-              color: "#4F5D75",
-              lineHeight: 1.7,
-              marginBottom: "2rem",
-            }}
-          >
+        )}
+
+        {events.length === 0 && (
+          <p className="hc-body-text" style={{ marginBottom: "2rem" }}>
             No upcoming events are currently open. Join the list to receive the
             next invitation.
           </p>
         )}
 
-        <div
-          style={{
-            background: "#FAFAF9",
-            border: "1px solid #BFC0C0",
-            padding: "2.5rem",
-            maxWidth: 520,
-          }}
-        >
-          <p
-            style={{
-              fontFamily: "'DM Serif Display', Georgia, serif",
-              fontSize: "1.1rem",
-              fontWeight: 400,
-              color: "#2D3142",
-              marginBottom: "1.25rem",
-            }}
-          >
+        <div className="hc-email-capture">
+          <p className="hc-email-heading">
             Join the list to receive the next invitation.
           </p>
           {submitted ? (
-            <p
-              style={{
-                fontFamily: "'Inter', system-ui, sans-serif",
-                fontSize: "0.875rem",
-                color: "#7A2E3A",
-              }}
-            >
-              Thank you — you're on the list.
-            </p>
+            <p className="hc-email-confirm">Thank you — you're on the list.</p>
           ) : (
             <form
+              className="hc-email-form"
               onSubmit={(e) => {
                 e.preventDefault();
                 if (email) setSubmitted(true);
               }}
-              style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}
             >
               <input
                 type="email"
@@ -759,33 +336,9 @@ function Events() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
                 required
-                style={{
-                  flex: 1,
-                  minWidth: 200,
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: "0.875rem",
-                  color: "#2D3142",
-                  background: "#FFFFFF",
-                  border: "1px solid #BFC0C0",
-                  padding: "0.75rem 1rem",
-                  outline: "none",
-                }}
+                className="hc-email-input"
               />
-              <button
-                type="submit"
-                style={{
-                  fontFamily: "'Inter', system-ui, sans-serif",
-                  fontSize: "0.75rem",
-                  fontWeight: 500,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  background: "#7A2E3A",
-                  color: "#FFFFFF",
-                  border: "none",
-                  padding: "0.75rem 1.5rem",
-                  cursor: "pointer",
-                }}
-              >
+              <button type="submit" className="hc-btn-primary">
                 Join the List
               </button>
             </form>
@@ -798,42 +351,13 @@ function Events() {
 
 function Writing() {
   return (
-    <section id="writing" style={{ background: "#FAFAF9", padding: "5rem 2rem" }}>
-      <div style={{ maxWidth: 1200, margin: "0 auto" }}>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.75rem",
-            fontWeight: 500,
-            color: "#7A2E3A",
-            letterSpacing: "0.14em",
-            textTransform: "uppercase",
-            marginBottom: "1rem",
-          }}
-        >
-          Writing & Notes
-        </p>
-        <h2
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-            fontWeight: 400,
-            color: "#2D3142",
-            marginBottom: "3rem",
-            letterSpacing: "-0.01em",
-          }}
-        >
+    <section id="writing" className="hc-section hc-paper-soft">
+      <div className="hc-container">
+        <p className="hc-eyebrow">Writing &amp; Notes</p>
+        <h2 className="hc-section-headline" style={{ marginBottom: "3rem" }}>
           Ideas in progress.
         </h2>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "1px",
-            background: "#BFC0C0",
-            border: "1px solid #BFC0C0",
-          }}
-        >
+        <div className="hc-writing-grid">
           {writings.map((w, i) => (
             <WritingCard key={i} writing={w} />
           ))}
@@ -858,80 +382,18 @@ function WritingCard({
 
   return (
     <div
-      style={{
-        background: hovered ? "#FFFFFF" : "#FAFAF9",
-        padding: "2.5rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "1rem",
-        transition: "background 0.2s ease",
-      }}
+      className="hc-writing-card"
+      style={{ background: hovered ? "var(--hc-paper)" : "var(--hc-paper-soft)" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.7rem",
-            fontWeight: 500,
-            letterSpacing: "0.1em",
-            textTransform: "uppercase",
-            color: "#7A2E3A",
-          }}
-        >
-          {writing.category}
-        </span>
-        <span
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.8rem",
-            color: "#BFC0C0",
-          }}
-        >
-          {writing.date}
-        </span>
+      <div className="hc-writing-meta">
+        <span className="hc-writing-category">{writing.category}</span>
+        <span className="hc-event-date">{writing.date}</span>
       </div>
-      <h3
-        style={{
-          fontFamily: "'DM Serif Display', Georgia, serif",
-          fontSize: "1.2rem",
-          fontWeight: 400,
-          color: "#2D3142",
-          lineHeight: 1.3,
-        }}
-      >
-        {writing.title}
-      </h3>
-      <p
-        style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: "0.9rem",
-          color: "#4F5D75",
-          lineHeight: 1.7,
-          flex: 1,
-        }}
-      >
-        {writing.excerpt}
-      </p>
-      <a
-        href={writing.link}
-        style={{
-          fontFamily: "'Inter', system-ui, sans-serif",
-          fontSize: "0.75rem",
-          fontWeight: 500,
-          color: "#7A2E3A",
-          textDecoration: "none",
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-        }}
-      >
+      <h3 className="hc-card-title">{writing.title}</h3>
+      <p className="hc-card-body">{writing.excerpt}</p>
+      <a href={writing.link} className="hc-link-arrow">
         Read More →
       </a>
     </div>
@@ -940,107 +402,24 @@ function WritingCard({
 
 function Founder() {
   return (
-    <section style={{ background: "#FFFFFF", padding: "5rem 2rem" }}>
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          gap: "5rem",
-          alignItems: "center",
-        }}
-      >
+    <section className="hc-section hc-paper">
+      <div className="hc-container hc-grid-2 hc-founder-grid">
         <div>
-          <div
-            style={{
-              width: "100%",
-              aspectRatio: "4/5",
-              background: "#D4AFB9",
-              maxWidth: 360,
-              position: "relative",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "'DM Serif Display', Georgia, serif",
-                  fontSize: "5rem",
-                  fontWeight: 400,
-                  color: "rgba(45,49,66,0.25)",
-                  letterSpacing: "0.05em",
-                }}
-              >
-                ML
-              </span>
-            </div>
+          <div className="hc-founder-photo">
+            <span className="hc-founder-monogram">ML</span>
           </div>
         </div>
         <div>
-          <p
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: "0.75rem",
-              fontWeight: 500,
-              color: "#7A2E3A",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              marginBottom: "1.5rem",
-            }}
-          >
-            About M. Louis
+          <p className="hc-eyebrow">About M. Louis</p>
+          <h2 className="hc-section-headline">Founder &amp; Principal</h2>
+          <p className="hc-body-text" style={{ marginBottom: "2rem" }}>
+            M. Louis is the founder of Hello Creative &amp; Co., an identity,
+            leadership, and institutional design studio serving women leaders and
+            mission-driven organizations. Her work sits at the intersection of
+            editorial strategy, leadership development, collaboration design, and
+            cultural systems thinking.
           </p>
-          <h2
-            style={{
-              fontFamily: "'DM Serif Display', Georgia, serif",
-              fontSize: "clamp(1.75rem, 3vw, 2.25rem)",
-              fontWeight: 400,
-              color: "#2D3142",
-              marginBottom: "1.5rem",
-              lineHeight: 1.25,
-              letterSpacing: "-0.01em",
-            }}
-          >
-            Founder & Principal
-          </h2>
-          <p
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: "1rem",
-              color: "#4F5D75",
-              lineHeight: 1.8,
-              marginBottom: "2rem",
-            }}
-          >
-            M. Louis is the founder of Hello Creative & Co., an identity,
-            leadership, and institutional design studio serving women leaders
-            and mission-driven organizations. Her work sits at the intersection
-            of editorial strategy, leadership development, collaboration design,
-            and cultural systems thinking.
-          </p>
-          <a
-            href="#contact"
-            style={{
-              fontFamily: "'Inter', system-ui, sans-serif",
-              fontSize: "0.75rem",
-              fontWeight: 500,
-              color: "#7A2E3A",
-              textDecoration: "none",
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              borderBottom: "1.5px solid #7A2E3A",
-              paddingBottom: "2px",
-            }}
-          >
+          <a href="#contact" className="hc-link-underline">
             Learn More →
           </a>
         </div>
@@ -1051,64 +430,17 @@ function Founder() {
 
 function FinalCTA() {
   return (
-    <section
-      id="contact"
-      style={{
-        background: "#FAFAF9",
-        borderTop: "1px solid #BFC0C0",
-        padding: "6rem 2rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 720,
-          margin: "0 auto",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "clamp(2rem, 4vw, 3rem)",
-            fontWeight: 400,
-            color: "#2D3142",
-            lineHeight: 1.2,
-            letterSpacing: "-0.01em",
-            marginBottom: "1.5rem",
-          }}
-        >
+    <section id="contact" className="hc-section hc-paper-soft hc-final-cta">
+      <div className="hc-container hc-text-center">
+        <h2 className="hc-cta-headline">
           If you're building what comes next, begin with a conversation.
         </h2>
-        <p
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "1rem",
-            color: "#4F5D75",
-            lineHeight: 1.8,
-            marginBottom: "3rem",
-          }}
-        >
+        <p className="hc-cta-body">
           Whether you are clarifying your own leadership identity, designing a
           program, convening a room, or strengthening collaboration inside an
-          institution, Hello Creative & Co. helps bring the work into form.
+          institution, Hello Creative &amp; Co. helps bring the work into form.
         </p>
-        <a
-          href="mailto:hello@hellocreativeandco.com"
-          style={{
-            display: "inline-block",
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.8125rem",
-            fontWeight: 500,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            textDecoration: "none",
-            padding: "1rem 2.5rem",
-            background: "#7A2E3A",
-            color: "#FFFFFF",
-            border: "none",
-            transition: "background 0.2s ease",
-          }}
-        >
+        <a href="mailto:hello@hellocreativeandco.com" className="hc-btn-primary">
           Start a Conversation
         </a>
       </div>
@@ -1118,42 +450,11 @@ function FinalCTA() {
 
 function Footer() {
   return (
-    <footer
-      style={{
-        background: "#2D3142",
-        padding: "2.5rem 2rem",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: 1200,
-          margin: "0 auto",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "1rem",
-        }}
-      >
-        <span
-          style={{
-            fontFamily: "'DM Serif Display', Georgia, serif",
-            fontSize: "1rem",
-            fontWeight: 400,
-            color: "rgba(255,255,255,0.7)",
-          }}
-        >
-          Hello Creative & Co.
-        </span>
-        <span
-          style={{
-            fontFamily: "'Inter', system-ui, sans-serif",
-            fontSize: "0.8rem",
-            color: "rgba(255,255,255,0.4)",
-            letterSpacing: "0.04em",
-          }}
-        >
-          © 2025 Hello Creative & Co. All rights reserved.
+    <footer className="hc-footer">
+      <div className="hc-container hc-footer-inner">
+        <span className="hc-footer-logo">Hello Creative &amp; Co.</span>
+        <span className="hc-footer-copy">
+          © 2025 Hello Creative &amp; Co. All rights reserved.
         </span>
       </div>
     </footer>
@@ -1166,27 +467,339 @@ export default function HelloCreative() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500&display=swap');
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         html { scroll-behavior: smooth; }
 
-        .hc-nav-links {
-          display: flex;
+        /* ── Brand tokens (consumed via var()) ── */
+        .hc-root {
+          --hc-ink: var(--hc-ink-primary, #2D3142);
+          --hc-accent: var(--hc-accent-premium, #7A2E3A);
+          --hc-warm: var(--hc-neutral-warm, #D4AFB9);
+          --hc-cool: var(--hc-support-cool, #4F5D75);
+          --hc-soft: var(--hc-neutral-soft, #BFC0C0);
+          --hc-signal: var(--hc-accent-signal, #DE6449);
+          --hc-white: var(--hc-paper, #FFFFFF);
+          --hc-offwhite: var(--hc-paper-soft, #FAFAF9);
+          font-family: 'Inter', system-ui, sans-serif;
+          color: var(--hc-ink);
         }
 
-        @media (max-width: 768px) {
-          .hc-nav-links {
-            display: none;
-          }
+        /* ── Layout ── */
+        .hc-container  { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
+        .hc-section    { padding: 5rem 2rem; }
+        .hc-paper      { background: var(--hc-white); }
+        .hc-paper-soft { background: var(--hc-offwhite); }
+        .hc-dark       { background: var(--hc-ink); }
+        .hc-hero       { padding: 7rem 2rem 6rem; }
+        .hc-final-cta  { border-top: 1px solid var(--hc-soft); padding: 6rem 2rem; }
+        .hc-text-center { text-align: center; }
+
+        /* ── Nav ── */
+        .hc-nav {
+          position: sticky; top: 0; z-index: 100;
+          background: var(--hc-white);
+          border-bottom: 1px solid var(--hc-soft);
+        }
+        .hc-nav-inner {
+          max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+          display: flex; align-items: center; justify-content: space-between;
+          height: 72px;
+        }
+        .hc-logo {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: 1.1rem; font-weight: 400;
+          color: var(--hc-ink); text-decoration: none; letter-spacing: 0.02em;
+          white-space: nowrap;
+        }
+        .hc-nav-links-desktop {
+          display: flex; align-items: center; gap: 2.25rem;
+        }
+        .hc-nav-link {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.8125rem; font-weight: 400;
+          color: var(--hc-cool); text-decoration: none;
+          letter-spacing: 0.06em; text-transform: uppercase;
+          transition: color 0.2s ease;
+        }
+        .hc-nav-link:hover { color: var(--hc-ink); }
+        .hc-nav-cta {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.8125rem; font-weight: 500;
+          color: var(--hc-accent); text-decoration: none;
+          letter-spacing: 0.06em; text-transform: uppercase;
+          border-bottom: 1.5px solid var(--hc-accent); padding-bottom: 2px;
+          transition: opacity 0.2s ease;
+        }
+        .hc-nav-cta:hover { opacity: 0.7; }
+        .hc-hamburger {
+          display: none;
+          background: none; border: none; cursor: pointer;
+          color: var(--hc-ink); padding: 4px;
+        }
+        .hc-mobile-menu {
+          background: var(--hc-white);
+          border-top: 1px solid var(--hc-soft);
+          padding: 1.5rem 2rem;
+          display: flex; flex-direction: column; gap: 1.25rem;
+        }
+        .hc-mobile-link {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.9rem; font-weight: 400;
+          color: var(--hc-cool); text-decoration: none;
+          letter-spacing: 0.05em; text-transform: uppercase;
+        }
+        .hc-mobile-cta {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.9rem; font-weight: 500;
+          color: var(--hc-accent); text-decoration: none;
+          letter-spacing: 0.05em; text-transform: uppercase;
+          border-bottom: 1.5px solid var(--hc-accent); width: fit-content;
+          padding-bottom: 2px;
         }
 
+        /* ── Divider ── */
+        .hc-divider { height: 1px; background: var(--hc-soft); }
+
+        /* ── Typography ── */
+        .hc-eyebrow {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.75rem; font-weight: 500;
+          color: var(--hc-accent); letter-spacing: 0.14em;
+          text-transform: uppercase; margin-bottom: 1rem; display: block;
+        }
+        .hc-eyebrow-light { color: var(--hc-warm); }
+        .hc-section-headline {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: clamp(1.75rem, 3vw, 2.25rem);
+          font-weight: 400; color: var(--hc-ink);
+          letter-spacing: -0.01em; line-height: 1.25;
+          margin-bottom: 1.25rem;
+        }
+        .hc-headline-light { color: #FFFFFF; }
+        .hc-hero-headline {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: clamp(2.4rem, 5vw, 3.75rem);
+          font-weight: 400; color: var(--hc-ink);
+          line-height: 1.18; letter-spacing: -0.01em;
+          margin-bottom: 2rem; max-width: 820px;
+        }
+        .hc-hero-sub {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 1.125rem; color: var(--hc-cool); line-height: 1.7;
+          max-width: 640px; margin-bottom: 3rem;
+        }
+        .hc-body-text {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 1rem; color: var(--hc-cool); line-height: 1.8;
+        }
+        .hc-cta-headline {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: clamp(2rem, 4vw, 3rem); font-weight: 400;
+          color: var(--hc-ink); line-height: 1.2; letter-spacing: -0.01em;
+          margin-bottom: 1.5rem; max-width: 680px; margin-left: auto; margin-right: auto;
+        }
+        .hc-cta-body {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 1rem; color: var(--hc-cool); line-height: 1.8;
+          max-width: 560px; margin: 0 auto 3rem;
+        }
+
+        /* ── Buttons ── */
+        .hc-hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .hc-btn-primary {
+          display: inline-block;
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.8125rem; font-weight: 500;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          text-decoration: none; padding: 0.875rem 2rem;
+          background: var(--hc-accent); color: #FFFFFF; border: 1.5px solid var(--hc-accent);
+          transition: background 0.2s ease, border-color 0.2s ease; cursor: pointer;
+          font-family: 'Inter', system-ui, sans-serif;
+        }
+        .hc-btn-primary:hover { background: #5f2430; border-color: #5f2430; }
+        .hc-btn-outline {
+          display: inline-block;
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.8125rem; font-weight: 500;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          text-decoration: none; padding: 0.875rem 2rem;
+          background: transparent; color: var(--hc-ink); border: 1.5px solid var(--hc-soft);
+          transition: border-color 0.2s ease;
+        }
+        .hc-btn-outline:hover { border-color: var(--hc-ink); }
+        .hc-link-arrow {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.75rem; font-weight: 500;
+          color: var(--hc-accent); text-decoration: none;
+          letter-spacing: 0.08em; text-transform: uppercase;
+        }
+        .hc-link-underline {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.75rem; font-weight: 500;
+          color: var(--hc-accent); text-decoration: none;
+          letter-spacing: 0.08em; text-transform: uppercase;
+          border-bottom: 1.5px solid var(--hc-accent); padding-bottom: 2px;
+        }
+
+        /* ── Cards ── */
+        .hc-card-title {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: 1.2rem; font-weight: 400;
+          color: var(--hc-ink); line-height: 1.3; letter-spacing: -0.01em;
+        }
+        .hc-card-body {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.9rem; color: var(--hc-cool); line-height: 1.7; flex: 1;
+        }
+
+        /* ── Grid layouts ── */
+        .hc-grid-2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 4rem; align-items: center;
+        }
+        .hc-founder-grid { gap: 5rem; }
+        .hc-pathway-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          border: 1px solid var(--hc-soft);
+        }
+        .hc-pathway-card {
+          padding: 2.5rem; border-right: 1px solid var(--hc-soft);
+          display: flex; flex-direction: column; gap: 1rem;
+          transition: background 0.2s ease;
+        }
+        .hc-events-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: 1px; background: var(--hc-soft);
+          border: 1px solid var(--hc-soft); margin-bottom: 3rem;
+        }
+        .hc-event-card {
+          background: var(--hc-white); padding: 2.5rem;
+          display: flex; flex-direction: column; gap: 1rem;
+        }
+        .hc-event-meta { display: flex; gap: 0.75rem; align-items: center; }
+        .hc-event-format {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.7rem; font-weight: 500;
+          letter-spacing: 0.1em; text-transform: uppercase;
+          color: #FFFFFF; background: var(--hc-cool); padding: 0.2rem 0.6rem;
+        }
+        .hc-event-date {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.8rem; color: var(--hc-soft); letter-spacing: 0.04em;
+        }
+        .hc-writing-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+          gap: 1px; background: var(--hc-soft); border: 1px solid var(--hc-soft);
+        }
+        .hc-writing-card {
+          padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem;
+          transition: background 0.2s ease;
+        }
+        .hc-writing-meta { display: flex; justify-content: space-between; align-items: center; }
+        .hc-writing-category {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.7rem; font-weight: 500;
+          letter-spacing: 0.1em; text-transform: uppercase; color: var(--hc-accent);
+        }
+        .hc-framework-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+          border-top: 1px solid rgba(191,192,192,0.25);
+        }
+        .hc-framework-item {
+          padding: 2rem 2.5rem 2rem 0;
+          border-bottom: 1px solid rgba(191,192,192,0.25);
+        }
+        .hc-framework-title {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: 1.05rem; font-weight: 400;
+          color: var(--hc-warm); margin-bottom: 0.75rem;
+        }
+        .hc-framework-body {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.875rem; color: rgba(255,255,255,0.7); line-height: 1.75;
+        }
+
+        /* ── Founder photo ── */
+        .hc-founder-photo {
+          width: 100%; max-width: 360px; aspect-ratio: 4/5;
+          background: var(--hc-warm);
+          display: flex; align-items: center; justify-content: center;
+        }
+        .hc-founder-monogram {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: 5rem; font-weight: 400;
+          color: rgba(45,49,66,0.25); letter-spacing: 0.05em;
+        }
+
+        /* ── Email capture ── */
+        .hc-email-capture {
+          background: var(--hc-offwhite); border: 1px solid var(--hc-soft);
+          padding: 2.5rem; max-width: 520px;
+        }
+        .hc-email-heading {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: 1.1rem; font-weight: 400;
+          color: var(--hc-ink); margin-bottom: 1.25rem;
+        }
+        .hc-email-confirm {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.875rem; color: var(--hc-accent);
+        }
+        .hc-email-form { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+        .hc-email-input {
+          flex: 1; min-width: 200px;
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.875rem; color: var(--hc-ink);
+          background: var(--hc-white); border: 1px solid var(--hc-soft);
+          padding: 0.75rem 1rem; outline: none;
+        }
+        .hc-email-input:focus { border-color: var(--hc-cool); }
+
+        /* ── Footer ── */
+        .hc-footer { background: var(--hc-ink); padding: 2.5rem 2rem; }
+        .hc-footer-inner {
+          display: flex; justify-content: space-between;
+          align-items: center; flex-wrap: wrap; gap: 1rem;
+        }
+        .hc-footer-logo {
+          font-family: 'DM Serif Display', Georgia, serif;
+          font-size: 1rem; font-weight: 400; color: rgba(255,255,255,0.7);
+        }
+        .hc-footer-copy {
+          font-family: 'Inter', system-ui, sans-serif;
+          font-size: 0.8rem; color: rgba(255,255,255,0.4); letter-spacing: 0.04em;
+        }
+
+        /* ── Responsive ── */
         @media (max-width: 768px) {
+          .hc-nav-links-desktop { display: none; }
+          .hc-hamburger { display: flex; align-items: center; }
+          .hc-section { padding: 3.5rem 1.25rem; }
+          .hc-container { padding: 0 1.25rem; }
+          .hc-hero { padding: 4rem 1.25rem 3.5rem; }
           .hc-grid-2 {
-            grid-template-columns: 1fr !important;
+            grid-template-columns: 1fr;
+            gap: 2rem;
           }
+          .hc-hero-headline { font-size: 2.2rem; }
+          .hc-hero-sub { font-size: 1rem; }
+          .hc-pathway-grid { grid-template-columns: 1fr; }
+          .hc-pathway-card { border-right: none; border-bottom: 1px solid var(--hc-soft); }
+          .hc-framework-grid { grid-template-columns: 1fr; }
+          .hc-writing-grid { grid-template-columns: 1fr; }
+          .hc-events-grid { grid-template-columns: 1fr; }
+          .hc-founder-photo { max-width: 100%; }
+          .hc-final-cta { padding: 4rem 1.25rem; }
+          .hc-cta-headline { font-size: 2rem; }
         }
       `}</style>
 
-      <div style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <div className="hc-root">
         <NavBar />
         <Hero />
         <Divider />

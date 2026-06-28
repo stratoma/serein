@@ -112,10 +112,20 @@
   --sidebar-ring: 240 5.9% 10%;
 
   --font-sans: 'Inter', sans-serif;
-  --font-serif: Georgia, serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
   --font-mono: Menlo, monospace;
   --radius: .5rem;
   --spacing: 0.25rem;
+
+  /* Hello Creative & Co. brand tokens */
+  --hc-ink-primary: #2D3142;
+  --hc-accent-premium: #7A2E3A;
+  --hc-neutral-warm: #D4AFB9;
+  --hc-support-cool: #4F5D75;
+  --hc-neutral-soft: #BFC0C0;
+  --hc-accent-signal: #DE6449;
+  --hc-paper: #FFFFFF;
+  --hc-paper-soft: #FAFAF9;
 }
 
 /* DARK MODE */
