@@ -1,0 +1,261 @@
+Below is a polished **Replit Agent prompt** you can paste directly:
+
+````markdown
+Build a premium, minimal editorial landing page for **Hello Creative & Co.**, founded by **M. Louis**.
+
+Use **English** for all Replit Agent communication and the application interface.
+
+## Project Goal
+Create a refined landing page that introduces Hello Creative & Co. as an identity, leadership, and institutional design studio. The site should create clear pathways into Advisory, Programs, Events, and Writing.
+
+The brand should feel like a premium editorial advisory platform — not a coaching site, beauty brand, portfolio, or generic consultancy.
+
+## Tech Direction
+Build a responsive web landing page suitable for hosting on Replit. Use a clean modern stack such as React + Vite or Next.js if available. Keep the code CMS-ready using structured data arrays for events and writings.
+
+## Brand Style
+Tone:
+- editorial
+- intelligent
+- warm
+- restrained
+- premium
+- culturally fluent
+- institutionally credible
+
+Avoid:
+- influencer language
+- overly soft feminine branding
+- corporate clichés
+- generic luxury serif styling
+- excessive animation
+- clutter
+
+## Colors
+Use this palette:
+
+```css
+:root {
+  --hc-ink-primary: #2D3142;
+  --hc-accent-premium: #7A2E3A;
+  --hc-neutral-warm: #D4AFB9;
+  --hc-support-cool: #4F5D75;
+  --hc-neutral-soft: #BFC0C0;
+  --hc-accent-signal: #DE6449;
+  --hc-paper: #FFFFFF;
+}
+````
+
+Primary text/logo: `#2D3142`
+Main accent: `#7A2E3A`
+Soft sections: `#D4AFB9` used sparingly
+Rare highlight: `#DE6449`
+
+## Typography
+
+Use an elegant editorial serif for headings and a refined readable sans-serif for body text. Typography should feel literary, premium, clear, and not overly delicate.
+
+## Page Sections
+
+### 1. Navigation
+
+Top left logo: **Hello Creative & Co.**
+
+Nav links:
+
+* About
+* Work With Us
+* Events
+* Writing
+* Contact
+
+Primary nav CTA:
+**Start a Conversation**
+
+Use sticky or clean fixed-top navigation with subtle divider.
+
+### 2. Hero
+
+Headline:
+**Identity, leadership, and collaboration architecture for women leaders and the institutions that support them.**
+
+Subhead:
+**Hello Creative & Co. helps women leaders and mission-driven organizations move from identity clarity to leadership architecture to values-aligned collaboration systems.**
+
+Small founder credit:
+**Founded by M. Louis**
+
+Buttons:
+
+* Work With Us
+* Read the Notes
+
+Design: spacious, editorial, text-forward, white/off-white background.
+
+### 3. Positioning
+
+Heading:
+**A studio for identity, leadership, and institutional design.**
+
+Copy:
+**Hello Creative & Co. sits at the intersection of strategic design, leadership development, creative intelligence, and systems thinking. We support women and organizations as they clarify who they are, how they lead, and what structures they need in order to grow with integrity.**
+
+### 4. Offer Pathways
+
+Heading:
+**Ways to work together**
+
+Create four refined cards:
+
+1. **Advisory**
+   Strategic support for leaders, teams, and institutions navigating identity, collaboration, and systems change.
+   CTA: Explore Advisory
+
+2. **Programs**
+   Structured leadership development experiences for women, cohorts, and organizations.
+   CTA: Explore Programs
+
+3. **Events**
+   Curated salons, conversations, and gatherings for women thinking deeply about leadership, identity, creativity, and change.
+   CTA: View Events
+
+4. **Writing**
+   Essays, notes, and reflections from M. Louis on identity, leadership, visibility, collaboration, and creative intelligence.
+   CTA: Read Writing
+
+### 5. Frameworks
+
+Heading:
+**The work is guided by a clear point of view.**
+
+Show high-level descriptions only. Do not reveal proprietary methodology.
+
+Frameworks:
+
+* **Creative Intelligence** — A lens for approaching identity, leadership, aesthetics, and growth with imagination, discernment, and strategic depth.
+* **Collective Leadership Architecture™** — A way of thinking about leadership as an ecosystem shaped by trust, visibility, sponsorship, and support.
+* **PAC Framework™** — A collaboration framework for creating more aligned, clear, and sustainable ways of working together.
+* **Ethics-Embedded Operations** — An approach to ensuring values show up in decisions, systems, and day-to-day practice.
+
+### 6. Events
+
+Heading:
+**Upcoming Events**
+
+Use event cards from a data object.
+
+Default event:
+
+```js
+const events = [
+  {
+    title: "Salon Soirée: Visibility Without Performance",
+    date: "Coming Soon",
+    format: "Virtual",
+    description: "A guided conversation for women navigating leadership, identity, and the pressure to be seen.",
+    cta: "Reserve a Seat",
+    link: "#"
+  }
+];
+```
+
+Also support empty-state copy:
+**No upcoming events are currently open. Join the list to receive the next invitation.**
+
+CTA:
+**Join the List**
+
+Include email capture field.
+
+### 7. Writing & Notes
+
+Heading:
+**Writing & Notes**
+
+Use three featured article cards from a data object.
+
+```js
+const writings = [
+  {
+    title: "Visibility Is Not Performance",
+    category: "Identity",
+    date: "Coming Soon",
+    excerpt: "A note on being seen without becoming flattened by the gaze of others.",
+    link: "#"
+  },
+  {
+    title: "Leadership Needs Architecture",
+    category: "Leadership",
+    date: "Coming Soon",
+    excerpt: "A reflection on building structures that support identity, trust, and sustainable influence.",
+    link: "#"
+  },
+  {
+    title: "Creative Intelligence at Work",
+    category: "Creative Intelligence",
+    date: "Coming Soon",
+    excerpt: "On discernment, imagination, and strategic depth as leadership practices.",
+    link: "#"
+  }
+];
+```
+
+CTA on each card:
+**Read More**
+
+### 8. Founder
+
+Heading:
+**About M. Louis**
+
+Copy:
+**M. Louis is the founder of Hello Creative & Co., an identity, leadership, and institutional design studio serving women leaders and mission-driven organizations. Her work sits at the intersection of editorial strategy, leadership development, collaboration design, and cultural systems thinking.**
+
+CTA:
+**Learn More**
+
+### 9. Final CTA
+
+Heading:
+**If you’re building what comes next, begin with a conversation.**
+
+Copy:
+**Whether you are clarifying your own leadership identity, designing a program, convening a room, or strengthening collaboration inside an institution, Hello Creative & Co. helps bring the work into form.**
+
+CTA:
+**Start a Conversation**
+
+## UX/UI Requirements
+
+* Responsive desktop/tablet/mobile design
+* Spacious editorial layout
+* Generous margins
+* Thin divider lines
+* Soft background shifts
+* Restrained color usage
+* Elegant hover states
+* Minimal animation only
+* No gradients
+* No stock-photo-heavy layout
+* No excessive icons
+* No loud buttons
+* No blush/pink dominance
+
+## Functional Requirements
+
+* Clean section anchors
+* Events data structure for future CMS integration
+* Writing data structure for future CMS integration
+* Email capture for newsletter/events
+* Contact CTA
+* Accessible semantic HTML
+* Good mobile spacing
+* Fast loading
+* Deployable on Replit
+
+Create the full landing page now with polished UI, clean component structure, and production-ready styling.
+
+```
+
+Replit is well-suited for this because it supports fast browser-based development, hosting, and AI-assisted app creation in one environment. :contentReference[oaicite:0]{index=0}
+```
