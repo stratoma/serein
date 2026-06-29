@@ -10,6 +10,8 @@ const practices = [
     how: "Through one-on-one advisory engagement, cohort-based programs, and institutional partnerships, we design experiences that address the whole leader — identity, visibility, strategy, and sustainability.",
     engagements: ["Executive leadership advisory", "Women's leadership cohorts", "Emerging leader programs", "Intergenerational leadership design"],
     outcomes: ["Greater identity clarity and leadership confidence", "Stronger relational authority and executive presence", "Sustainable leadership practices and boundaries", "Networks of mutual sponsorship and support"],
+    cta: "Begin a Conversation",
+    ctaHref: "/contact",
     color: "var(--hc-mulberry)",
     bg: "var(--hc-ivory)",
   },
@@ -20,6 +22,8 @@ const practices = [
     how: "We work alongside leadership teams and boards to examine current structures, identify design gaps, and build systems and processes that reflect stated values. We bring both analysis and aesthetics to organizational design.",
     engagements: ["Organizational culture assessment", "Governance and process redesign", "Values-to-operations translation", "Team collaboration architecture"],
     outcomes: ["Clearer decision-making structures", "Stronger alignment between values and practice", "More equitable and sustainable collaboration", "Increased organizational trust and accountability"],
+    cta: "Partner With HC&C",
+    ctaHref: "/contact",
     color: "var(--hc-navy)",
     bg: "var(--hc-white)",
   },
@@ -30,6 +34,8 @@ const practices = [
     how: "Strategic facilitation is woven into everything we do — from single convenings to multi-year engagements. We design each conversation as carefully as we design any other artifact: with purpose, structure, aesthetic attention, and a clear outcome in mind.",
     engagements: ["Leadership team retreats", "Strategic planning convenings", "Cross-sector convenings and summits", "Board and stakeholder facilitation"],
     outcomes: ["Aligned leadership teams with shared direction", "Sound decisions with broad ownership", "Transformed relationships and working dynamics", "Clear implementation commitments and accountabilities"],
+    cta: "Begin a Conversation",
+    ctaHref: "/contact",
     color: "var(--hc-coral)",
     bg: "var(--hc-ivory)",
   },
@@ -40,6 +46,8 @@ const practices = [
     how: "Each volume of Salon Soirées brings together a carefully curated group of women leaders for an intimate, facilitated evening. We use volume language — Volume 01, Volume 02 — to signal that this is a living archive of gathered thought, not a one-time event.",
     engagements: ["Volume 01: Leadership as Relationship", "Volume 02: The Architecture of Trust", "Volume 03: Visibility & Identity (Coming Soon)"],
     outcomes: ["Community and connection across sectors", "Deepened reflection on leadership and identity", "New relationships and networks of mutual support", "Ideas that travel beyond the room"],
+    cta: "Reserve Your Seat",
+    ctaHref: "/contact",
     color: "var(--hc-dusty-rose)",
     bg: "var(--hc-white)",
   },
@@ -189,7 +197,7 @@ function PracticeSection({ practice: p, index }: { practice: typeof practices[0]
               </div>
             </FadeUp>
             <FadeUp delay={0.32}>
-              <MagneticButton href="/contact" variant="primary">Begin a Conversation</MagneticButton>
+              <MagneticButton href={p.ctaHref} variant="primary">{p.cta}</MagneticButton>
             </FadeUp>
           </div>
         </div>
