@@ -1,0 +1,198 @@
+Use this as the updated Replit instruction set:
+
+```text
+Refresh the Hello Creative & Co. website based on the last approved direction.
+
+This is a refinement, not a rebrand. Preserve the warmth, colors, identity, and humanity of HC&C while making the site more cohesive, editorial, and clear.
+
+Design Principle:
+Every page should feel like the digital home of a thoughtful Black-owned, woman-led leadership studio where meaningful conversations become meaningful change.
+
+Brand Essence:
+Hello Creative & Co. partners with women leaders and organizations to cultivate thoughtful leadership through strategic facilitation, leadership development, organizational consulting, and intentional design.
+
+The website should communicate warmth + rigor, hospitality + strategy, beauty + systems, and conversation + implementation.
+
+Primary audience:
+Thoughtful, values-driven women leaders, executives, founders, nonprofit leaders, institutional partners, and organizations seeking clarity, collaboration, and sustainable leadership.
+
+Site Purpose:
+The website should establish credibility, communicate HC&C’s philosophy, demonstrate the approach, and invite deeper engagement. Do not explain every framework in full. Mention the frameworks, but do not teach them. Curiosity is better than information overload.
+
+Navigation:
+Use a simplified structure:
+- Home
+- About
+- The Studio
+- Work With Us
+- Journal
+- Contact
+
+Homepage:
+The homepage should answer only:
+- Who we are
+- What we do
+- Who we serve
+- Why our approach is different
+- How to engage
+
+Add or refine these sections:
+1. Hero
+Headline:
+Hello Creative & Co. partners with women leaders and organizations to design the conversations, leadership systems, and collaborative structures that transform vision into lasting impact.
+
+Subheadline:
+Through strategic facilitation, leadership architecture, and editorial thought leadership, we help people move from complexity to clarity, and from clarity to sustained action.
+
+CTAs:
+- Begin a Conversation
+- Enter the Journal
+
+2. Point of View
+Title:
+Our Point of View
+
+Copy:
+Leadership is not simply personal advancement. It is relational architecture. We believe trust is infrastructure, design shapes behavior, visibility requires identity, and collaboration must be intentionally facilitated if it is to become meaningful action.
+
+3. Signature Capabilities
+Use concise cards:
+- Creative Intelligence: Pattern recognition, imagination, and strategic sense-making.
+- Strategic Facilitation: Designed conversations that build alignment, trust, sound decisions, and shared ownership.
+- Leadership Architecture: Systems for sponsorship, relational authority, and cross-generational leadership.
+- Collaboration Design: Purpose-aligned collaboration through the PAC Framework™.
+- Ethics-Embedded Operations: Values translated into governance, process, access, and accountability.
+
+About Page:
+Tell the HC&C story with warmth and confidence.
+Include this idea naturally:
+Hello Creative & Co. is a Black-owned, woman-led leadership studio shaped by global perspective, cultural fluency, and a belief that thoughtful leadership begins with identity, relationship, and intentional design.
+
+The Studio Page:
+Create one consolidated page for HC&C’s philosophy and methodology.
+Include concise introductions to:
+- Creative Intelligence
+- Collective Leadership Architecture™
+- PAC Framework™
+- Ethics-Embedded Operations™
+
+Do not fully explain every framework. Keep this elegant and high-level. Link deeper exploration to the Journal.
+
+Work With Us:
+Rename “Services” to “Practice Areas” or “Work With Us.”
+Organize into four practice areas:
+- Leadership Development
+- Organizational Consulting
+- Strategic Facilitation
+- Salon Soirées
+
+Each practice area should include:
+- What it is
+- How we work
+- Typical engagements
+- Outcomes
+- Invitation to connect
+
+Facilitation:
+Facilitation should be visible but not over-separated. Do not position it only as a standalone workshop service.
+Weave this language throughout the site:
+HC&C designs and facilitates the conversations that help leaders build alignment, navigate complexity, strengthen relationships, clarify decisions, create shared ownership, and move from ideas to implementation.
+
+Journal:
+Create or refine the Journal page as:
+The Hello Creative Journal
+
+Subtitle:
+Essays, field notes, salon reflections, and frameworks on leadership, identity, design, culture, and change.
+
+Position the Journal as both the editorial platform and living archive of HC&C thinking. Link to Substack.
+
+Salon Soirées:
+Position salons as a recurring conversation series, not one-off events.
+
+Copy:
+Salon Soirées is a conversation series by Hello Creative & Co. exploring leadership, identity, design, technology, culture, and the future we are building together. Each gathering is carefully facilitated to surface insight, deepen reflection, and build community around complex questions.
+
+Use volume language:
+- Volume 01
+- Volume 02
+- Volume 03
+
+CTA:
+Reserve Your Seat
+
+Contact:
+Keep it simple, warm, and invitation-based.
+Use CTA language such as:
+- Begin a Conversation
+- Partner With HC&C
+- Read the Journal
+- Reserve Your Seat
+
+Visual Direction:
+The site should feel like a warm editorial leadership studio, not a cold institution, coaching template, or generic consultancy.
+
+Preserve and use the HC&C palette:
+- Mulberry: #7A2E3A
+- Coral: #DE6449
+- Dusty Rose: #D4AFB9
+- Deep Navy: #2E4057
+- Warm Ivory: #F8F5F2
+- Charcoal: #2B2B2B
+
+Color usage:
+- Mulberry anchors authority, leadership, depth, and legacy.
+- Coral is for invitation, CTAs, highlights, and movement.
+- Dusty Rose is for warmth, panels, cards, quote sections, and relational moments.
+- Deep Navy is for structure, trust, and institutional content.
+- Warm Ivory is the primary background.
+- Charcoal is for readable body text.
+
+Do not remove warmth from the brand. Do not make the site monochromatic.
+
+Photography and Image Placeholders:
+Use image placeholders where final photography is needed.
+
+Suggested placeholders:
+- Homepage hero: warm architectural interior, salon, library, or creative studio with natural light.
+- About: natural, timeless portrait imagery that feels warm, confident, and thoughtful.
+- Leadership Development: Black women or multicultural women in authentic intergenerational conversation.
+- Organizational Consulting: small leadership team gathered around a table, reviewing ideas or collaborating naturally.
+- Strategic Facilitation: facilitated conversation, roundtable, notes, dialogue, or workshop materials.
+- Salon Soirées: intimate gathering with books, candles, architecture, conversation, and warmth.
+- Journal: desk with books, notebooks, handwritten notes, coffee, architectural sketches, or editorial materials.
+
+Avoid:
+- Generic corporate stock photos
+- People pointing at whiteboards
+- Forced laptop smiles
+- Cold tech visuals
+- Overly polished coaching imagery
+
+Layout:
+Use generous whitespace, editorial grids, beautiful typography, pull quotes, subtle architectural textures, refined cards, and calm transitions.
+Keep the experience spacious and readable.
+Prioritize clarity over completeness.
+
+Accessibility and Quality:
+Ensure strong contrast, readable line lengths, responsive typography, alt text for images, clear heading hierarchy, keyboard accessibility, and mobile responsiveness.
+
+Remove or reduce:
+- Repetitive sections
+- Overexplained frameworks
+- Too many CTAs
+- Generic consulting language
+- Any copy that feels too revealing for public site visitors
+- Sections that make the site feel like a textbook
+
+Success Criteria:
+A visitor should leave thinking:
+- This feels different.
+- These are thoughtful people.
+- I trust their approach.
+- They understand leadership and complexity.
+- This feels warm, serious, and beautiful.
+- I want to read the Journal.
+- I want to attend a Salon.
+- I want to partner with HC&C.
+```

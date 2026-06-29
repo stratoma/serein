@@ -6,23 +6,23 @@ import { FadeUp, AnimatedHeadline, MagneticButton, sharedStyles } from "../compo
 const capabilities = [
   {
     title: "Creative Intelligence",
-    body: "Pattern recognition, imagination, and strategic sense-making applied to leadership, identity, and organizational life.",
+    body: "Pattern recognition, imagination, and strategic sense-making.",
   },
   {
     title: "Strategic Facilitation",
-    body: "Designed conversations that build alignment, trust, sound decisions, and shared ownership across teams and institutions.",
+    body: "Designed conversations that build alignment, trust, sound decisions, and shared ownership.",
   },
   {
     title: "Leadership Architecture",
-    body: "Systems for sponsorship, relational authority, visibility, and cross-generational leadership development.",
+    body: "Systems for sponsorship, relational authority, and cross-generational leadership.",
   },
   {
     title: "Collaboration Design",
-    body: "Purpose-aligned collaboration structures through the PAC Framework™, creating clarity, accountability, and sustained momentum.",
+    body: "Purpose-aligned collaboration through the PAC Framework™.",
   },
   {
     title: "Ethics-Embedded Operations",
-    body: "Values translated into governance, process, access, and accountability — not aspirations, but architecture.",
+    body: "Values translated into governance, process, access, and accountability.",
   },
 ];
 
@@ -288,7 +288,7 @@ export default function Home() {
               tag="h1"
               className="hc-display"
               style={{ maxWidth: 920, marginTop: "0.5rem" }}
-              text="Partnering with women leaders to design the conversations, leadership systems, and collaborative structures that transform vision into lasting impact."
+              text="Hello Creative & Co. partners with women leaders and organizations to design the conversations, leadership systems, and collaborative structures that transform vision into lasting impact."
             />
           </motion.div>
 
@@ -298,7 +298,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.9 }}
           >
-            Through strategic facilitation, leadership architecture, and editorial thought leadership, we help people move from complexity to clarity — and from clarity to sustained action.
+            Through strategic facilitation, leadership architecture, and editorial thought leadership, we help people move from complexity to clarity, and from clarity to sustained action.
           </motion.p>
 
           <motion.div
@@ -345,9 +345,7 @@ export default function Home() {
           </div>
           <FadeUp delay={0.15}>
             <p className="hc-pov-body">
-              We believe trust is infrastructure, not assumption. Design shapes behavior before strategy can take hold. Visibility requires identity — you cannot be truly seen until you know who you are. And collaboration must be intentionally facilitated if it is to become meaningful, sustained action.
-              <br /><br />
-              These are not aspirations. They are the operating principles that shape every engagement, every program, and every conversation we design.
+              We believe trust is infrastructure, design shapes behavior, visibility requires identity, and collaboration must be intentionally facilitated if it is to become meaningful action.
             </p>
           </FadeUp>
         </div>
@@ -385,7 +383,7 @@ export default function Home() {
             </FadeUp>
             <FadeUp delay={0.18}>
               <p className="hc-salon-desc">
-                Each gathering is carefully facilitated to surface insight, deepen reflection, and build community around complex questions of leadership, identity, design, and the future we are building together.
+                Salon Soirées is a conversation series by Hello Creative &amp; Co. exploring leadership, identity, design, technology, culture, and the future we are building together. Each gathering is carefully facilitated to surface insight, deepen reflection, and build community around complex questions.
               </p>
             </FadeUp>
           </div>
