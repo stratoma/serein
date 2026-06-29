@@ -1,15 +1,15 @@
 @import "tailwindcss";
 
-/* ── Brand tokens ── */
+/* ── HC&C Brand Tokens ── */
 :root {
-  --hc-ink-primary:    #2D3142;
-  --hc-accent-premium: #7A2E3A;
-  --hc-neutral-warm:   #D4AFB9;
-  --hc-support-cool:   #4F5D75;
-  --hc-neutral-soft:   #BFC0C0;
-  --hc-accent-signal:  #DE6449;
-  --hc-paper:          #FFFFFF;
-  --hc-paper-soft:     #FAFAF9;
+  --hc-mulberry:   #7A2E3A;
+  --hc-coral:      #DE6449;
+  --hc-dusty-rose: #D4AFB9;
+  --hc-navy:       #2E4057;
+  --hc-ivory:      #F8F5F2;
+  --hc-ivory-deep: #EDE9E4;
+  --hc-charcoal:   #2B2B2B;
+  --hc-white:      #FFFFFF;
 }
 
 *, *::before, *::after {
@@ -24,7 +24,8 @@ html {
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
-  color: var(--hc-ink-primary);
-  background: var(--hc-paper);
+  color: var(--hc-charcoal);
+  background: var(--hc-ivory);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

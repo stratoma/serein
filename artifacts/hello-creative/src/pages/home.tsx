@@ -1,1075 +1,516 @@
-import { useState, useEffect, useRef } from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useSpring,
-  useInView,
-  AnimatePresence,
-} from "framer-motion";
+import { useRef, useEffect } from "react";
+import { motion, useScroll, useTransform, useSpring, useInView } from "framer-motion";
+import { Link } from "wouter";
+import { FadeUp, AnimatedHeadline, MagneticButton, sharedStyles } from "../components/ui-helpers";
 
-/* ── Data ─────────────────────────────────────────────── */
-
-const events = [
+const capabilities = [
   {
-    title: "Salon Soirée: Visibility Without Performance",
-    date: "Coming Soon",
-    format: "Virtual",
-    description:
-      "A guided conversation for women navigating leadership, identity, and the pressure to be seen.",
-    cta: "Reserve a Seat",
-    link: "#contact",
+    title: "Creative Intelligence",
+    body: "Pattern recognition, imagination, and strategic sense-making applied to leadership, identity, and organizational life.",
+  },
+  {
+    title: "Strategic Facilitation",
+    body: "Designed conversations that build alignment, trust, sound decisions, and shared ownership across teams and institutions.",
+  },
+  {
+    title: "Leadership Architecture",
+    body: "Systems for sponsorship, relational authority, visibility, and cross-generational leadership development.",
+  },
+  {
+    title: "Collaboration Design",
+    body: "Purpose-aligned collaboration structures through the PAC Framework™, creating clarity, accountability, and sustained momentum.",
+  },
+  {
+    title: "Ethics-Embedded Operations",
+    body: "Values translated into governance, process, access, and accountability — not aspirations, but architecture.",
   },
 ];
 
-const writings = [
+const volumes = [
   {
-    title: "Visibility Is Not Performance",
+    vol: "Volume 03",
+    theme: "Visibility & Identity",
+    excerpt:
+      "A conversation about how we become seen, on our own terms, without losing ourselves in the performance of it.",
+    status: "Next",
+  },
+  {
+    vol: "Volume 02",
+    theme: "The Architecture of Trust",
+    excerpt:
+      "Women executives and institutional leaders explored how trust is built, broken, and rebuilt inside complex organizations.",
+    status: "Past",
+  },
+  {
+    vol: "Volume 01",
+    theme: "Leadership as Relationship",
+    excerpt:
+      "The inaugural gathering that brought together women leaders to re-examine what leadership actually requires of us.",
+    status: "Past",
+  },
+];
+
+const journalPreviews = [
+  {
     category: "Identity",
-    date: "Coming Soon",
-    excerpt:
-      "A note on being seen without becoming flattened by the gaze of others.",
-    link: "#",
+    title: "Visibility Is Not Performance",
+    excerpt: "A note on being seen without becoming flattened by the gaze of others.",
   },
   {
-    title: "Leadership Needs Architecture",
     category: "Leadership",
-    date: "Coming Soon",
-    excerpt:
-      "A reflection on building structures that support identity, trust, and sustainable influence.",
-    link: "#",
+    title: "Leadership Needs Architecture",
+    excerpt: "On building structures that hold identity, trust, and sustainable influence.",
   },
   {
-    title: "Creative Intelligence at Work",
     category: "Creative Intelligence",
-    date: "Coming Soon",
-    excerpt:
-      "On discernment, imagination, and strategic depth as leadership practices.",
-    link: "#",
+    title: "The Strategic Value of Imagination",
+    excerpt: "Why discernment and imaginative capacity are not soft skills — they are leadership infrastructure.",
   },
 ];
 
-const frameworks = [
-  {
-    name: "Creative Intelligence",
-    description:
-      "A lens for approaching identity, leadership, aesthetics, and growth with imagination, discernment, and strategic depth.",
-  },
-  {
-    name: "Collective Leadership Architecture™",
-    description:
-      "A way of thinking about leadership as an ecosystem shaped by trust, visibility, sponsorship, and support.",
-  },
-  {
-    name: "PAC Framework™",
-    description:
-      "A collaboration framework for creating more aligned, clear, and sustainable ways of working together.",
-  },
-  {
-    name: "Ethics-Embedded Operations",
-    description:
-      "An approach to ensuring values show up in decisions, systems, and day-to-day practice.",
-  },
-];
-
-const pathways = [
-  {
-    title: "Advisory",
-    description:
-      "Strategic support for leaders, teams, and institutions navigating identity, collaboration, and systems change.",
-    cta: "Explore Advisory",
-  },
-  {
-    title: "Programs",
-    description:
-      "Structured leadership development experiences for women, cohorts, and organizations.",
-    cta: "Explore Programs",
-  },
-  {
-    title: "Events",
-    description:
-      "Curated salons, conversations, and gatherings for women thinking deeply about leadership, identity, creativity, and change.",
-    cta: "View Events",
-  },
-  {
-    title: "Writing",
-    description:
-      "Essays, notes, and reflections from M. Louis on identity, leadership, visibility, collaboration, and creative intelligence.",
-    cta: "Read Writing",
-  },
-];
-
-const navLinks = ["About", "Work With Us", "Events", "Writing", "Contact"];
-
-/* ── Animation helpers ────────────────────────────────── */
-
-function FadeUp({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay }}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-function AnimatedHeadline({
-  text,
-  className = "",
-}: {
-  text: string;
-  className?: string;
-}) {
-  const words = text.split(" ");
-  const container = {
-    hidden: {},
-    visible: {
-      transition: { staggerChildren: 0.055, delayChildren: 0.25 },
-    },
-  };
-  const word = {
-    hidden: { opacity: 0, y: "110%", rotateX: -15 },
-    visible: {
-      opacity: 1,
-      y: "0%",
-      rotateX: 0,
-      transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
-    },
-  };
-  return (
-    <motion.h1
-      className={className}
-      variants={container}
-      initial="hidden"
-      animate="visible"
-      style={{ perspective: "800px" }}
-    >
-      {words.map((w, i) => (
-        <span
-          key={i}
-          style={{
-            display: "inline-block",
-            overflow: "hidden",
-            verticalAlign: "bottom",
-            marginRight: "0.28em",
-          }}
-        >
-          <motion.span style={{ display: "inline-block" }} variants={word}>
-            {w}
-          </motion.span>
-        </span>
-      ))}
-    </motion.h1>
-  );
-}
-
-/* ── Nav ──────────────────────────────────────────────── */
-
-function NavBar() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  return (
-    <nav className="hc-nav" style={{ boxShadow: scrolled ? "0 1px 24px rgba(45,49,66,0.08)" : "none" }}>
-      <motion.div
-        className="hc-nav-inner"
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <a href="#" className="hc-logo">Hello Creative &amp; Co.</a>
-        <div className="hc-nav-links-desktop">
-          {navLinks.map((link) => (
-            <a
-              key={link}
-              href={`#${link.toLowerCase().replace(/ /g, "-")}`}
-              className="hc-nav-link"
-            >
-              {link}
-            </a>
-          ))}
-          <a href="#contact" className="hc-nav-cta">
-            Start a Conversation
-          </a>
-        </div>
-        <button
-          className="hc-hamburger"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-            {menuOpen ? (
-              <>
-                <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="16" y1="4" x2="4" y2="16" stroke="currentColor" strokeWidth="1.5" />
-              </>
-            ) : (
-              <>
-                <line x1="3" y1="6" x2="17" y2="6" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" strokeWidth="1.5" />
-                <line x1="3" y1="14" x2="17" y2="14" stroke="currentColor" strokeWidth="1.5" />
-              </>
-            )}
-          </svg>
-        </button>
-      </motion.div>
-
-      <AnimatePresence>
-        {menuOpen && (
-          <motion.div
-            className="hc-mobile-menu"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            style={{ overflow: "hidden" }}
-          >
-            <div style={{ padding: "1.5rem 2rem", display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-              {navLinks.map((link) => (
-                <a
-                  key={link}
-                  href={`#${link.toLowerCase().replace(/ /g, "-")}`}
-                  className="hc-mobile-link"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  {link}
-                </a>
-              ))}
-              <a href="#contact" className="hc-mobile-cta" onClick={() => setMenuOpen(false)}>
-                Start a Conversation
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </nav>
-  );
-}
-
-/* ── Magnetic button ──────────────────────────────────── */
-
-function MagneticButton({
-  children,
-  href,
-  primary,
-}: {
-  children: React.ReactNode;
-  href: string;
-  primary?: boolean;
-}) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const x = useSpring(0, { stiffness: 200, damping: 18 });
-  const y = useSpring(0, { stiffness: 200, damping: 18 });
-
-  const onMove = (e: React.MouseEvent) => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
-    x.set((e.clientX - (rect.left + rect.width / 2)) * 0.3);
-    y.set((e.clientY - (rect.top + rect.height / 2)) * 0.3);
-  };
-
-  const onLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      ref={wrapRef}
-      style={{ x, y, display: "inline-block" }}
-      whileTap={{ scale: 0.96 }}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-    >
-      <a href={href} className={primary ? "hc-btn-primary" : "hc-btn-outline"}>
-        {children}
-      </a>
-    </motion.div>
-  );
-}
-
-/* ── Hero ─────────────────────────────────────────────── */
-
-function Hero() {
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
-  const yParallax = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const opacityOut = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-
-  const mouseX = useSpring(0, { stiffness: 60, damping: 20 });
-  const mouseY = useSpring(0, { stiffness: 60, damping: 20 });
-
-  useEffect(() => {
-    const handleMouse = (e: MouseEvent) => {
-      mouseX.set(((e.clientX - window.innerWidth / 2) / (window.innerWidth / 2)) * 14);
-      mouseY.set(((e.clientY - window.innerHeight / 2) / (window.innerHeight / 2)) * 8);
-    };
-    window.addEventListener("mousemove", handleMouse);
-    return () => window.removeEventListener("mousemove", handleMouse);
-  }, [mouseX, mouseY]);
-
-  return (
-    <section id="about" ref={heroRef} className="hc-hero">
-      <motion.div
-        className="hc-hero-rule"
-        initial={{ scaleX: 0 }}
-        animate={{ scaleX: 1 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      />
-
-      <motion.div className="hc-container" style={{ y: yParallax, opacity: opacityOut }}>
-        <motion.p
-          className="hc-eyebrow"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.15 }}
-        >
-          Founded by M. Louis
-        </motion.p>
-
-        <motion.div style={{ x: mouseX, y: mouseY }}>
-          <AnimatedHeadline
-            className="hc-hero-headline"
-            text="Identity, leadership, and collaboration architecture for women leaders and the institutions that support them."
-          />
-        </motion.div>
-
-        <motion.p
-          className="hc-hero-sub"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1], delay: 0.85 }}
-        >
-          Hello Creative &amp; Co. helps women leaders and mission-driven organizations move from identity clarity to leadership architecture to values-aligned collaboration systems.
-        </motion.p>
-
-        <motion.div
-          className="hc-hero-ctas"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: 1.05 }}
-        >
-          <MagneticButton href="#work-with-us" primary>Work With Us</MagneticButton>
-          <MagneticButton href="#writing">Read the Notes</MagneticButton>
-        </motion.div>
-
-        <motion.div
-          className="hc-scroll-cue"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.6, duration: 0.8 }}
-        >
-          <motion.span
-            animate={{ y: [0, 6, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          >
-            ↓
-          </motion.span>
-        </motion.div>
-      </motion.div>
-    </section>
-  );
-}
-
-/* ── Divider ──────────────────────────────────────────── */
-
-function Divider() {
-  return (
-    <div className="hc-container">
-      <div className="hc-divider" />
-    </div>
-  );
-}
-
-/* ── Positioning ──────────────────────────────────────── */
-
-function Positioning() {
-  return (
-    <section className="hc-section hc-paper-soft">
-      <div className="hc-container hc-grid-2">
-        <FadeUp>
-          <h2 className="hc-section-headline">
-            A studio for identity, leadership, and institutional design.
-          </h2>
-        </FadeUp>
-        <FadeUp delay={0.15}>
-          <p className="hc-body-text">
-            Hello Creative &amp; Co. sits at the intersection of strategic design, leadership development, creative intelligence, and systems thinking. We support women and organizations as they clarify who they are, how they lead, and what structures they need in order to grow with integrity.
-          </p>
-        </FadeUp>
-      </div>
-    </section>
-  );
-}
-
-/* ── Offer Pathways ───────────────────────────────────── */
-
-function OfferPathways() {
-  return (
-    <section id="work-with-us" className="hc-section hc-paper">
-      <div className="hc-container">
-        <FadeUp><p className="hc-eyebrow">Ways to work together</p></FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="hc-section-headline" style={{ marginBottom: "3rem" }}>
-            The work takes many forms.
-          </h2>
-        </FadeUp>
-        <div className="hc-pathway-grid">
-          {pathways.map((p, i) => (
-            <PathwayCard key={i} pathway={p} index={i} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function PathwayCard({ pathway, index }: { pathway: typeof pathways[0]; index: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      className="hc-pathway-card"
-      initial={{ opacity: 0, y: 32 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: index * 0.09 }}
-      whileHover={{ backgroundColor: "var(--hc-paper-soft)", transition: { duration: 0.2 } }}
-    >
-      <span className="hc-pathway-num">0{index + 1}</span>
-      <h3 className="hc-card-title">{pathway.title}</h3>
-      <p className="hc-card-body">{pathway.description}</p>
-      <motion.a
-        href="#contact"
-        className="hc-link-arrow"
-        whileHover={{ x: 4 }}
-        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      >
-        {pathway.cta} →
-      </motion.a>
-    </motion.div>
-  );
-}
-
-/* ── Frameworks ───────────────────────────────────────── */
-
-function Frameworks() {
-  return (
-    <section className="hc-section hc-dark">
-      <div className="hc-container">
-        <FadeUp><p className="hc-eyebrow hc-eyebrow-light">Point of View</p></FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="hc-section-headline hc-headline-light" style={{ maxWidth: 560, marginBottom: "3.5rem" }}>
-            The work is guided by a clear point of view.
-          </h2>
-        </FadeUp>
-        <div className="hc-framework-grid">
-          {frameworks.map((f, i) => (
-            <FrameworkItem key={i} f={f} index={i} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FrameworkItem({ f, index }: { f: typeof frameworks[0]; index: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <motion.div
-      ref={ref}
-      className="hc-framework-item"
-      initial={{ opacity: 0, x: -20 }}
-      animate={inView ? { opacity: 1, x: 0 } : {}}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <motion.div
-        className="hc-framework-accent"
-        animate={{ scaleX: hovered ? 1 : 0 }}
-        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-      />
-      <h3 className="hc-framework-title" style={{ color: hovered ? "#D4AFB9" : "rgba(212,175,185,0.75)" }}>
-        {f.name}
-      </h3>
-      <p className="hc-framework-body">{f.description}</p>
-    </motion.div>
-  );
-}
-
-/* ── Events ───────────────────────────────────────────── */
-
-function Events() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  return (
-    <section id="events" className="hc-section hc-paper">
-      <div className="hc-container">
-        <FadeUp><p className="hc-eyebrow">Upcoming Events</p></FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="hc-section-headline" style={{ marginBottom: "3rem" }}>
-            Conversations worth having.
-          </h2>
-        </FadeUp>
-
-        {events.length > 0 && (
-          <div className="hc-events-grid">
-            {events.map((event, i) => (
-              <FadeUp key={i} delay={i * 0.1}>
-                <div className="hc-event-card">
-                  <div className="hc-event-meta">
-                    <span className="hc-event-format">{event.format}</span>
-                    <span className="hc-event-date">{event.date}</span>
-                  </div>
-                  <h3 className="hc-card-title">{event.title}</h3>
-                  <p className="hc-card-body">{event.description}</p>
-                  <motion.a
-                    href={event.link}
-                    className="hc-link-arrow"
-                    whileHover={{ x: 4 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    {event.cta} →
-                  </motion.a>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        )}
-
-        <FadeUp delay={0.2}>
-          <div className="hc-email-capture">
-            <p className="hc-email-heading">Join the list to receive the next invitation.</p>
-            {submitted ? (
-              <motion.p
-                className="hc-email-confirm"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                Thank you — you're on the list.
-              </motion.p>
-            ) : (
-              <form
-                className="hc-email-form"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  if (email) setSubmitted(true);
-                }}
-              >
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Your email address"
-                  required
-                  className="hc-email-input"
-                />
-                <motion.button type="submit" className="hc-btn-primary" whileTap={{ scale: 0.97 }}>
-                  Join the List
-                </motion.button>
-              </form>
-            )}
-          </div>
-        </FadeUp>
-      </div>
-    </section>
-  );
-}
-
-/* ── Writing ──────────────────────────────────────────── */
-
-function Writing() {
-  return (
-    <section id="writing" className="hc-section hc-paper-soft">
-      <div className="hc-container">
-        <FadeUp><p className="hc-eyebrow">Writing &amp; Notes</p></FadeUp>
-        <FadeUp delay={0.1}>
-          <h2 className="hc-section-headline" style={{ marginBottom: "3rem" }}>
-            Ideas in progress.
-          </h2>
-        </FadeUp>
-        <div className="hc-writing-grid">
-          {writings.map((w, i) => (
-            <WritingCard key={i} writing={w} index={i} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WritingCard({ writing, index }: { writing: typeof writings[0]; index: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      className="hc-writing-card"
-      initial={{ opacity: 0, y: 28 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
-      whileHover={{ backgroundColor: "var(--hc-paper)", transition: { duration: 0.2 } }}
-    >
-      <div className="hc-writing-meta">
-        <span className="hc-writing-category">{writing.category}</span>
-        <span className="hc-event-date">{writing.date}</span>
-      </div>
-      <h3 className="hc-card-title">{writing.title}</h3>
-      <p className="hc-card-body">{writing.excerpt}</p>
-      <motion.a
-        href={writing.link}
-        className="hc-link-arrow"
-        whileHover={{ x: 4 }}
-        transition={{ type: "spring", stiffness: 300 }}
-      >
-        Read More →
-      </motion.a>
-    </motion.div>
-  );
-}
-
-/* ── Founder ──────────────────────────────────────────── */
-
-function Founder() {
-  const photoRef = useRef(null);
-  const inView = useInView(photoRef, { once: true, margin: "-80px" });
-
-  return (
-    <section className="hc-section hc-paper">
-      <div className="hc-container hc-grid-2 hc-founder-grid">
-        <div>
-          <motion.div
-            ref={photoRef}
-            className="hc-founder-photo"
-            initial={{ opacity: 0, scale: 0.97 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <motion.div
-              className="hc-founder-shimmer"
-              animate={{ opacity: [0.3, 0.6, 0.3], x: ["-100%", "100%"] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", repeatDelay: 2 }}
-            />
-            <span className="hc-founder-monogram">ML</span>
-          </motion.div>
-        </div>
-        <div>
-          <FadeUp delay={0.1}><p className="hc-eyebrow">About M. Louis</p></FadeUp>
-          <FadeUp delay={0.2}><h2 className="hc-section-headline">Founder &amp; Principal</h2></FadeUp>
-          <FadeUp delay={0.3}>
-            <p className="hc-body-text" style={{ marginBottom: "2rem" }}>
-              M. Louis is the founder of Hello Creative &amp; Co., an identity, leadership, and institutional design studio serving women leaders and mission-driven organizations. Her work sits at the intersection of editorial strategy, leadership development, collaboration design, and cultural systems thinking.
-            </p>
-          </FadeUp>
-          <FadeUp delay={0.4}>
-            <motion.a
-              href="#contact"
-              className="hc-link-underline"
-              whileHover={{ x: 4 }}
-              style={{ display: "inline-block" }}
-            >
-              Learn More →
-            </motion.a>
-          </FadeUp>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── Final CTA ────────────────────────────────────────── */
-
-function FinalCTA() {
-  return (
-    <section id="contact" className="hc-section hc-paper-soft hc-final-cta">
-      <div className="hc-container hc-text-center">
-        <FadeUp>
-          <h2 className="hc-cta-headline">
-            If you're building what comes next, begin with a conversation.
-          </h2>
-        </FadeUp>
-        <FadeUp delay={0.15}>
-          <p className="hc-cta-body">
-            Whether you are clarifying your own leadership identity, designing a program, convening a room, or strengthening collaboration inside an institution, Hello Creative &amp; Co. helps bring the work into form.
-          </p>
-        </FadeUp>
-        <FadeUp delay={0.25}>
-          <MagneticButton href="mailto:hello@hellocreativeandco.com" primary>
-            Start a Conversation
-          </MagneticButton>
-        </FadeUp>
-      </div>
-    </section>
-  );
-}
-
-/* ── Footer ───────────────────────────────────────────── */
-
-function Footer() {
-  return (
-    <footer className="hc-footer">
-      <div className="hc-container hc-footer-inner">
-        <span className="hc-footer-logo">Hello Creative &amp; Co.</span>
-        <span className="hc-footer-copy">© 2025 Hello Creative &amp; Co. All rights reserved.</span>
-      </div>
-    </footer>
-  );
-}
-
-/* ── Styles ───────────────────────────────────────────── */
-
-const styles = `
-  /* ── Layout ── */
-  .hc-container  { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-  .hc-section    { padding: 5.5rem 2rem; }
-  .hc-paper      { background: var(--hc-paper); }
-  .hc-paper-soft { background: var(--hc-paper-soft); }
-  .hc-dark       { background: var(--hc-ink-primary); }
-  .hc-final-cta  { border-top: 1px solid var(--hc-neutral-soft); padding: 6rem 2rem; }
-  .hc-text-center { text-align: center; display: flex; flex-direction: column; align-items: center; }
-
-  /* ── Hero ── */
+const pageStyles = `
+  /* Hero */
   .hc-hero {
-    position: relative; padding: 8rem 2rem 7rem; overflow: hidden;
-    background: var(--hc-paper);
+    position: relative; min-height: 92vh; padding: 7rem 2rem 6rem;
+    background: var(--hc-ivory); display: flex; align-items: center; overflow: hidden;
   }
   .hc-hero-rule {
     position: absolute; top: 0; left: 0; right: 0; height: 3px;
-    background: var(--hc-accent-premium);
-    transform-origin: left; z-index: 10;
+    background: var(--hc-mulberry); transform-origin: left;
   }
-  .hc-scroll-cue {
-    margin-top: 3.5rem; font-size: 0.9rem; opacity: 0.35;
-    color: var(--hc-support-cool); user-select: none;
-  }
-
-  /* ── Nav ── */
-  .hc-nav {
-    position: sticky; top: 0; z-index: 100;
-    background: rgba(255,255,255,0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--hc-neutral-soft);
-    transition: box-shadow 0.3s ease;
-  }
-  .hc-nav-inner {
-    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
-    display: flex; align-items: center; justify-content: space-between; height: 72px;
-  }
-  .hc-logo {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: 1.1rem; font-weight: 400;
-    color: var(--hc-ink-primary); text-decoration: none;
-    letter-spacing: 0.02em; white-space: nowrap;
-  }
-  .hc-nav-links-desktop { display: flex; align-items: center; gap: 2.25rem; }
-  .hc-nav-link {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.8125rem; font-weight: 400;
-    color: var(--hc-support-cool); text-decoration: none;
-    letter-spacing: 0.06em; text-transform: uppercase; transition: color 0.2s ease;
-  }
-  .hc-nav-link:hover { color: var(--hc-ink-primary); }
-  .hc-nav-cta {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.8125rem; font-weight: 500;
-    color: var(--hc-accent-premium); text-decoration: none;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    border-bottom: 1.5px solid var(--hc-accent-premium); padding-bottom: 2px;
-    transition: opacity 0.2s ease;
-  }
-  .hc-nav-cta:hover { opacity: 0.7; }
-  .hc-hamburger {
-    display: none; background: none; border: none; cursor: pointer;
-    color: var(--hc-ink-primary); padding: 4px;
-  }
-  .hc-mobile-link {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; font-weight: 400;
-    color: var(--hc-support-cool); text-decoration: none;
-    letter-spacing: 0.05em; text-transform: uppercase;
-  }
-  .hc-mobile-cta {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem; font-weight: 500;
-    color: var(--hc-accent-premium); text-decoration: none;
-    letter-spacing: 0.05em; text-transform: uppercase;
-    border-bottom: 1.5px solid var(--hc-accent-premium); width: fit-content; padding-bottom: 2px;
-  }
-
-  /* ── Divider ── */
-  .hc-divider { height: 1px; background: var(--hc-neutral-soft); }
-
-  /* ── Typography ── */
-  .hc-eyebrow {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.75rem; font-weight: 500;
-    color: var(--hc-accent-premium); letter-spacing: 0.14em; text-transform: uppercase;
-    margin-bottom: 1rem; display: block;
-  }
-  .hc-eyebrow-light { color: var(--hc-neutral-warm); }
-  .hc-section-headline {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: clamp(1.75rem, 3vw, 2.25rem); font-weight: 400;
-    color: var(--hc-ink-primary); letter-spacing: -0.01em; line-height: 1.25; margin-bottom: 1.25rem;
-  }
-  .hc-headline-light { color: #FFFFFF; }
-  .hc-hero-headline {
-    font-family: 'DM Serif Display', Georgia, serif;
-    font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 400;
-    color: var(--hc-ink-primary); line-height: 1.15; letter-spacing: -0.02em;
-    margin-bottom: 2rem; max-width: 880px; will-change: transform;
-  }
+  .hc-hero-container { max-width: 1200px; margin: 0 auto; width: 100%; }
   .hc-hero-sub {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 1.125rem;
-    color: var(--hc-support-cool); line-height: 1.75; max-width: 600px; margin-bottom: 2.75rem;
+    font-family: 'Inter', system-ui, sans-serif; font-size: 1.05rem;
+    color: var(--hc-navy); line-height: 1.82; max-width: 580px;
+    margin-top: 1.75rem; margin-bottom: 2.75rem;
   }
-  .hc-body-text {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 1rem;
-    color: var(--hc-support-cool); line-height: 1.8;
-  }
-  .hc-cta-headline {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 400; color: var(--hc-ink-primary); line-height: 1.2;
-    letter-spacing: -0.01em; margin-bottom: 1.5rem; max-width: 680px;
-  }
-  .hc-cta-body {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 1rem;
-    color: var(--hc-support-cool); line-height: 1.8; max-width: 540px; margin-bottom: 2.75rem;
-  }
-
-  /* ── Buttons ── */
   .hc-hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
-  .hc-btn-primary {
-    display: inline-block; font-family: 'Inter', system-ui, sans-serif;
-    font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
-    text-decoration: none; padding: 1rem 2.25rem;
-    background: var(--hc-accent-premium); color: #FFFFFF;
-    border: 1.5px solid var(--hc-accent-premium);
-    transition: background 0.22s ease, border-color 0.22s ease; cursor: pointer;
+  .hc-scroll-cue {
+    margin-top: 4rem; font-size: 0.85rem; color: rgba(43,43,43,0.35);
+    font-family: 'Inter', system-ui, sans-serif; letter-spacing: 0.06em; user-select: none;
   }
-  .hc-btn-primary:hover { background: #5f2430; border-color: #5f2430; }
-  .hc-btn-outline {
-    display: inline-block; font-family: 'Inter', system-ui, sans-serif;
-    font-size: 0.8125rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
-    text-decoration: none; padding: 1rem 2.25rem;
-    background: transparent; color: var(--hc-ink-primary);
-    border: 1.5px solid var(--hc-neutral-soft); transition: border-color 0.22s ease;
-  }
-  .hc-btn-outline:hover { border-color: var(--hc-ink-primary); }
-  .hc-link-arrow {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.75rem; font-weight: 500;
-    color: var(--hc-accent-premium); text-decoration: none;
-    letter-spacing: 0.08em; text-transform: uppercase; display: inline-block;
-  }
-  .hc-link-underline {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.75rem; font-weight: 500;
-    color: var(--hc-accent-premium); text-decoration: none;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    border-bottom: 1.5px solid var(--hc-accent-premium); padding-bottom: 2px;
-  }
-
-  /* ── Cards / Grids ── */
-  .hc-card-title {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 1.2rem; font-weight: 400;
-    color: var(--hc-ink-primary); line-height: 1.3; letter-spacing: -0.01em;
-  }
-  .hc-card-body {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.9rem;
-    color: var(--hc-support-cool); line-height: 1.7; flex: 1;
-  }
-  .hc-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
-  .hc-founder-grid { gap: 5rem; }
-
-  /* Pathway */
-  .hc-pathway-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    border: 1px solid var(--hc-neutral-soft);
-  }
-  .hc-pathway-card {
-    padding: 2.5rem; border-right: 1px solid var(--hc-neutral-soft);
-    display: flex; flex-direction: column; gap: 1.1rem;
-    background: var(--hc-paper); cursor: default;
-  }
-  .hc-pathway-num {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 0.85rem;
-    color: var(--hc-neutral-warm); letter-spacing: 0.06em;
-  }
-
-  /* Events */
-  .hc-events-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1px; background: var(--hc-neutral-soft);
-    border: 1px solid var(--hc-neutral-soft); margin-bottom: 3rem;
-  }
-  .hc-event-card {
-    background: var(--hc-paper); padding: 2.5rem;
-    display: flex; flex-direction: column; gap: 1rem;
-  }
-  .hc-event-meta { display: flex; gap: 0.75rem; align-items: center; }
-  .hc-event-format {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.7rem; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: #FFFFFF; background: var(--hc-support-cool); padding: 0.2rem 0.6rem;
-  }
-  .hc-event-date {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem;
-    color: var(--hc-neutral-soft); letter-spacing: 0.04em;
-  }
-
-  /* Writing */
-  .hc-writing-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-    gap: 1px; background: var(--hc-neutral-soft); border: 1px solid var(--hc-neutral-soft);
-  }
-  .hc-writing-card {
-    padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem;
-    background: var(--hc-paper-soft);
-  }
-  .hc-writing-meta { display: flex; justify-content: space-between; align-items: center; }
-  .hc-writing-category {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.7rem; font-weight: 500;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--hc-accent-premium);
-  }
-
-  /* Frameworks */
-  .hc-framework-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    border-top: 1px solid rgba(191,192,192,0.2);
-  }
-  .hc-framework-item {
-    padding: 2.25rem 2.5rem 2.25rem 0;
-    border-bottom: 1px solid rgba(191,192,192,0.2);
-    position: relative; overflow: hidden; cursor: default;
-  }
-  .hc-framework-accent {
-    position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-    background: var(--hc-neutral-warm); transform-origin: left;
-  }
-  .hc-framework-title {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 1.05rem; font-weight: 400;
-    margin-bottom: 0.75rem; transition: color 0.2s ease;
-  }
-  .hc-framework-body {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.875rem;
-    color: rgba(255,255,255,0.65); line-height: 1.75;
-  }
-
-  /* Founder */
-  .hc-founder-photo {
-    width: 100%; max-width: 380px; aspect-ratio: 4/5;
-    background: var(--hc-neutral-warm);
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-  }
-  .hc-founder-shimmer {
-    position: absolute; inset: 0; width: 60%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  .hc-hero-deco {
+    position: absolute; right: -120px; top: 50%; transform: translateY(-50%);
+    width: 560px; height: 560px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(212,175,185,0.18) 0%, transparent 70%);
     pointer-events: none;
   }
-  .hc-founder-monogram {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 5rem; font-weight: 400;
-    color: rgba(45,49,66,0.2); letter-spacing: 0.05em; position: relative; z-index: 1;
+
+  /* POV */
+  .hc-pov { padding: 6rem 2rem; background: var(--hc-white); }
+  .hc-pov-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start;
+  }
+  .hc-pov-quote {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(1.4rem, 2.8vw, 1.9rem); font-weight: 400; font-style: italic;
+    color: var(--hc-charcoal); line-height: 1.5; letter-spacing: -0.01em;
+    border-left: 3px solid var(--hc-mulberry); padding-left: 1.75rem;
+    margin-top: 1.5rem;
+  }
+  .hc-pov-body {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 1rem;
+    color: var(--hc-navy); line-height: 1.85;
   }
 
-  /* Email */
-  .hc-email-capture {
-    background: var(--hc-paper-soft); border: 1px solid var(--hc-neutral-soft);
-    padding: 2.5rem; max-width: 520px;
+  /* Capabilities */
+  .hc-caps { padding: 6rem 2rem; background: var(--hc-ivory); }
+  .hc-caps-header {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: end;
+    margin-bottom: 3.5rem;
   }
-  .hc-email-heading {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 1.1rem; font-weight: 400;
-    color: var(--hc-ink-primary); margin-bottom: 1.25rem;
+  .hc-caps-grid {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    border: 1px solid rgba(43,43,43,0.1);
   }
-  .hc-email-confirm {
+  .hc-cap-card {
+    padding: 2.5rem; border-right: 1px solid rgba(43,43,43,0.1);
+    display: flex; flex-direction: column; gap: 0.9rem;
+    background: var(--hc-white); transition: background 0.25s ease;
+  }
+  .hc-cap-card:last-child { border-right: none; }
+  .hc-cap-card:nth-child(3) { border-right: none; }
+  .hc-cap-card:nth-child(4) {
+    border-top: 1px solid rgba(43,43,43,0.1); border-right: 1px solid rgba(43,43,43,0.1);
+  }
+  .hc-cap-card:nth-child(5) { border-top: 1px solid rgba(43,43,43,0.1); border-right: none; }
+  .hc-cap-card:hover { background: var(--hc-ivory); }
+  .hc-cap-num {
+    font-family: 'DM Serif Display', Georgia, serif; font-size: 0.8rem;
+    color: var(--hc-dusty-rose); letter-spacing: 0.06em;
+  }
+  .hc-cap-title {
+    font-family: 'DM Serif Display', Georgia, serif; font-size: 1.15rem; font-weight: 400;
+    color: var(--hc-charcoal); line-height: 1.3;
+  }
+  .hc-cap-body {
     font-family: 'Inter', system-ui, sans-serif; font-size: 0.875rem;
-    color: var(--hc-accent-premium);
-  }
-  .hc-email-form { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-  .hc-email-input {
-    flex: 1; min-width: 200px; font-family: 'Inter', system-ui, sans-serif;
-    font-size: 0.875rem; color: var(--hc-ink-primary);
-    background: var(--hc-paper); border: 1px solid var(--hc-neutral-soft);
-    padding: 0.875rem 1rem; outline: none; transition: border-color 0.2s ease;
-  }
-  .hc-email-input:focus { border-color: var(--hc-support-cool); }
-
-  /* Footer */
-  .hc-footer { background: var(--hc-ink-primary); padding: 2.5rem 2rem; }
-  .hc-footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-  .hc-footer-logo {
-    font-family: 'DM Serif Display', Georgia, serif; font-size: 1rem; font-weight: 400;
-    color: rgba(255,255,255,0.65);
-  }
-  .hc-footer-copy {
-    font-family: 'Inter', system-ui, sans-serif; font-size: 0.8rem;
-    color: rgba(255,255,255,0.35); letter-spacing: 0.04em;
+    color: var(--hc-navy); line-height: 1.75; flex: 1;
   }
 
-  /* ── Responsive ── */
-  @media (max-width: 768px) {
-    .hc-nav-links-desktop { display: none; }
-    .hc-hamburger { display: flex; align-items: center; }
-    .hc-section { padding: 3.5rem 1.25rem; }
-    .hc-container { padding: 0 1.25rem; }
-    .hc-hero { padding: 5rem 1.25rem 4rem; }
-    .hc-grid-2 { grid-template-columns: 1fr; gap: 2.5rem; }
-    .hc-hero-headline { font-size: 2.4rem; }
-    .hc-hero-sub { font-size: 1rem; }
-    .hc-pathway-grid { grid-template-columns: 1fr; }
-    .hc-pathway-card { border-right: none; border-bottom: 1px solid var(--hc-neutral-soft); }
-    .hc-framework-grid { grid-template-columns: 1fr; }
-    .hc-writing-grid { grid-template-columns: 1fr; }
-    .hc-events-grid { grid-template-columns: 1fr; }
-    .hc-founder-photo { max-width: 100%; }
-    .hc-final-cta { padding: 4rem 1.25rem; }
-    .hc-cta-headline { font-size: 2rem; }
+  /* Salons */
+  .hc-salons { padding: 6rem 2rem; background: var(--hc-navy); }
+  .hc-salons-inner { max-width: 1200px; margin: 0 auto; }
+  .hc-salons-header { margin-bottom: 3.5rem; max-width: 560px; }
+  .hc-salon-desc {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 1rem;
+    color: rgba(255,255,255,0.65); line-height: 1.8; max-width: 480px; margin-top: 1.25rem;
+  }
+  .hc-vol-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(255,255,255,0.1); margin-bottom: 3rem; }
+  .hc-vol-card { background: var(--hc-navy); padding: 2.5rem; display: flex; flex-direction: column; gap: 1rem; }
+  .hc-vol-badge {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.4);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .hc-vol-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--hc-coral); display: inline-block;
+  }
+  .hc-vol-badge-dot-past { background: rgba(255,255,255,0.25); }
+  .hc-vol-theme {
+    font-family: 'DM Serif Display', Georgia, serif; font-size: 1.15rem; font-weight: 400;
+    color: rgba(255,255,255,0.9); line-height: 1.3;
+  }
+  .hc-vol-excerpt {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 0.875rem;
+    color: rgba(255,255,255,0.5); line-height: 1.7; flex: 1;
+  }
+
+  /* Journal */
+  .hc-journal { padding: 6rem 2rem; background: var(--hc-white); }
+  .hc-journal-inner { max-width: 1200px; margin: 0 auto; }
+  .hc-journal-header { margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; }
+  .hc-journal-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: rgba(43,43,43,0.1); margin-bottom: 3rem; }
+  .hc-journal-card { background: var(--hc-white); padding: 2.5rem; display: flex; flex-direction: column; gap: 0.9rem; transition: background 0.2s ease; }
+  .hc-journal-card:hover { background: var(--hc-ivory); }
+  .hc-journal-cat {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 0.7rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--hc-mulberry);
+  }
+  .hc-journal-title {
+    font-family: 'DM Serif Display', Georgia, serif; font-size: 1.15rem; font-weight: 400;
+    color: var(--hc-charcoal); line-height: 1.3;
+  }
+  .hc-journal-excerpt {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 0.875rem;
+    color: var(--hc-navy); line-height: 1.7; flex: 1;
+  }
+  .hc-journal-status {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 0.7rem;
+    color: rgba(43,43,43,0.35); letter-spacing: 0.06em;
+  }
+
+  /* Final CTA */
+  .hc-final { padding: 7rem 2rem; background: var(--hc-ivory); text-align: center; border-top: 1px solid rgba(43,43,43,0.1); }
+  .hc-final-inner { max-width: 680px; margin: 0 auto; }
+  .hc-final-headline {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 400;
+    color: var(--hc-charcoal); line-height: 1.2; letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+  }
+  .hc-final-body {
+    font-family: 'Inter', system-ui, sans-serif; font-size: 1rem;
+    color: var(--hc-navy); line-height: 1.8; margin-bottom: 2.75rem;
+  }
+  .hc-final-ctas { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .hc-pov-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .hc-caps-header { grid-template-columns: 1fr; gap: 1.5rem; }
+    .hc-caps-grid { grid-template-columns: 1fr 1fr; }
+    .hc-cap-card:nth-child(2) { border-right: none; }
+    .hc-cap-card:nth-child(3) { border-top: 1px solid rgba(43,43,43,0.1); border-right: 1px solid rgba(43,43,43,0.1); }
+    .hc-cap-card:nth-child(4) { border-right: none; }
+    .hc-cap-card:nth-child(5) { border-top: 1px solid rgba(43,43,43,0.1); border-right: none; }
+    .hc-vol-grid { grid-template-columns: 1fr; }
+    .hc-journal-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .hc-hero { min-height: auto; padding: 5rem 1.25rem 4rem; }
+    .hc-caps-grid { grid-template-columns: 1fr; }
+    .hc-cap-card { border-right: none !important; border-top: 1px solid rgba(43,43,43,0.1) !important; }
+    .hc-cap-card:first-child { border-top: none !important; }
+    .hc-hero-deco { display: none; }
+    .hc-journal-header { flex-direction: column; align-items: flex-start; }
   }
 `;
 
-/* ── Root ─────────────────────────────────────────────── */
-
 export default function Home() {
+  const heroRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const yParallax = useTransform(scrollYProgress, [0, 1], ["0%", "16%"]);
+  const opacityOut = useTransform(scrollYProgress, [0, 0.65], [1, 0]);
+
+  const mouseX = useSpring(0, { stiffness: 55, damping: 22 });
+  const mouseY = useSpring(0, { stiffness: 55, damping: 22 });
+
+  useEffect(() => {
+    const handle = (e: MouseEvent) => {
+      mouseX.set(((e.clientX - window.innerWidth / 2) / (window.innerWidth / 2)) * 12);
+      mouseY.set(((e.clientY - window.innerHeight / 2) / (window.innerHeight / 2)) * 7);
+    };
+    window.addEventListener("mousemove", handle);
+    return () => window.removeEventListener("mousemove", handle);
+  }, [mouseX, mouseY]);
+
   return (
     <>
-      <style>{styles}</style>
-      <NavBar />
-      <Hero />
-      <Divider />
-      <Positioning />
-      <Divider />
-      <OfferPathways />
-      <Frameworks />
-      <Events />
-      <Divider />
-      <Writing />
-      <Divider />
-      <Founder />
-      <FinalCTA />
-      <Footer />
+      <style>{sharedStyles + pageStyles}</style>
+
+      {/* ── Hero ── */}
+      <section ref={heroRef} className="hc-hero">
+        <motion.div
+          className="hc-hero-rule"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <div className="hc-hero-deco" />
+
+        <motion.div className="hc-hero-container" style={{ y: yParallax, opacity: opacityOut }}>
+          <motion.span
+            className="hc-eyebrow"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, delay: 0.1 }}
+          >
+            Founded by M. Louis — Leadership Studio
+          </motion.span>
+
+          <motion.div style={{ x: mouseX, y: mouseY }}>
+            <AnimatedHeadline
+              tag="h1"
+              className="hc-display"
+              style={{ maxWidth: 920, marginTop: "0.5rem" }}
+              text="Partnering with women leaders to design the conversations, leadership systems, and collaborative structures that transform vision into lasting impact."
+            />
+          </motion.div>
+
+          <motion.p
+            className="hc-hero-sub"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1], delay: 0.9 }}
+          >
+            Through strategic facilitation, leadership architecture, and editorial thought leadership, we help people move from complexity to clarity — and from clarity to sustained action.
+          </motion.p>
+
+          <motion.div
+            className="hc-hero-ctas"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: 1.1 }}
+          >
+            <MagneticButton href="/contact" variant="primary">Begin a Conversation</MagneticButton>
+            <MagneticButton href="/journal" variant="outline">Enter the Journal</MagneticButton>
+          </motion.div>
+
+          <motion.div
+            className="hc-scroll-cue"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.7, duration: 0.8 }}
+          >
+            <motion.span
+              animate={{ y: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+              style={{ display: "inline-block" }}
+            >
+              ↓
+            </motion.span>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      <div className="hc-container"><div className="hc-divider" /></div>
+
+      {/* ── Point of View ── */}
+      <section className="hc-pov">
+        <div className="hc-pov-inner">
+          <div>
+            <FadeUp>
+              <span className="hc-eyebrow">Our Point of View</span>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <blockquote className="hc-pov-quote">
+                Leadership is not simply personal advancement. It is relational architecture.
+              </blockquote>
+            </FadeUp>
+          </div>
+          <FadeUp delay={0.15}>
+            <p className="hc-pov-body">
+              We believe trust is infrastructure, not assumption. Design shapes behavior before strategy can take hold. Visibility requires identity — you cannot be truly seen until you know who you are. And collaboration must be intentionally facilitated if it is to become meaningful, sustained action.
+              <br /><br />
+              These are not aspirations. They are the operating principles that shape every engagement, every program, and every conversation we design.
+            </p>
+          </FadeUp>
+        </div>
+      </section>
+
+      <div className="hc-container"><div className="hc-divider" /></div>
+
+      {/* ── Signature Capabilities ── */}
+      <section className="hc-caps">
+        <div className="hc-caps-header">
+          <div>
+            <FadeUp><span className="hc-eyebrow">Signature Capabilities</span></FadeUp>
+            <FadeUp delay={0.1}><h2 className="hc-h2">The work takes many forms.<br />The approach never changes.</h2></FadeUp>
+          </div>
+          <FadeUp delay={0.15}>
+            <p className="hc-body" style={{ maxWidth: 460 }}>
+              Every engagement is shaped by a consistent set of capabilities — each one a distinct practice area, each one informed by the same philosophy of design, relationship, and trust.
+            </p>
+          </FadeUp>
+        </div>
+        <div className="hc-caps-grid">
+          {capabilities.map((cap, i) => (
+            <CapCard key={i} cap={cap} index={i} />
+          ))}
+        </div>
+      </section>
+
+      {/* ── Salon Soirées ── */}
+      <section className="hc-salons">
+        <div className="hc-salons-inner">
+          <div className="hc-salons-header">
+            <FadeUp><span className="hc-eyebrow hc-eyebrow-light">Salon Soirées</span></FadeUp>
+            <FadeUp delay={0.1}>
+              <h2 className="hc-h2 hc-h2-light">A recurring conversation series.</h2>
+            </FadeUp>
+            <FadeUp delay={0.18}>
+              <p className="hc-salon-desc">
+                Each gathering is carefully facilitated to surface insight, deepen reflection, and build community around complex questions of leadership, identity, design, and the future we are building together.
+              </p>
+            </FadeUp>
+          </div>
+          <div className="hc-vol-grid">
+            {volumes.map((v, i) => (
+              <VolCard key={i} v={v} index={i} />
+            ))}
+          </div>
+          <FadeUp delay={0.2}>
+            <MagneticButton href="/work-with-us" variant="outline">
+              <span style={{ color: "#FFFFFF" }}>Reserve Your Seat</span>
+            </MagneticButton>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ── Journal ── */}
+      <section className="hc-journal">
+        <div className="hc-journal-inner">
+          <div className="hc-journal-header">
+            <div>
+              <FadeUp><span className="hc-eyebrow">The Hello Creative Journal</span></FadeUp>
+              <FadeUp delay={0.1}>
+                <h2 className="hc-h2" style={{ maxWidth: 480 }}>Essays, field notes, and frameworks on leadership and change.</h2>
+              </FadeUp>
+            </div>
+            <FadeUp delay={0.15}>
+              <Link href="/journal" className="hc-link-arrow-dark">View All Writing →</Link>
+            </FadeUp>
+          </div>
+          <div className="hc-journal-grid">
+            {journalPreviews.map((j, i) => (
+              <JournalCard key={i} j={j} index={i} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Final CTA ── */}
+      <section className="hc-final">
+        <div className="hc-final-inner">
+          <FadeUp>
+            <h2 className="hc-final-headline">
+              If you're building what comes next, begin with a conversation.
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.12}>
+            <p className="hc-final-body">
+              Whether you are clarifying your own leadership identity, designing a program, convening a room, or strengthening collaboration inside an institution — Hello Creative &amp; Co. helps bring the work into form.
+            </p>
+          </FadeUp>
+          <FadeUp delay={0.22}>
+            <div className="hc-final-ctas">
+              <MagneticButton href="/contact" variant="primary">Begin a Conversation</MagneticButton>
+              <MagneticButton href="/work-with-us" variant="outline">Explore the Work</MagneticButton>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
     </>
+  );
+}
+
+function CapCard({ cap, index }: { cap: typeof capabilities[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      className="hc-cap-card"
+      initial={{ opacity: 0, y: 24 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.08 }}
+    >
+      <span className="hc-cap-num">0{index + 1}</span>
+      <h3 className="hc-cap-title">{cap.title}</h3>
+      <p className="hc-cap-body">{cap.body}</p>
+      <motion.a href="/work-with-us" className="hc-link-arrow" whileHover={{ x: 4 }} transition={{ type: "spring", stiffness: 300 }}>
+        Learn More →
+      </motion.a>
+    </motion.div>
+  );
+}
+
+function VolCard({ v, index }: { v: typeof volumes[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      className="hc-vol-card"
+      initial={{ opacity: 0, y: 20 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+    >
+      <div className="hc-vol-badge">
+        <span className={`hc-vol-badge-dot${v.status === "Past" ? " hc-vol-badge-dot-past" : ""}`} />
+        {v.vol} · {v.status}
+      </div>
+      <h3 className="hc-vol-theme">{v.theme}</h3>
+      <p className="hc-vol-excerpt">{v.excerpt}</p>
+      {v.status === "Next" && (
+        <motion.a href="/work-with-us" className="hc-link-arrow" whileHover={{ x: 4 }} transition={{ type: "spring", stiffness: 300 }}>
+          Reserve Your Seat →
+        </motion.a>
+      )}
+    </motion.div>
+  );
+}
+
+function JournalCard({ j, index }: { j: typeof journalPreviews[0]; index: number }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <motion.div
+      ref={ref}
+      className="hc-journal-card"
+      initial={{ opacity: 0, y: 22 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: index * 0.1 }}
+    >
+      <span className="hc-journal-cat">{j.category}</span>
+      <h3 className="hc-journal-title">{j.title}</h3>
+      <p className="hc-journal-excerpt">{j.excerpt}</p>
+      <span className="hc-journal-status">Coming Soon</span>
+    </motion.div>
   );
 }
