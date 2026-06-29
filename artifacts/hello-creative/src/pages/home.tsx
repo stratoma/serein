@@ -140,7 +140,7 @@ const pageStyles = `
   .hc-cap-card:hover { background: var(--hc-ivory); }
   .hc-cap-num {
     font-family: 'DM Serif Display', Georgia, serif; font-size: 0.8rem;
-    color: var(--hc-dusty-rose); letter-spacing: 0.06em;
+    color: var(--hc-mulberry); letter-spacing: 0.06em; opacity: 0.55;
   }
   .hc-cap-title {
     font-family: 'DM Serif Display', Georgia, serif; font-size: 1.15rem; font-weight: 400;
