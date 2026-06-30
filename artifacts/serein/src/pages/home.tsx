@@ -9,28 +9,37 @@ const products = [
     id: "supple-oud",
     name: "Supple Oud",
     price: "$22",
-    scent: "Warm and enveloping.",
-    desc: "Oud, amber, and a whisper of vanilla.",
+    pillar: "Transform.",
+    scent: "Smoke. Wood. Depth.",
+    desc: "Saffron, amber, and oud — a grounding scent that stays with you.",
+    notes: ["Saffron", "Amber", "Oud Wood", "Cashmere Woods & Tonka", "Sweet Amber Musk"],
+    tagline: "Rich. Grounded. Timeless.",
     img: `${BASE}images/product-oud.png`,
-    caption: "Quiet evenings. Skin that holds warmth.",
+    caption: "A grounding scent that stays with you.",
   },
   {
     id: "mint-moss",
     name: "Mint + Moss",
     price: "$22",
-    scent: "Clean and grounding.",
-    desc: "Cool mint softened by green moss.",
+    pillar: "Root.",
+    scent: "Fresh mint. Earth. Green renewal.",
+    desc: "Garden mint, green tea, and vetiver — a return to what grounds you.",
+    notes: ["Garden Mint", "Green Tea", "Vetiver Blend", "Cedarwood", "Sweet Amber Musk"],
+    tagline: "Fresh. Green. Spa-like.",
     img: `${BASE}images/product-mint.png`,
-    caption: "Early mornings. The smell of open windows.",
+    caption: "A scent that restores and rebalances.",
   },
   {
     id: "lithe-bloom",
     name: "Lithe Bloom",
     price: "$22",
-    scent: "Airy and floral.",
-    desc: "Rose petals, soft musk, ylang ylang.",
+    pillar: "Become.",
+    scent: "Soft florals. Warm citrus. Light.",
+    desc: "Orange blossom, bergamot, neroli, and sweet amber musk — a scent that opens you to what's next.",
+    notes: ["Orange Blossom", "Bergamot", "Neroli", "Sweet Amber Musk"],
+    tagline: "Bright. Clean. Sophisticated.",
     img: `${BASE}images/product-bloom.png`,
-    caption: "Light through linen. Slow afternoons.",
+    caption: "A scent that becomes you.",
   },
 ];
 
@@ -53,12 +62,12 @@ const journalArticles = [
 ];
 
 const ingredients = [
-  { name: "Shea Butter", note: "Centuries of skin memory." },
-  { name: "Mango Butter", note: "Tropical. Deeply nourishing." },
-  { name: "Jojoba Oil", note: "Mirrors the skin's own oils." },
-  { name: "Vitamin E", note: "Time, slowed." },
-  { name: "Arrowroot", note: "Comfort without heaviness." },
-  { name: "Fragrance", note: "Thoughtfully chosen. Always intentional." },
+  { name: "Shea Butter", note: "Rich and restorative. The foundation of every batch." },
+  { name: "Mango Butter", note: "Deeply nourishing. Melts into the skin like warmth." },
+  { name: "Jojoba Oil", note: "Mirrors the skin's own composition. Balances without weight." },
+  { name: "Vitamin E", note: "Protects and repairs. Quietly essential." },
+  { name: "Arrowroot", note: "A light, powdery finish. Nothing unnecessary." },
+  { name: "Fragrance", note: "Thoughtfully blended. Each scent is its own story." },
 ];
 
 function ParallaxHero() {
@@ -120,9 +129,9 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-8 md:px-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-primary-foreground/10">
             {[
-              { word: "Transform.", sub: "Your skin is a ritual, not a routine." },
-              { word: "Root.", sub: "Grounded in generations of botanical wisdom." },
-              { word: "Become.", sub: "The daily practice of choosing care." },
+              { word: "Transform.", sub: "Rich botanicals. Deep nourishment." },
+              { word: "Root.", sub: "Grounded in nature. Made with intention." },
+              { word: "Become.", sub: "Daily rituals. Lasting change." },
             ].map(({ word, sub }, i) => (
               <FadeIn key={word} delay={i * 0.18} direction="none">
                 <div className="py-16 md:py-24 px-8 md:px-14 flex flex-col justify-between gap-10">
@@ -169,7 +178,8 @@ export default function Home() {
                   </div>
                   <div className="w-full md:w-[42%] flex flex-col gap-6 md:py-12">
                     <FadeIn direction="none" delay={0.2}>
-                      <h3 className="text-3xl md:text-4xl font-serif text-primary leading-none">
+                      <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans">{product.pillar}</span>
+                      <h3 className="text-3xl md:text-4xl font-serif text-primary leading-none mt-2">
                         {product.name}
                       </h3>
                     </FadeIn>
@@ -177,9 +187,10 @@ export default function Home() {
                       <p className="font-serif italic text-foreground/60 text-lg leading-relaxed">
                         {product.scent}
                       </p>
-                      <p className="text-foreground/50 text-sm leading-relaxed mt-1 max-w-[28ch]">
+                      <p className="text-foreground/50 text-sm leading-relaxed mt-2 max-w-[32ch]">
                         {product.desc}
                       </p>
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/30 font-sans mt-3">{product.tagline}</p>
                     </FadeIn>
                     <FadeIn direction="none" delay={0.4}>
                       <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
@@ -224,7 +235,7 @@ export default function Home() {
               </FadeIn>
               <FadeIn direction="none" delay={0.35}>
                 <p className="font-serif italic text-foreground/60 text-lg leading-relaxed max-w-[32ch]">
-                  Three travel-sized butters. All three scents. One small but complete world.
+                  Three rituals. One discovery. All three scents, together.
                 </p>
               </FadeIn>
               <FadeIn direction="none" delay={0.45}>
