@@ -1,6 +1,6 @@
 import { FadeIn } from "@/components/ui/fade-in";
-import { ArrowRight, Leaf, Droplets, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -9,294 +9,414 @@ const products = [
     id: "supple-oud",
     name: "Supple Oud",
     price: "$22",
-    desc: "Warm and enveloping. Oud, amber, and a whisper of vanilla.",
+    scent: "Warm and enveloping.",
+    desc: "Oud, amber, and a whisper of vanilla.",
     img: `${BASE}images/product-oud.png`,
+    caption: "Quiet evenings. Skin that holds warmth.",
   },
   {
     id: "mint-moss",
     name: "Mint + Moss",
     price: "$22",
-    desc: "Clean and grounding. Cool mint softened by green moss.",
+    scent: "Clean and grounding.",
+    desc: "Cool mint softened by green moss.",
     img: `${BASE}images/product-mint.png`,
+    caption: "Early mornings. The smell of open windows.",
   },
   {
     id: "lithe-bloom",
     name: "Lithe Bloom",
     price: "$22",
-    desc: "Airy and floral. Rose petals, soft musk, ylang ylang.",
+    scent: "Airy and floral.",
+    desc: "Rose petals, soft musk, ylang ylang.",
     img: `${BASE}images/product-bloom.png`,
-  },
-  {
-    id: "morrow-trio",
-    name: "The Morrow Trio",
-    price: "$11",
-    desc: "Three travel-sized butters. Your morning ritual, wherever you are.",
-    img: `${BASE}images/product-trio.png`,
+    caption: "Light through linen. Slow afternoons.",
   },
 ];
 
 const journalArticles = [
   {
     title: "Morning Mist",
-    excerpt: "On the quiet ritual of waking before the house does.",
     img: `${BASE}images/journal-1.png`,
+    caption: "Thoughtfully sourced.",
   },
   {
     title: "The Weight of Linen",
-    excerpt: "Why the fabrics we choose say something about how we move through the world.",
     img: `${BASE}images/journal-2.png`,
+    caption: "Light through linen.",
   },
   {
     title: "Why Amber Glass",
-    excerpt: "The decision to use amber glass wasn't just aesthetic.",
     img: `${BASE}images/journal-3.png`,
+    caption: "Quiet mornings.",
   },
 ];
+
+const ingredients = [
+  { name: "Shea Butter", note: "Centuries of skin memory." },
+  { name: "Mango Butter", note: "Tropical. Deeply nourishing." },
+  { name: "Jojoba Oil", note: "Mirrors the skin's own oils." },
+  { name: "Vitamin E", note: "Time, slowed." },
+  { name: "Arrowroot", note: "Comfort without heaviness." },
+  { name: "Fragrance", note: "Thoughtfully chosen. Always intentional." },
+];
+
+function ParallaxHero() {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "8%"]);
+
+  return (
+    <section ref={ref} className="relative h-[100dvh] overflow-hidden flex items-end">
+      <motion.div style={{ y }} className="absolute inset-0 will-change-transform">
+        <img
+          src={`${BASE}images/hero.png`}
+          alt="Warm architectural earthy tones with linen"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/5 via-transparent to-black/30" />
+      </motion.div>
+
+      <div className="relative z-10 w-full px-8 md:px-16 pb-16 md:pb-24 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+        <FadeIn delay={0.15} direction="none">
+          <h1 className="text-[clamp(4rem,14vw,12rem)] font-serif text-[#F3EBDD] leading-none tracking-tight">
+            Serein
+          </h1>
+        </FadeIn>
+        <FadeIn delay={0.45} direction="none" className="md:text-right max-w-xs">
+          <p className="text-[#F3EBDD]/80 font-serif italic text-lg md:text-xl leading-relaxed mb-6">
+            For skin that remembers touch.
+          </p>
+          <a
+            href="#collection"
+            className="inline-block text-[10px] uppercase tracking-[0.25em] text-[#F3EBDD]/70 border-b border-[#F3EBDD]/30 pb-1 hover:text-[#F3EBDD] hover:border-[#F3EBDD]/70 transition-all duration-500"
+          >
+            Explore the Collection
+          </a>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   return (
     <main className="w-full bg-background overflow-hidden">
-      
-      {/* HERO SECTION */}
-      <section className="relative min-h-[100dvh] flex flex-col md:flex-row items-center pt-24 md:pt-0">
-        <div className="w-full md:w-1/2 px-6 md:px-16 lg:px-24 flex flex-col justify-center z-10 order-2 md:order-1 py-12 md:py-0">
-          <FadeIn delay={0.2}>
-            <h1 className="text-6xl md:text-7xl lg:text-8xl font-serif text-primary mb-6 tracking-tight">
-              SEREIN
-            </h1>
-          </FadeIn>
-          <FadeIn delay={0.4}>
-            <p className="text-xl md:text-2xl font-serif text-foreground/90 italic mb-6">
-              For skin that remembers touch.
-            </p>
-            <p className="text-base text-foreground/70 max-w-md mb-10 leading-relaxed">
-              Small-batch body butters crafted for everyday ritual. Skin-kind ingredients, thoughtfully sourced.
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.6} className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-14 px-8 tracking-widest uppercase text-xs">
-              Shop Collection
-            </Button>
-            <Button size="lg" variant="outline" className="border-primary text-primary hover:bg-primary/5 rounded-none h-14 px-8 tracking-widest uppercase text-xs">
-              Find Us at a Market
-            </Button>
-          </FadeIn>
-        </div>
-        <div className="w-full md:w-1/2 h-[50vh] md:h-screen relative order-1 md:order-2">
-          <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10 pointer-events-none"></div>
-          <img 
-            src={`${BASE}images/hero.png`}
-            alt="Warm architectural earthy tones with linen" 
-            className="w-full h-full object-cover"
-          />
-        </div>
-      </section>
 
-      {/* QUICK SHOP */}
-      <section id="collection" className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
-        <FadeIn>
-          <div className="flex justify-between items-end mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif text-primary">The Collection</h2>
-            <a href="#collection" className="text-sm uppercase tracking-widest text-primary hover:opacity-70 transition-opacity hidden md:block">
-              View All
-            </a>
-          </div>
+      {/* HERO */}
+      <ParallaxHero />
+
+      {/* OPENING STATEMENT */}
+      <section className="py-28 md:py-40 px-8 md:px-16 max-w-3xl mx-auto text-center">
+        <FadeIn direction="none">
+          <p className="font-serif italic text-2xl md:text-3xl lg:text-4xl text-primary leading-relaxed tracking-wide">
+            Small-batch body butters crafted for everyday ritual.
+          </p>
         </FadeIn>
-        
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-6">
-          {products.map((product, i) => (
-            <FadeIn key={product.id} delay={i * 0.1} direction="up" className="group cursor-pointer flex flex-col">
-              <div className="relative aspect-square overflow-hidden bg-muted mb-6">
-                <img 
-                  src={product.img} 
-                  alt={product.name} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-serif text-lg text-primary">{product.name}</h3>
-                <span className="text-sm font-sans text-foreground/80">{product.price}</span>
-              </div>
-              <p className="text-sm text-foreground/60 leading-relaxed mb-5">
-                {product.desc}
-              </p>
-              <Button
-                size="sm"
-                className="w-full mt-auto bg-primary text-primary-foreground hover:bg-primary/90 rounded-none h-12 tracking-widest uppercase text-xs"
-              >
-                Add to Cart
-              </Button>
-            </FadeIn>
-          ))}
+      </section>
+
+      {/* BRAND PILLARS — Transform / Root / Become */}
+      <section className="py-10 md:py-16 bg-primary text-primary-foreground overflow-hidden">
+        <div className="max-w-7xl mx-auto px-8 md:px-16">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-primary-foreground/10">
+            {[
+              { word: "Transform.", sub: "Your skin is a ritual, not a routine." },
+              { word: "Root.", sub: "Grounded in generations of botanical wisdom." },
+              { word: "Become.", sub: "The daily practice of choosing care." },
+            ].map(({ word, sub }, i) => (
+              <FadeIn key={word} delay={i * 0.18} direction="none">
+                <div className="py-16 md:py-24 px-8 md:px-14 flex flex-col justify-between gap-10">
+                  <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif leading-none">
+                    {word}
+                  </h2>
+                  <p className="text-primary-foreground/50 text-sm leading-loose tracking-wide max-w-[22ch]">
+                    {sub}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* WHY SEREIN */}
-      <section className="py-24 bg-primary text-primary-foreground px-6 md:px-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-12">
-            <FadeIn delay={0.1} className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full border border-primary-foreground/20 flex items-center justify-center mb-8">
-                <Sparkles className="w-6 h-6 text-primary-foreground/80" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-2xl font-serif mb-4">Transform</h3>
-              <p className="text-primary-foreground/70 leading-relaxed">
-                "We believe your skin is a ritual, not a routine."
+      {/* COLLECTION */}
+      <section id="collection" className="py-28 md:py-40 px-8 md:px-16">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn direction="none">
+            <div className="mb-20 flex items-end justify-between">
+              <h2 className="text-[clamp(2rem,6vw,4rem)] font-serif text-primary leading-none">
+                The Collection.
+              </h2>
+              <span className="hidden md:block text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans">
+                Three scents.
+              </span>
+            </div>
+          </FadeIn>
+
+          <div className="space-y-28 md:space-y-40">
+            {products.map((product, i) => (
+              <FadeIn key={product.id} direction="none" delay={0.1}>
+                <div className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-10 md:gap-20 items-center`}>
+                  <div className="w-full md:w-[58%] relative overflow-hidden group">
+                    <img
+                      src={product.img}
+                      alt={product.name}
+                      className="w-full aspect-[4/5] object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                    />
+                    <p className="absolute bottom-4 left-5 text-[10px] uppercase tracking-[0.2em] text-white/60 font-sans">
+                      {product.caption}
+                    </p>
+                  </div>
+                  <div className="w-full md:w-[42%] flex flex-col gap-6 md:py-12">
+                    <FadeIn direction="none" delay={0.2}>
+                      <h3 className="text-3xl md:text-4xl font-serif text-primary leading-none">
+                        {product.name}
+                      </h3>
+                    </FadeIn>
+                    <FadeIn direction="none" delay={0.3}>
+                      <p className="font-serif italic text-foreground/60 text-lg leading-relaxed">
+                        {product.scent}
+                      </p>
+                      <p className="text-foreground/50 text-sm leading-relaxed mt-1 max-w-[28ch]">
+                        {product.desc}
+                      </p>
+                    </FadeIn>
+                    <FadeIn direction="none" delay={0.4}>
+                      <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
+                        <span className="text-foreground/40 text-sm font-sans">{product.price}</span>
+                        <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                          Choose This Scent
+                        </button>
+                      </div>
+                    </FadeIn>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* THE MORROW TRIO */}
+      <section id="morrow-trio" className="py-28 md:py-40 bg-[#e9dfd0]">
+        <div className="max-w-7xl mx-auto px-8 md:px-16">
+          <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
+            <FadeIn direction="none" className="w-full md:w-1/2">
+              <img
+                src={`${BASE}images/product-trio.png`}
+                alt="The Morrow Trio — three travel-sized body butters"
+                className="w-full aspect-square object-cover"
+              />
+              <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-sans">
+                Thoughtfully packaged.
               </p>
             </FadeIn>
-            <FadeIn delay={0.3} className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full border border-primary-foreground/20 flex items-center justify-center mb-8">
-                <Leaf className="w-6 h-6 text-primary-foreground/80" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-2xl font-serif mb-4">Root</h3>
-              <p className="text-primary-foreground/70 leading-relaxed">
-                "Every formula is grounded in butters and oils with generations of use behind them."
-              </p>
-            </FadeIn>
-            <FadeIn delay={0.5} className="flex flex-col items-center text-center">
-              <div className="w-16 h-16 rounded-full border border-primary-foreground/20 flex items-center justify-center mb-8">
-                <Droplets className="w-6 h-6 text-primary-foreground/80" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-2xl font-serif mb-4">Become</h3>
-              <p className="text-primary-foreground/70 leading-relaxed">
-                "SEREIN is the daily practice of choosing care over convenience."
-              </p>
-            </FadeIn>
+            <div className="w-full md:w-1/2 flex flex-col gap-8">
+              <FadeIn direction="none" delay={0.15}>
+                <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans">
+                  The Morrow Trio
+                </span>
+              </FadeIn>
+              <FadeIn direction="none" delay={0.25}>
+                <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-serif text-primary leading-none">
+                  Your ritual,<br />wherever you are.
+                </h2>
+              </FadeIn>
+              <FadeIn direction="none" delay={0.35}>
+                <p className="font-serif italic text-foreground/60 text-lg leading-relaxed max-w-[32ch]">
+                  Three travel-sized butters. All three scents. One small but complete world.
+                </p>
+              </FadeIn>
+              <FadeIn direction="none" delay={0.45}>
+                <div className="flex items-center justify-between pt-6 border-t border-foreground/10 max-w-xs">
+                  <span className="text-foreground/40 text-sm font-sans">$11</span>
+                  <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                    Bring It Home
+                  </button>
+                </div>
+              </FadeIn>
+            </div>
           </div>
         </div>
       </section>
 
       {/* INGREDIENTS */}
-      <section className="py-24 md:py-32 px-6 md:px-12 max-w-7xl mx-auto overflow-hidden">
-        <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-          <FadeIn direction="right" className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-[3/4] relative overflow-hidden">
-             <img 
-               src={`${BASE}images/ingredients.png`}
-               alt="Raw shea butter and seeds" 
-               className="w-full h-full object-cover object-center"
-             />
-          </FadeIn>
-          <FadeIn direction="left" className="w-full lg:w-1/2">
-            <h2 className="text-3xl md:text-5xl font-serif text-primary mb-8 tracking-tight">
-              Sourced with intention.
+      <section id="ingredients" className="py-28 md:py-40 px-8 md:px-16 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20 lg:gap-32 items-start">
+          <FadeIn direction="none" className="w-full lg:w-[45%] lg:sticky lg:top-28">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-8">
+              A Botanical Study
+            </span>
+            <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-serif text-primary leading-none mb-8">
+              Sourced with<br />intention.
             </h2>
-            <div className="space-y-6 text-lg text-foreground/80 leading-relaxed font-serif italic mb-10">
-              <p>Shea Butter</p>
-              <p>Mango Butter</p>
-              <p>Jojoba Oil</p>
-              <p>Vitamin E</p>
-              <p>Arrowroot</p>
-              <p>Thoughtfully blended fragrance</p>
+            <div className="w-full aspect-[3/4] overflow-hidden">
+              <img
+                src={`${BASE}images/ingredients.png`}
+                alt="Raw shea butter and seeds"
+                className="w-full h-full object-cover object-center"
+              />
             </div>
-            <button className="flex items-center space-x-2 text-sm uppercase tracking-widest text-primary border-b border-primary pb-1 hover:text-primary/70 hover:border-primary/70 transition-all">
-              <span>View Full Ingredients</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-sans">
+              Shea. In its natural state.
+            </p>
           </FadeIn>
+
+          <div className="w-full lg:w-[55%] pt-0 lg:pt-24 space-y-0">
+            {ingredients.map((item, i) => (
+              <FadeIn key={item.name} direction="none" delay={i * 0.1}>
+                <div className="border-b border-foreground/10 py-10 flex flex-col sm:flex-row sm:items-end justify-between gap-3 group">
+                  <h3 className="font-serif text-3xl md:text-4xl text-primary leading-none group-hover:translate-x-1 transition-transform duration-500">
+                    {item.name}
+                  </h3>
+                  <p className="text-foreground/40 text-sm font-sans italic max-w-[24ch] text-right leading-relaxed">
+                    {item.note}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+            <FadeIn direction="none" delay={0.6}>
+              <div className="pt-10">
+                <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                  View Full Ingredients
+                </button>
+              </div>
+            </FadeIn>
+          </div>
         </div>
       </section>
 
       {/* OUR STORY */}
-      <section id="story" className="py-24 md:py-32 bg-[#e9dfd0] px-6 md:px-12">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16">
-          <FadeIn className="w-full md:w-1/2 order-2 md:order-1">
-            <h2 className="text-3xl md:text-4xl font-serif text-primary mb-8">Our Story</h2>
-            <p className="text-lg text-foreground/80 leading-relaxed mb-6">
-              SEREIN came from a quiet insistence that beauty should be slower. That the jar you reach for each morning should be something you chose, not something you grabbed. 
-            </p>
-            <p className="text-lg text-foreground/80 leading-relaxed mb-6">
-              We blend every batch by hand, in small quantities, because we think the act of care matters as much as the ingredients inside it. 
-            </p>
-            <p className="text-lg font-serif italic text-primary leading-relaxed">
-              Skin that remembers touch is skin that has been tended to — every day, without exception.
+      <section id="story" className="py-28 md:py-40 bg-primary text-primary-foreground">
+        <div className="max-w-7xl mx-auto px-8 md:px-16 flex flex-col md:flex-row items-center gap-16 md:gap-28">
+          <FadeIn direction="none" className="w-full md:w-1/2">
+            <div className="aspect-[3/4] overflow-hidden">
+              <img
+                src={`${BASE}images/story.png`}
+                alt="Hands holding an amber jar in natural light"
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-primary-foreground/30 font-sans">
+              Made by hand. Always.
             </p>
           </FadeIn>
-          <FadeIn direction="left" className="w-full md:w-1/2 order-1 md:order-2">
-            <div className="aspect-square relative overflow-hidden bg-muted">
-               <img 
-                 src={`${BASE}images/story.png`}
-                 alt="Hands holding an amber jar in natural light" 
-                 className="w-full h-full object-cover"
-               />
+          <div className="w-full md:w-1/2 flex flex-col gap-8">
+            <FadeIn direction="none" delay={0.1}>
+              <span className="text-[10px] uppercase tracking-[0.25em] text-primary-foreground/30 font-sans">
+                About
+              </span>
+            </FadeIn>
+            <FadeIn direction="none" delay={0.2}>
+              <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-serif leading-none">
+                SEREIN came<br />from stillness.
+              </h2>
+            </FadeIn>
+            <FadeIn direction="none" delay={0.3}>
+              <p className="text-primary-foreground/60 leading-loose text-base max-w-[38ch]">
+                A quiet insistence that beauty should be slower. That the jar you reach for each morning should be something you chose — not something you grabbed.
+              </p>
+            </FadeIn>
+            <FadeIn direction="none" delay={0.4}>
+              <p className="text-primary-foreground/60 leading-loose text-base max-w-[38ch]">
+                We blend every batch by hand, in small quantities, because the act of care matters as much as the ingredients inside it.
+              </p>
+            </FadeIn>
+            <FadeIn direction="none" delay={0.5}>
+              <p className="font-serif italic text-primary-foreground/80 text-xl leading-relaxed border-t border-primary-foreground/10 pt-8 max-w-[32ch]">
+                Skin that remembers touch is skin that has been tended to.
+              </p>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
+      {/* MARKETS */}
+      <section id="markets" className="py-28 md:py-40 px-8 md:px-16">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn direction="none">
+            <div className="mb-20 flex items-end justify-between">
+              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-serif text-primary leading-none">
+                Find Us.
+              </h2>
+              <span className="hidden md:block text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans">
+                2026 Dates
+              </span>
+            </div>
+          </FadeIn>
+
+          <div className="space-y-0">
+            <FadeIn direction="none" delay={0.1}>
+              <div className="border-t border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
+                <div className="flex flex-col gap-2">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-[#C48C1E] font-sans">Next Up</span>
+                  <h3 className="text-2xl font-serif text-primary group-hover:translate-x-0.5 transition-transform duration-500">Lagos Handcraft Fair</h3>
+                  <p className="text-foreground/40 text-xs font-sans tracking-wide">Victoria Island Community Centre</p>
+                </div>
+                <p className="font-serif italic text-foreground/50 text-lg sm:text-xl whitespace-nowrap">July 12, 2026</p>
+              </div>
+            </FadeIn>
+
+            <FadeIn direction="none" delay={0.2}>
+              <div className="border-t border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-2xl font-serif text-primary/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-500">The Makers Market</h3>
+                  <p className="text-foreground/30 text-xs font-sans tracking-wide">Lekki Phase 1</p>
+                </div>
+                <p className="font-serif italic text-foreground/40 text-lg sm:text-xl whitespace-nowrap">August 2, 2026</p>
+              </div>
+            </FadeIn>
+
+            <FadeIn direction="none" delay={0.3}>
+              <div className="border-t border-b border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
+                <div className="flex flex-col gap-2">
+                  <h3 className="text-2xl font-serif text-primary/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-500">Craft & Co. Pop-Up</h3>
+                  <p className="text-foreground/30 text-xs font-sans tracking-wide">Ikoyi Arts Quarter</p>
+                </div>
+                <p className="font-serif italic text-foreground/40 text-lg sm:text-xl whitespace-nowrap">August 23, 2026</p>
+              </div>
+            </FadeIn>
+          </div>
+
+          <FadeIn direction="none" delay={0.4}>
+            <div className="mt-14">
+              <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                See Full Market Calendar
+              </button>
             </div>
           </FadeIn>
         </div>
       </section>
 
-      {/* MARKETS */}
-      <section id="markets" className="py-24 md:py-32 px-6 md:px-12 max-w-4xl mx-auto text-center">
-        <FadeIn>
-          <h2 className="text-3xl md:text-4xl font-serif text-primary mb-16">Visit Us</h2>
-          <div className="space-y-12 text-left mb-16">
-            
-            <div className="border-b border-foreground/10 pb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <span className="inline-block bg-[#C48C1E] text-white text-[10px] uppercase tracking-widest px-2 py-1 mb-3">Next Up</span>
-                <h3 className="text-xl font-serif text-primary mb-1">Lagos Handcraft Fair</h3>
-                <p className="text-foreground/60 text-sm">Victoria Island Community Centre</p>
-              </div>
-              <div className="text-primary font-serif italic text-lg">
-                July 12, 2026
-              </div>
-            </div>
-
-            <div className="border-b border-foreground/10 pb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 opacity-80 hover:opacity-100 transition-opacity">
-              <div>
-                <h3 className="text-xl font-serif text-primary mb-1">The Makers Market</h3>
-                <p className="text-foreground/60 text-sm">Lekki Phase 1</p>
-              </div>
-              <div className="text-primary font-serif italic text-lg">
-                August 2, 2026
-              </div>
-            </div>
-
-            <div className="border-b border-foreground/10 pb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 opacity-80 hover:opacity-100 transition-opacity">
-              <div>
-                <h3 className="text-xl font-serif text-primary mb-1">Craft & Co. Pop-Up</h3>
-                <p className="text-foreground/60 text-sm">Ikoyi Arts Quarter</p>
-              </div>
-              <div className="text-primary font-serif italic text-lg">
-                August 23, 2026
-              </div>
-            </div>
-
-          </div>
-          <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground rounded-none h-14 px-8 tracking-widest uppercase text-xs transition-colors duration-300">
-            See Full Market Calendar
-          </Button>
-        </FadeIn>
-      </section>
-
       {/* JOURNAL */}
-      <section id="journal" className="py-24 md:py-32 bg-[#e9dfd0] px-6 md:px-12">
+      <section id="journal" className="py-28 md:py-40 bg-[#e9dfd0] px-8 md:px-16">
         <div className="max-w-7xl mx-auto">
-          <FadeIn>
-            <div className="flex justify-between items-end mb-16">
-              <h2 className="text-3xl md:text-4xl font-serif text-primary">Journal</h2>
-              <a href="#journal" className="text-sm uppercase tracking-widest text-primary hover:opacity-70 transition-opacity hidden md:block border-b border-primary pb-1">
+          <FadeIn direction="none">
+            <div className="mb-20 flex items-end justify-between">
+              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-serif text-primary leading-none">
+                Journal.
+              </h2>
+              <a href="#journal" className="hidden md:block text-[10px] uppercase tracking-[0.25em] text-foreground/40 border-b border-foreground/20 pb-1 hover:text-primary hover:border-primary transition-all duration-300 font-sans">
                 Read All
               </a>
             </div>
           </FadeIn>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
             {journalArticles.map((article, i) => (
-              <FadeIn key={article.title} delay={i * 0.2} direction="up" className="group cursor-pointer">
-                <div className="aspect-[3/4] overflow-hidden mb-6 relative">
-                  <img 
-                    src={article.img} 
-                    alt={article.title} 
-                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                </div>
-                <h3 className="text-xl font-serif text-primary mb-3">{article.title}</h3>
-                <p className="text-foreground/70 leading-relaxed text-sm">
-                  {article.excerpt}
-                </p>
-                <div className="mt-4 inline-flex items-center space-x-2 text-xs uppercase tracking-widest text-primary/60 group-hover:text-primary transition-colors">
-                  <span>Read Story</span>
-                  <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
+              <FadeIn key={article.title} direction="none" delay={i * 0.15}>
+                <div className="group cursor-pointer">
+                  <div className="overflow-hidden mb-5">
+                    <img
+                      src={article.img}
+                      alt={article.title}
+                      className="w-full aspect-[3/4] object-cover transition-all duration-[1200ms] ease-out group-hover:brightness-95 group-hover:scale-[1.02]"
+                    />
+                  </div>
+                  <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/40 font-sans mb-3">
+                    {article.caption}
+                  </p>
+                  <h3 className="font-serif text-xl text-primary">{article.title}</h3>
                 </div>
               </FadeIn>
             ))}

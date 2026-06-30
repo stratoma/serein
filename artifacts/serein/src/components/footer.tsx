@@ -2,46 +2,48 @@ import { Link } from "wouter";
 
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground py-20 px-6 md:px-12">
-      <div className="container mx-auto max-w-6xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
-          <div className="lg:col-span-2">
-            <h2 className="text-3xl font-serif mb-6 tracking-wide">SEREIN</h2>
-            <p className="text-primary-foreground/70 mb-8 max-w-sm font-serif italic text-lg">
+    <footer className="bg-primary text-primary-foreground py-24 px-8 md:px-16">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16 mb-20">
+
+          <div className="lg:col-span-1">
+            <h2 className="text-2xl font-serif mb-5 tracking-[0.15em]">Serein</h2>
+            <p className="text-primary-foreground/40 font-serif italic text-base leading-relaxed max-w-[22ch]">
               Transform. Root. Become.
             </p>
-            <div className="flex space-x-4">
-              <a href="#" className="text-primary-foreground/70 hover:text-primary-foreground transition-colors text-sm">
-                Instagram (@serein.skin)
+            <div className="mt-8">
+              <a href="#" className="text-[10px] uppercase tracking-[0.2em] text-primary-foreground/30 hover:text-primary-foreground/70 transition-colors duration-400 font-sans">
+                @serein.skin
               </a>
             </div>
           </div>
 
           <div>
-            <h3 className="font-serif text-lg mb-6 tracking-wider">Explore</h3>
-            <ul className="space-y-4 text-sm text-primary-foreground/70">
-              <li><a href="#collection" className="hover:text-primary-foreground transition-colors">Collection</a></li>
-              <li><a href="#story" className="hover:text-primary-foreground transition-colors">Our Story</a></li>
-              <li><a href="#markets" className="hover:text-primary-foreground transition-colors">Markets</a></li>
-              <li><a href="#journal" className="hover:text-primary-foreground transition-colors">Journal</a></li>
+            <h3 className="text-[10px] uppercase tracking-[0.25em] font-sans text-primary-foreground/30 mb-8">Explore</h3>
+            <ul className="space-y-5 text-sm text-primary-foreground/50 font-sans">
+              <li><a href="#collection" className="hover:text-primary-foreground/90 transition-colors duration-300">Collection</a></li>
+              <li><a href="#ingredients" className="hover:text-primary-foreground/90 transition-colors duration-300">Ingredients</a></li>
+              <li><a href="#morrow-trio" className="hover:text-primary-foreground/90 transition-colors duration-300">The Morrow Trio</a></li>
+              <li><a href="#markets" className="hover:text-primary-foreground/90 transition-colors duration-300">Markets</a></li>
+              <li><a href="#story" className="hover:text-primary-foreground/90 transition-colors duration-300">About</a></li>
             </ul>
           </div>
 
           <div>
-            <h3 className="font-serif text-lg mb-6 tracking-wider">Newsletter</h3>
-            <p className="text-sm text-primary-foreground/70 mb-4 leading-relaxed">
-              Quiet rituals and new batches, delivered thoughtfully.
+            <h3 className="text-[10px] uppercase tracking-[0.25em] font-sans text-primary-foreground/30 mb-8">Stay close.</h3>
+            <p className="text-xs text-primary-foreground/40 font-sans leading-relaxed mb-6 max-w-[26ch]">
+              New batches and quiet news, when it matters.
             </p>
-            <form className="flex flex-col space-y-3" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="Email address" 
-                className="bg-transparent border-b border-primary-foreground/20 py-2 px-0 text-sm focus:outline-none focus:border-primary-foreground placeholder:text-primary-foreground/40 transition-colors"
+            <form className="flex flex-col space-y-4" onSubmit={(e) => e.preventDefault()}>
+              <input
+                type="email"
+                placeholder="your@email.com"
+                className="bg-transparent border-b border-primary-foreground/15 py-2 px-0 text-sm font-sans focus:outline-none focus:border-primary-foreground/40 placeholder:text-primary-foreground/25 transition-colors duration-300"
                 required
               />
-              <button 
-                type="submit" 
-                className="text-left text-sm uppercase tracking-widest text-primary-foreground hover:text-primary-foreground/70 transition-colors pt-2"
+              <button
+                type="submit"
+                className="text-left text-[10px] uppercase tracking-[0.25em] text-primary-foreground/40 hover:text-primary-foreground/70 transition-colors duration-400 font-sans pt-1"
               >
                 Subscribe
               </button>
@@ -49,11 +51,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-primary-foreground/10 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-xs text-primary-foreground/50">
-          <p>&copy; {new Date().getFullYear()} SEREIN. All rights reserved.</p>
-          <div className="flex space-x-6">
-            <Link href="/privacy" className="hover:text-primary-foreground transition-colors">Privacy Policy</Link>
-            <Link href="/shipping" className="hover:text-primary-foreground transition-colors">Shipping & Returns</Link>
+        <div className="pt-8 border-t border-primary-foreground/8 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] text-primary-foreground/25 font-sans uppercase tracking-[0.15em]">
+          <p>&copy; {new Date().getFullYear()} Serein</p>
+          <div className="flex space-x-8">
+            <Link href="/privacy" className="hover:text-primary-foreground/50 transition-colors duration-300">Privacy</Link>
+            <Link href="/shipping" className="hover:text-primary-foreground/50 transition-colors duration-300">Shipping</Link>
           </div>
         </div>
       </div>

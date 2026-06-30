@@ -11,16 +11,16 @@ interface FadeInProps extends HTMLMotionProps<"div"> {
 export function FadeIn({
   children,
   delay = 0,
-  direction = "up",
+  direction = "none",
   fullWidth = false,
   className = "",
   ...props
 }: FadeInProps) {
   const directions = {
-    up: { y: 40, x: 0 },
-    down: { y: -40, x: 0 },
-    left: { x: 40, y: 0 },
-    right: { x: -40, y: 0 },
+    up: { y: 24, x: 0 },
+    down: { y: -24, x: 0 },
+    left: { x: 24, y: 0 },
+    right: { x: -24, y: 0 },
     none: { x: 0, y: 0 },
   };
 
@@ -35,10 +35,10 @@ export function FadeIn({
         x: 0,
         y: 0,
       }}
-      viewport={{ once: true, margin: "-10%" }}
+      viewport={{ once: true, margin: "-5%" }}
       transition={{
-        duration: 0.8,
-        ease: [0.21, 0.47, 0.32, 0.98],
+        duration: 0.9,
+        ease: [0.16, 1, 0.3, 1],
         delay: delay,
       }}
       className={`${fullWidth ? "w-full" : ""} ${className}`}
