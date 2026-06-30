@@ -140,7 +140,7 @@ export default function Home() {
           <div className="space-y-28 md:space-y-40">
             {products.map((product, i) => (
               <FadeIn key={product.id} direction="none" delay={0.1}>
-                <div className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-10 md:gap-20 items-center`}>
+                <div id={product.id} className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-10 md:gap-20 items-center`}>
                   <div className="w-full md:w-[58%] relative overflow-hidden group">
                     <img
                       src={product.img}

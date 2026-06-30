@@ -4,6 +4,21 @@ import { FadeIn } from "@/components/ui/fade-in";
 
 const BASE = import.meta.env.BASE_URL;
 
+const productList = [
+  { id: "supple-oud", name: "Supple Oud" },
+  { id: "mint-moss", name: "Mint + Moss" },
+  { id: "lithe-bloom", name: "Lithe Bloom" },
+];
+
+const ingredientProducts: Record<string, typeof productList> = {
+  "shea-butter": productList,
+  "mango-butter": productList,
+  "jojoba-oil": productList,
+  "vitamin-e": productList,
+  "arrowroot": productList,
+  "fragrance": productList,
+};
+
 const ingredients = [
   {
     id: "shea-butter",
@@ -199,6 +214,26 @@ export default function Ingredients() {
                           <p className="text-[9px] uppercase tracking-[0.3em] text-foreground/30 font-sans mt-2">
                             {item.provenance}
                           </p>
+                          {ingredientProducts[item.id] && (
+                            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-4 border-t border-foreground/10">
+                              <span className="text-[9px] uppercase tracking-[0.3em] text-foreground/30 font-sans shrink-0">
+                                Find it in:
+                              </span>
+                              {ingredientProducts[item.id].map((product, idx, arr) => (
+                                <span key={product.id} className="inline-flex items-baseline gap-x-2">
+                                  <a
+                                    href={`${BASE}#${product.id}`}
+                                    className="font-sans text-[9px] uppercase tracking-[0.2em] text-primary border-b border-primary/30 pb-px hover:border-primary transition-colors duration-300"
+                                  >
+                                    {product.name}
+                                  </a>
+                                  {idx < arr.length - 1 && (
+                                    <span className="text-foreground/20 font-sans text-[9px]">·</span>
+                                  )}
+                                </span>
+                              ))}
+                            </div>
+                          )}
                         </div>
 
                         {/* IMAGE SIDE */}
