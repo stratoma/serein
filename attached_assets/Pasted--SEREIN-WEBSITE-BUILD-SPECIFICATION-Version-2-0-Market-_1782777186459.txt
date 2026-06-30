@@ -1,0 +1,378 @@
+# SEREIN WEBSITE BUILD SPECIFICATION
+
+## Version 2.0 — Market Ready | Customer Focused
+
+### Brand Statement
+
+SEREIN creates handcrafted body care inspired by quiet rituals, natural materials, and the beauty of becoming.
+
+The website should feel calm, tactile, and intentional—not sparse or difficult to navigate.
+
+Every page should answer the customer's questions while preserving the brand's atmosphere.
+
+---
+
+# Design Language
+
+Keywords
+
+• Modern African luxury
+• Quiet confidence
+• Editorial photography
+• Architectural
+• Sensory
+• Earthy
+• Minimal
+• Warm
+• Intentional
+
+Avoid
+
+• Apothecary
+• Cottagecore
+• Vintage English
+• Farmhouse
+• Generic wellness
+• White spa aesthetic
+
+---
+
+# Brand Colors
+
+Bone (#F3EBDD)
+
+Espresso (#2B1E18)
+
+Olive (#5B6643)
+
+Eggplant (#5B214F)
+
+Paprika (#B7653D)
+
+Marigold (#C48C1E)
+
+Amber glass is treated as part of the palette.
+
+---
+
+# Navigation
+
+SEREIN
+
+Collection
+
+Our Story
+
+Markets
+
+Journal
+
+Cart
+
+---
+
+# HERO
+
+Large immersive photograph.
+
+Not a product cutout.
+
+Architecture.
+
+Stone.
+
+Linen.
+
+Hands.
+
+Morning light.
+
+One amber jar.
+
+Headline
+
+SEREIN
+
+Subheading
+
+For skin that remembers touch.
+
+Supporting copy
+
+Handcrafted body butter made in small batches for skin that deserves slowing down.
+
+Primary Button
+
+Shop Collection
+
+Secondary Button
+
+Find Us at a Market
+
+---
+
+# QUICK SHOP
+
+Immediately below the hero.
+
+Three product cards.
+
+Each includes
+
+• Product photo
+
+• Name
+
+• Short scent description
+
+• Price
+
+• Add to Cart
+
+---
+
+SUPPLE OUD
+
+Transform
+
+Smoke.
+Wood.
+Depth.
+
+$22
+
+---
+
+MINT + MOSS
+
+Root
+
+Fresh mint.
+Earth.
+Green renewal.
+
+$22
+
+---
+
+LITHE BLOOM
+
+Become
+
+Soft florals.
+Warm citrus.
+Light.
+
+$22
+
+---
+
+THE MORROW TRIO
+
+Three rituals.
+
+One discovery.
+
+Includes sample tins of all three scents.
+
+$11
+
+---
+
+# WHY SEREIN
+
+Three illustrated columns
+
+Transform
+
+Rich botanical butters.
+
+Root
+
+Handcrafted in small batches.
+
+Become
+
+Designed as daily rituals rather than products.
+
+---
+
+# INGREDIENTS
+
+Photography first.
+
+Then
+
+Shea Butter
+
+Mango Butter
+
+Jojoba Oil
+
+Vitamin E
+
+Arrowroot
+
+Thoughtfully blended fragrance
+
+Small button
+
+View Full Ingredients
+
+---
+
+# OUR STORY
+
+One portrait.
+
+One workspace image.
+
+One paragraph.
+
+Keep it personal.
+
+Avoid founder clichés.
+
+Speak about ritual, slowing down, and creating beauty through care.
+
+---
+
+# VISIT US
+
+Upcoming Markets
+
+Interactive list
+
+Map
+
+Next event highlighted.
+
+Button
+
+See Full Market Calendar
+
+---
+
+# JOURNAL
+
+Three featured articles
+
+Morning Mist
+
+The Weight of Linen
+
+Why Amber Glass
+
+---
+
+# FOOTER
+
+Transform.
+
+Root.
+
+Become.
+
+Instagram
+
+Newsletter
+
+Email
+
+Policies
+
+---
+
+# PRODUCT PAGE
+
+Large editorial photography.
+
+Sticky Add to Cart button.
+
+Product description.
+
+Benefits.
+
+Ingredients.
+
+Directions.
+
+Shipping.
+
+FAQ.
+
+Suggested pairing.
+
+---
+
+# MOBILE EXPERIENCE
+
+Everything should be thumb-friendly.
+
+Buttons at least 48px high.
+
+Fast loading.
+
+Sticky Add to Cart.
+
+Minimal scrolling before shopping.
+
+---
+
+# PHOTOGRAPHY DIRECTION
+
+The products should exist inside environments.
+
+Adobe walls.
+
+Stone.
+
+Black ceramics.
+
+Dark skin.
+
+Natural linen.
+
+Architectural shadows.
+
+Plants.
+
+Brass.
+
+Handmade objects.
+
+No staged spa scenes.
+
+No white marble.
+
+No eucalyptus.
+
+No rolled towels.
+
+---
+
+# PERFORMANCE
+
+Compress images.
+
+Use lazy loading.
+
+Optimize Core Web Vitals.
+
+Accessibility score above 95.
+
+SEO score above 95.
+
+---
+
+# FINAL FEELING
+
+The customer should leave thinking:
+
+"I trust this maker."
+
+"This feels unlike anything else at the market."
+
+"I know exactly which scent I want."
+
+"I want to come back."
