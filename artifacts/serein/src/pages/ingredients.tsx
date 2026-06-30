@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
 
@@ -67,11 +67,41 @@ const ingredients = [
   },
 ];
 
+function getHashId(): string | null {
+  const hash = window.location.hash.slice(1);
+  return hash || null;
+}
+
 export default function Ingredients() {
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(() => getHashId());
+
+  useEffect(() => {
+    const initial = getHashId();
+    if (initial) {
+      setOpenId(initial);
+      requestAnimationFrame(() => {
+        const el = document.getElementById(initial);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    function onPopState() {
+      setOpenId(getHashId());
+    }
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
 
   function toggle(id: string) {
-    setOpenId((prev) => (prev === id ? null : id));
+    const next = openId === id ? null : id;
+    if (next) {
+      history.pushState(null, "", `#${next}`);
+    } else {
+      history.pushState(null, "", window.location.pathname + window.location.search);
+    }
+    setOpenId(next);
   }
 
   return (
@@ -108,7 +138,7 @@ export default function Ingredients() {
 
           return (
             <FadeIn key={item.id} direction="none" delay={i * 0.07}>
-              <div className="border-b border-foreground/10">
+              <div id={item.id} className="border-b border-foreground/10">
 
                 {/* ROW — always visible */}
                 <button
