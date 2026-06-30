@@ -27,17 +27,17 @@ export default function ProductDetail() {
   }
 
   const carouselImages: CarouselImage[] = [
-    product.cleanStill && { src: product.cleanStill, alt: `${product.name} — product still` },
-    { src: product.img, alt: `${product.name} — editorial still` },
-    product.scentCard && { src: product.scentCard, alt: `${product.name} — scent notes` },
-    product.ingredientsGraphic && { src: product.ingredientsGraphic, alt: `${product.name} — ingredients` },
+    product.cleanStill && { src: product.cleanStill, alt: `${product.name} — product still`, variant: "product" as const },
+    { src: product.img, alt: `${product.name} — editorial still`, variant: "product" as const },
+    product.scentCard && { src: product.scentCard, alt: `${product.name} — scent notes`, variant: "card" as const },
+    product.ingredientsGraphic && { src: product.ingredientsGraphic, alt: `${product.name} — ingredients`, variant: "card" as const },
   ].filter(Boolean) as CarouselImage[];
 
   return (
     <main className="w-full bg-background overflow-hidden">
 
-      {/* HERO — full-bleed image with overlay text */}
-      <section className="relative h-[100dvh] overflow-hidden flex items-end">
+      {/* HERO — full-bleed image, text anchored to safe negative-space zones */}
+      <section className="relative h-[100dvh] overflow-hidden">
         <motion.div
           initial={{ scale: 1.04 }}
           animate={{ scale: 1 }}
@@ -47,22 +47,27 @@ export default function ProductDetail() {
           <img
             src={product.cleanStill ?? product.img}
             alt={product.name}
-            className="w-full h-full object-cover [object-position:right_center]"
+            className="w-full h-full object-cover [object-position:center_45%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/15" />
         </motion.div>
 
-        <div className="relative z-10 w-full px-8 md:px-16 pb-16 md:pb-24 flex flex-col md:flex-row md:items-end md:justify-between gap-8">
+        {/* Top-left: pillar label + product name — sits in clear wall/background space */}
+        <div className="absolute top-0 left-0 z-10 px-8 md:px-16 pt-24 md:pt-28">
           <FadeIn delay={0.2} direction="none">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-white/50 font-sans block mb-3">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-white/55 font-sans block mb-3">
               {product.pillar}
             </span>
-            <h1 className="text-[clamp(3.5rem,12vw,10rem)] font-serif text-[#F3EBDD] leading-none tracking-tight">
+            <h1 className="text-[clamp(2.8rem,7vw,6.5rem)] font-serif text-[#F3EBDD] leading-none tracking-tight">
               {product.name}
             </h1>
           </FadeIn>
-          <FadeIn delay={0.45} direction="none" className="md:text-right max-w-xs">
-            <p className="font-serif italic text-[#F3EBDD]/70 text-lg md:text-xl leading-relaxed">
+        </div>
+
+        {/* Bottom-right: scent descriptor — sits in the stone/linen negative space */}
+        <div className="absolute bottom-0 right-0 z-10 px-8 md:px-16 pb-14 md:pb-20 text-right">
+          <FadeIn delay={0.5} direction="none">
+            <p className="font-serif italic text-[#F3EBDD]/65 text-lg md:text-xl leading-relaxed max-w-[22ch] ml-auto">
               {product.scent}
             </p>
           </FadeIn>

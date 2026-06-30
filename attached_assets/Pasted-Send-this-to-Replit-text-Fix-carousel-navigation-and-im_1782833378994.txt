@@ -1,0 +1,87 @@
+Send this to Replit:
+
+```text
+Fix carousel navigation and image overlay readability across the product pages.
+
+Current issues:
+1. Navigation arrows are blending into the images.
+2. Arrows are sitting over detailed or light areas, so users cannot easily see them.
+3. Some carousel images contain text baked into the image, and the carousel crop is cutting that text off.
+4. Product hero copy is overlapping the jar image, making the label and headline compete.
+
+Carousel arrow fix:
+- Move carousel arrows outside the image frame when possible.
+- If arrows must sit over the image, place them inside a fixed circular button.
+- Use a semi-transparent espresso background with bone arrow color.
+- Add hover and focus states.
+- Make the buttons large enough for mobile tapping.
+
+Suggested CSS:
+
+.carousel-arrow {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: rgba(43, 30, 24, 0.72);
+  color: #F3EBDD;
+  border: 1px solid rgba(243, 235, 221, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  backdrop-filter: blur(4px);
+}
+
+.carousel-arrow:hover,
+.carousel-arrow:focus {
+  background: rgba(43, 30, 24, 0.92);
+}
+
+Carousel placement:
+- Left arrow should sit 16–24px from the left edge.
+- Right arrow should sit 16–24px from the right edge.
+- Vertically center arrows within the carousel image area.
+- Do not allow arrows to sit over product labels, faces, or dense text.
+
+For mobile:
+.carousel-arrow {
+  width: 48px;
+  height: 48px;
+}
+
+Image handling:
+- For product still-life images, use object-fit: contain.
+- For scent note cards or ingredient cards that contain text, NEVER use object-fit: cover.
+- Use object-fit: contain so the full graphic is visible.
+- Add a neutral bone or espresso background behind contained images if needed.
+
+Suggested:
+
+.carousel-image.text-card {
+  object-fit: contain;
+  background: #F3EBDD;
+}
+
+.carousel-image.product-photo {
+  object-fit: contain;
+  object-position: center;
+}
+
+Hero overlay fix:
+- Do not place large product headings over the jar label.
+- Move the product name and descriptor copy into a clear negative-space area.
+- If the image has no safe negative space, place copy in a separate panel beside or below the image.
+- The jar label should remain unobstructed.
+
+For the Lithe Bloom hero specifically:
+- The large “Lithe Bloom” heading is too low and overlaps the jar/image focal area.
+- Move the heading into the left negative-space area or place it in a separate text block.
+- Keep enough distance between heading and jar so they do not compete.
+
+Final checks:
+- Arrows must remain visible on light, dark, and detailed images.
+- No baked-in text cards should be cropped.
+- No navigation control should obscure important product or ingredient information.
+- Product names should not overlap jar labels.
+- The site should feel editorial, but still easy to use.
+```
