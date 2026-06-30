@@ -1,0 +1,62 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "vcNw5Pjts3TppgExMzO73"
+uri = "file://artifacts/serein/public/images/hero.png"
+type = "image"
+title = "Hero image with earthy tones"
+
+[[generated]]
+id = "V8kvqNOQrcOHBhw0JsMxs"
+uri = "file://artifacts/serein/public/images/product-oud.png"
+type = "image"
+title = "Product Supple Oud"
+
+[[generated]]
+id = "Xk4YnZ0O9ggaNRD8TREgW"
+uri = "file://artifacts/serein/public/images/product-mint.png"
+type = "image"
+title = "Product Mint Moss"
+
+[[generated]]
+id = "nGPn0_cFtCDaU09ITba-I"
+uri = "file://artifacts/serein/public/images/product-bloom.png"
+type = "image"
+title = "Product Lithe Bloom"
+
+[[generated]]
+id = "vvWrE_yHUJW5SUxIUn3Yj"
+uri = "file://artifacts/serein/public/images/product-trio.png"
+type = "image"
+title = "Product Morrow Trio"
+
+[[generated]]
+id = "UGIdzE-ON71tvTi3ROtBh"
+uri = "file://artifacts/serein/public/images/ingredients.png"
+type = "image"
+title = "Raw shea butter ingredients"
+
+[[generated]]
+id = "V7dDNTUvEcMJzahf3ZmMq"
+uri = "file://artifacts/serein/public/images/story.png"
+type = "image"
+title = "Hands holding a jar"
+
+[[generated]]
+id = "CM4qZQwcP6PSs75LarPqR"
+uri = "file://artifacts/serein/public/images/journal-1.png"
+type = "image"
+title = "Morning mist journal"
+
+[[generated]]
+id = "-yqSrQQosFzp8aCFF5SLe"
+uri = "file://artifacts/serein/public/images/journal-2.png"
+type = "image"
+title = "Weight of linen journal"
+
+[[generated]]
+id = "Ax_BcpuaVzrggytKjDEzZ"
+uri = "file://artifacts/serein/public/images/journal-3.png"
+type = "image"
+title = "Amber glass journal"

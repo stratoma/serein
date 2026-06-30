@@ -1,0 +1,412 @@
+These images completely change the direction—and in a very good way.
+
+What you've created isn't simply a skincare website. It feels closer to an editorial home, a design journal, or a gallery. The photography carries so much narrative that the copy's role should shift from *telling* to *guiding*.
+
+My biggest recommendation is this:
+
+> **The copy should feel like museum wall text, not marketing copy.**
+
+Every sentence should create space for the imagery instead of competing with it.
+
+Below is what I would give Replit.
+
+---
+
+# SEREIN Website Direction
+
+## Overall Experience
+
+Do **not** build this like a traditional ecommerce website.
+
+Do **not** prioritize selling above atmosphere.
+
+Instead, create an experience that feels somewhere between:
+
+* a beautifully designed editorial magazine
+* a contemporary art gallery
+* a boutique hotel website
+* a luxury fragrance house
+* a slow design journal
+
+The customer should feel immersed before they ever feel sold to.
+
+The photography is the primary storyteller.
+
+The copy exists to create rhythm.
+
+Silence is part of the design.
+
+---
+
+# Emotional Direction
+
+The site should feel:
+
+* approachable but composed
+* luxurious without exclusivity
+* warm rather than polished
+* tactile rather than glossy
+* intelligent without being academic
+* modern African rather than "African-inspired"
+* slow
+* grounded
+* architectural
+* sensory
+
+Every page should invite exploration, never urgency.
+
+---
+
+# Copy Philosophy
+
+Assume the customer is already interested.
+
+Never persuade aggressively.
+
+Never oversell.
+
+Never explain what the image already communicates.
+
+Instead:
+
+* provide context
+* deepen emotion
+* introduce ritual
+* leave room for interpretation
+
+If an image already communicates warmth, don't write:
+
+> Warm. Cozy. Luxurious.
+
+Instead write:
+
+> A scent that settles long after the room has quieted.
+
+---
+
+# Writing Style
+
+Write in short paragraphs.
+
+Use generous white space.
+
+Allow breathing room between thoughts.
+
+Sentences should feel composed.
+
+Example:
+
+---
+
+Root.
+
+Fresh mint.
+Earth.
+Renewal.
+
+A scent that returns you
+to yourself.
+
+---
+
+Instead of
+
+> Mint + Moss combines fresh mint, cedarwood, green tea and amber musk to create a sophisticated spa-like fragrance perfect for relaxation.
+
+Never write like that.
+
+---
+
+# Headlines
+
+Headlines should rarely exceed four words.
+
+Examples
+
+Transform.
+
+Root.
+
+Become.
+
+The Collection
+
+Quiet Rituals
+
+Made Slowly
+
+Daily Return
+
+The Studio
+
+Materials
+
+The Morrow Trio
+
+Nothing should feel like marketing.
+
+---
+
+# Body Copy
+
+Paragraphs should stay between
+
+20–60 words.
+
+Never walls of text.
+
+Every paragraph should feel intentional.
+
+---
+
+# Product Pages
+
+Product pages should feel editorial.
+
+Flow:
+
+Large hero image
+
+↓
+
+One sentence
+
+↓
+
+Scent story
+
+↓
+
+Ingredients
+
+↓
+
+Texture
+
+↓
+
+How it feels
+
+↓
+
+Photography
+
+↓
+
+Purchase
+
+Buying comes naturally after emotional connection.
+
+---
+
+# Buttons
+
+Buttons should be understated.
+
+Avoid:
+
+Buy Now
+
+Purchase
+
+Get Yours
+
+Instead use
+
+Shop Collection
+
+Explore
+
+Discover
+
+Choose This Scent
+
+Bring It Home
+
+View Ingredients
+
+Learn More
+
+Find Us
+
+---
+
+# Navigation
+
+Keep navigation minimal.
+
+Home
+
+Collection
+
+Ingredients
+
+The Morrow Trio
+
+Markets
+
+Journal (future)
+
+About
+
+Cart
+
+No dropdown overload.
+
+---
+
+# Scrolling Experience
+
+Scrolling should feel cinematic.
+
+Large image.
+
+Small paragraph.
+
+Whitespace.
+
+Fade.
+
+Next image.
+
+Quote.
+
+Product.
+
+Pause.
+
+Repeat.
+
+The pace should slow the visitor down.
+
+---
+
+# Typography
+
+Typography should feel editorial.
+
+Elegant serif headlines.
+
+Simple readable body text.
+
+Large spacing.
+
+Avoid heavy bold text.
+
+Avoid shouting.
+
+Everything should feel quiet.
+
+---
+
+# Use of Photography
+
+Photography should dominate.
+
+Images should often occupy:
+
+70–90% of a section.
+
+Text should never cover important details.
+
+Instead, let text live beside images or float in negative space.
+
+Every image should be allowed to breathe.
+
+---
+
+# Image Captions
+
+Treat images almost like gallery pieces.
+
+Examples
+
+Thoughtfully sourced.
+
+Handcrafted in small batches.
+
+The ritual begins long before the jar is opened.
+
+Rich botanicals.
+
+Light through linen.
+
+Quiet mornings.
+
+Never over-caption.
+
+---
+
+# Motion
+
+Motion should feel almost invisible.
+
+Slow fades.
+
+Soft image reveals.
+
+Parallax no more than 5–10%.
+
+Buttons gently brighten.
+
+No bouncing.
+
+No flashy animations.
+
+Everything should move like sunlight.
+
+---
+
+# User Experience
+
+Every interaction should communicate care.
+
+Hover states should feel gentle.
+
+Transitions should feel soft.
+
+Whitespace should increase confidence.
+
+The customer should never feel rushed.
+
+---
+
+# Overall Impression
+
+When someone closes the website they should feel:
+
+> "That was beautiful."
+
+before they think
+
+> "I should buy that."
+
+Buying should become the natural conclusion of experiencing the brand.
+
+---
+
+## Most Important Observation
+
+Looking through your campaign, one thing stands out more than anything else.
+
+The photography doesn't sell body butter.
+
+It sells **a way of living**.
+
+The recurring themes are:
+
+* natural light
+* architecture
+* stone
+* linen
+* botanical studies
+* African modernism
+* books
+* ritual objects
+* quiet interiors
+* sculptural composition
+* contemplative portraiture
+
+That means SEREIN is not just a body care brand. It is presenting an aesthetic philosophy. The website should reflect that by feeling like an editorial experience first and a storefront second.
+
+If Replit can preserve that restraint—allowing imagery to lead, copy to support, and generous whitespace to set the pace—the site will feel distinctive rather than resembling another premium skincare template.
