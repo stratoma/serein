@@ -2,6 +2,7 @@ import { useParams, Link } from "wouter";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
 import { getProductById } from "@/data/products";
+import { ProductCarousel, CarouselImage } from "@/components/product-carousel";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -25,6 +26,13 @@ export default function ProductDetail() {
     );
   }
 
+  const carouselImages: CarouselImage[] = [
+    product.cleanStill && { src: product.cleanStill, alt: `${product.name} — product still` },
+    { src: product.img, alt: `${product.name} — editorial still` },
+    product.scentCard && { src: product.scentCard, alt: `${product.name} — scent notes` },
+    product.ingredientsGraphic && { src: product.ingredientsGraphic, alt: `${product.name} — ingredients` },
+  ].filter(Boolean) as CarouselImage[];
+
   return (
     <main className="w-full bg-background overflow-hidden">
 
@@ -37,9 +45,9 @@ export default function ProductDetail() {
           className="absolute inset-0 will-change-transform"
         >
           <img
-            src={product.img}
+            src={product.cleanStill ?? product.img}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover [object-position:right_center]"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/50" />
         </motion.div>
@@ -94,19 +102,10 @@ export default function ProductDetail() {
         </div>
       </section>
 
-      {/* SCENT CARD — brand image */}
-      {product.scentCard && (
-        <section className="px-8 md:px-0">
-          <FadeIn direction="none">
-            <img
-              src={product.scentCard}
-              alt={`${product.name} — scent story`}
-              className="w-full h-auto"
-              loading="lazy"
-            />
-          </FadeIn>
-        </section>
-      )}
+      {/* PRODUCT IMAGE CAROUSEL */}
+      <FadeIn direction="none">
+        <ProductCarousel images={carouselImages} />
+      </FadeIn>
 
       {/* SCENT NOTES */}
       <section className="py-10 md:py-14 bg-primary text-primary-foreground overflow-hidden">
@@ -173,19 +172,6 @@ export default function ProductDetail() {
               </Link>
             </div>
           </FadeIn>
-
-          {product.ingredientsGraphic && (
-            <FadeIn direction="none" delay={0.1}>
-              <div className="mb-16">
-                <img
-                  src={product.ingredientsGraphic}
-                  alt={`${product.name} ingredients`}
-                  className="w-full h-auto"
-                  loading="lazy"
-                />
-              </div>
-            </FadeIn>
-          )}
 
           <div className="space-y-0">
             {product.ingredients.map((ingredient, i) => (

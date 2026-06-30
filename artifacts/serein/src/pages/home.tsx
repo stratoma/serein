@@ -121,7 +121,7 @@ export default function Home() {
                     <img
                       src={product.img}
                       alt={product.name}
-                      className="w-full aspect-[4/5] object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                      className="w-full aspect-[4/5] object-cover [object-position:right_center] transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                     />
                     <p className="absolute bottom-4 left-5 text-[10px] uppercase tracking-[0.2em] text-white/60 font-sans">
                       {product.caption}

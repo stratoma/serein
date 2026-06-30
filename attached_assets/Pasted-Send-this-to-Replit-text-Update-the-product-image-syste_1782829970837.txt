@@ -1,0 +1,73 @@
+Send this to Replit:
+
+```text
+Update the product image system across the SEREIN website.
+
+Current issue:
+The existing product images include text/descriptors baked into the image. These are being cropped during page transitions and movement. They should no longer be used as the primary product visuals in the website sections.
+
+New direction:
+Use the newly uploaded singular product still-life images as the primary product images for each scent.
+
+Primary product images:
+- Supple Oud: use the new still-life jar image with eggplant scent name on the label, no scent marker, no surrounding descriptor text.
+- Mint + Moss: use the new still-life jar image with moss/olive scent name on the label, no scent marker, no surrounding descriptor text.
+- Lithe Bloom: use the new still-life jar image with paprika/burnt orange scent name on the label, no scent marker, no surrounding descriptor text.
+
+Image behavior:
+- These primary images should be resized and cropped to support smooth website transitions.
+- Do not crop into the jar label.
+- Keep the full jar visible whenever possible.
+- Maintain enough negative space around the jar so the image can move subtly without cutting off important content.
+- Use object-fit: cover for hero/section backgrounds only if the jar remains fully visible.
+- For product cards and product page hero images, prefer object-fit: contain or object-position: center.
+- Avoid left-cropping, since previous copy and descriptor text were being cut off.
+- Use responsive image rules for desktop, tablet, and mobile.
+
+Suggested CSS behavior:
+.product-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  object-position: center;
+}
+
+.product-hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.editorial-section-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+For mobile:
+- Keep the jar centered.
+- Avoid dramatic crop/zoom effects.
+- Disable or reduce parallax/movement on product images if it causes cropping.
+- Product imagery should feel calm, clear, and stable.
+
+Carousel update:
+The existing product images that contain baked-in text/descriptors should not be deleted. Move them into the product page carousel as secondary images.
+
+Carousel order for each product page:
+1. New singular product still-life image, no text overlay
+2. Existing scent descriptor/editorial image with text
+3. Ingredient or scent note card if available
+4. Lifestyle/detail image if available
+
+Homepage/collection sections:
+Use only the new still-life product images as primary visuals.
+
+Product pages:
+Use the new still-life product image as the main hero/product image.
+Use the previous text-based scent image as a secondary carousel image.
+
+Goal:
+The website should feel smoother, more editorial, and more usable. Product images should support the motion and page transitions without cutting off text, labels, or important visual elements. The copy should live in the website layout, not inside the image.
+```
