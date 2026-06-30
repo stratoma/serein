@@ -10,7 +10,9 @@ export const products = [
     desc: "Saffron, amber, and oud — a grounding scent that stays with you.",
     notes: ["Saffron", "Amber", "Oud Wood", "Cashmere Woods & Tonka", "Sweet Amber Musk"],
     tagline: "Rich. Grounded. Timeless.",
-    img: `${BASE}images/product-oud.png`,
+    img: `${BASE}images/supple-oud-still.png`,
+    scentCard: `${BASE}images/supple-oud-scent-card.png`,
+    ingredientsGraphic: `${BASE}images/supple-oud-ingredients.png`,
     caption: "A grounding scent that stays with you.",
     story: [
       "Supple Oud was born in the quiet of an evening ritual — the kind of moment where everything slows and the air itself becomes warm.",
@@ -31,7 +33,9 @@ export const products = [
     desc: "Garden mint, green tea, and vetiver — a return to what grounds you.",
     notes: ["Garden Mint", "Green Tea", "Vetiver Blend", "Cedarwood", "Sweet Amber Musk"],
     tagline: "Fresh. Green. Spa-like.",
-    img: `${BASE}images/product-mint.png`,
+    img: `${BASE}images/mint-moss-still.png`,
+    scentCard: `${BASE}images/mint-moss-scent-card.png`,
+    ingredientsGraphic: `${BASE}images/mint-moss-scent-notes.png`,
     caption: "A scent that restores and rebalances.",
     story: [
       "Mint + Moss started as a morning formula. A way to feel restored before the day asked anything of you.",
@@ -52,7 +56,9 @@ export const products = [
     desc: "Orange blossom, bergamot, neroli, and sweet amber musk — a scent that opens you to what's next.",
     notes: ["Orange Blossom", "Bergamot", "Neroli", "Sweet Amber Musk"],
     tagline: "Bright. Clean. Sophisticated.",
-    img: `${BASE}images/product-bloom.png`,
+    img: `${BASE}images/lithe-bloom-still.png`,
+    scentCard: `${BASE}images/lithe-bloom-scent-notes.png`,
+    ingredientsGraphic: `${BASE}images/lithe-bloom-ingredients.png`,
     caption: "A scent that becomes you.",
     story: [
       "Lithe Bloom is a scent about possibility. Neroli and orange blossom — flowers that bloom once, briefly, and smell like nothing else on earth.",

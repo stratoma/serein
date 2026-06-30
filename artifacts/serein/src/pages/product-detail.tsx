@@ -94,6 +94,20 @@ export default function ProductDetail() {
         </div>
       </section>
 
+      {/* SCENT CARD — brand image */}
+      {product.scentCard && (
+        <section className="px-8 md:px-0">
+          <FadeIn direction="none">
+            <img
+              src={product.scentCard}
+              alt={`${product.name} — scent story`}
+              className="w-full object-cover max-h-[70vh] object-center"
+              loading="lazy"
+            />
+          </FadeIn>
+        </section>
+      )}
+
       {/* SCENT NOTES */}
       <section className="py-10 md:py-14 bg-primary text-primary-foreground overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 md:px-16">
@@ -173,6 +187,19 @@ export default function ProductDetail() {
               </Link>
             </div>
           </FadeIn>
+
+          {product.ingredientsGraphic && (
+            <FadeIn direction="none" delay={0.1}>
+              <div className="mb-16">
+                <img
+                  src={product.ingredientsGraphic}
+                  alt={`${product.name} ingredients`}
+                  className="w-full object-cover rounded-none"
+                  loading="lazy"
+                />
+              </div>
+            </FadeIn>
+          )}
 
           <div className="space-y-0">
             {product.ingredients.map((ingredient, i) => (

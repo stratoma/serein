@@ -111,6 +111,18 @@ export default function Home() {
         </div>
       </section>
 
+      {/* BRAND TRIPTYCH — Transform / Root / Become */}
+      <section className="relative overflow-hidden">
+        <FadeIn direction="none">
+          <img
+            src={`${BASE}images/brand-triptych.png`}
+            alt="SEREIN — Transform. Root. Become. Three rituals, one world."
+            className="w-full object-cover max-h-[85vh]"
+            loading="lazy"
+          />
+        </FadeIn>
+      </section>
+
       {/* COLLECTION */}
       <section id="collection" className="py-28 md:py-40 px-8 md:px-16">
         <div className="max-w-7xl mx-auto">
@@ -264,6 +276,18 @@ export default function Home() {
             </FadeIn>
           </div>
         </div>
+      </section>
+
+      {/* EDITORIAL — brand atmosphere */}
+      <section className="relative overflow-hidden">
+        <FadeIn direction="none">
+          <img
+            src={`${BASE}images/editorial-grid.png`}
+            alt="SEREIN — a study of warmth. Amber glass, natural light, botanicals, and skin."
+            className="w-full object-cover max-h-[90vh]"
+            loading="lazy"
+          />
+        </FadeIn>
       </section>
 
       {/* OUR STORY */}
