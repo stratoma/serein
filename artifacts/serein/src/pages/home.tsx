@@ -25,12 +25,12 @@ const journalArticles = [
 ];
 
 const ingredients = [
-  { name: "Shea Butter", note: "Rich and restorative. The foundation of every batch." },
-  { name: "Mango Butter", note: "Deeply nourishing. Melts into the skin like warmth." },
+  { name: "Shea Butter", note: "Warmth and memory. The foundation of every batch." },
+  { name: "Mango Butter", note: "Melts into skin. Stays long after." },
   { name: "Jojoba Oil", note: "Mirrors the skin's own composition. Balances without weight." },
-  { name: "Vitamin E", note: "Protects and repairs. Quietly essential." },
-  { name: "Arrowroot", note: "A light, powdery finish. Nothing unnecessary." },
-  { name: "Fragrance", note: "Thoughtfully blended. Each scent is its own story." },
+  { name: "Vitamin E", note: "Quiet protection. Asks nothing in return." },
+  { name: "Arrowroot", note: "A light finish. Nothing unnecessary." },
+  { name: "Fragrance", note: "Each scent begins with a feeling." },
 ];
 
 function ParallaxHero() {
@@ -82,7 +82,7 @@ export default function Home() {
       <section className="py-28 md:py-40 px-8 md:px-16 max-w-3xl mx-auto text-center">
         <FadeIn direction="none">
           <p className="font-serif italic text-2xl md:text-3xl lg:text-4xl text-primary leading-relaxed tracking-wide">
-            Small-batch body butters crafted for everyday ritual.
+            The quiet architecture of everyday ritual.
           </p>
         </FadeIn>
       </section>
@@ -92,7 +92,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-8 md:px-16">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-primary-foreground/10">
             {[
-              { word: "Transform.", sub: "Rich botanicals. Deep nourishment." },
+              { word: "Transform.", sub: "Rich botanicals. Skin that knows it has been tended to." },
               { word: "Root.", sub: "Grounded in nature. Made with intention." },
               { word: "Become.", sub: "Daily rituals. Lasting change." },
             ].map(({ word, sub }, i) => (

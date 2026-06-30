@@ -19,9 +19,9 @@ const ingredients = [
     id: "mango-butter",
     name: "Mango Butter",
     provenance: "South Asia — India & Sri Lanka",
-    note: "Tropical. Deeply nourishing.",
+    note: "Tropical. Quietly rich.",
     description:
-      "Extracted from the seed kernel of the mango fruit. Lush in oleic and stearic acids, it melts on contact with skin, leaving a velvety layer that holds moisture through even the longest days.",
+      "Drawn from the seed of the mango fruit. It melts on contact, leaving skin velvety and settled — as though it had been tended to for a long time.",
     image: `${BASE}images/journal-1.png`,
     imageCaption: "Sourced with care.",
   },
@@ -41,7 +41,7 @@ const ingredients = [
     provenance: "Cold-pressed from sunflower & wheat germ",
     note: "Time, slowed.",
     description:
-      "A fat-soluble antioxidant that neutralises free radicals before they can accelerate skin ageing. We use tocopherol — the most bioavailable form — at a concentration that protects and repairs in equal measure.",
+      "Quiet in its work. It protects what the skin already has — working before anything notices the day has begun. The kind of ingredient that asks nothing, and gives generously.",
     image: `${BASE}images/journal-3.png`,
     imageCaption: "Quiet protection.",
   },
