@@ -16,11 +16,11 @@ export function NavBar() {
   }, []);
 
   const navLinks = [
-    { name: "Collection", href: "#collection" },
-    { name: "Ingredients", href: "#ingredients" },
-    { name: "The Morrow Trio", href: "#morrow-trio" },
-    { name: "Markets", href: "#markets" },
-    { name: "About", href: "#story" },
+    { name: "Collection", href: "#collection", isAnchor: true },
+    { name: "Ingredients", href: "/ingredients", isAnchor: false },
+    { name: "The Morrow Trio", href: "#morrow-trio", isAnchor: true },
+    { name: "Markets", href: "#markets", isAnchor: true },
+    { name: "About", href: "#story", isAnchor: true },
   ];
 
   return (
@@ -38,15 +38,25 @@ export function NavBar() {
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-10">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300 font-sans"
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            link.isAnchor ? (
+              <a
+                key={link.name}
+                href={link.href}
+                className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300 font-sans"
+              >
+                {link.name}
+              </a>
+            ) : (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300 font-sans"
+              >
+                {link.name}
+              </Link>
+            )
+          )}
           <button className="flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300">
             <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span>Cart</span>
@@ -77,19 +87,36 @@ export function NavBar() {
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="absolute top-0 left-0 w-full h-screen bg-background pt-28 px-8 flex flex-col space-y-10"
           >
-            {navLinks.map((link, i) => (
-              <motion.a
-                key={link.name}
-                href={link.href}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.07 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-4xl font-serif text-primary leading-none"
-              >
-                {link.name}
-              </motion.a>
-            ))}
+            {navLinks.map((link, i) =>
+              link.isAnchor ? (
+                <motion.a
+                  key={link.name}
+                  href={link.href}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-4xl font-serif text-primary leading-none"
+                >
+                  {link.name}
+                </motion.a>
+              ) : (
+                <motion.div
+                  key={link.name}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <Link
+                    href={link.href}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="text-4xl font-serif text-primary leading-none"
+                  >
+                    {link.name}
+                  </Link>
+                </motion.div>
+              )
+            )}
           </motion.div>
         )}
       </AnimatePresence>

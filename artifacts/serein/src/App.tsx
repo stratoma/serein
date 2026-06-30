@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { NavBar } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import Home from "@/pages/home";
+import Ingredients from "@/pages/ingredients";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -16,6 +17,7 @@ function Router() {
       <div className="flex-grow">
         <Switch>
           <Route path="/" component={Home} />
+          <Route path="/ingredients" component={Ingredients} />
           <Route component={NotFound} />
         </Switch>
       </div>
