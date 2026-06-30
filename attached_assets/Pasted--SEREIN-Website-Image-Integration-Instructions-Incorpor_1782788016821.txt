@@ -1,0 +1,212 @@
+# SEREIN Website Image Integration Instructions
+
+Incorporate all uploaded SEREIN imagery into the website with a refined editorial structure.
+
+The visual world should follow the SEREIN brand philosophy:
+
+SEREIN is the study of warmth.
+Through skin, light, texture, and ritual, we reveal the quiet richness that already exists.
+
+The site should feel like luxury for living, not luxury for display. Use imagery to create warmth, rhythm, intimacy, and evocative texture.
+
+## Image Types to Integrate
+
+I will upload:
+
+- Scent cards
+- Ingredient graphics
+- Scent note graphics
+- Editorial imagery with text
+- Product stills
+- Lifestyle and ritual imagery
+- Website hero or campaign graphics
+
+Use these assets throughout the website as designed brand elements, not random decorations.
+
+## Creative Direction
+
+The imagery should feel:
+
+- Warm
+- Editorial
+- Spacious
+- Grounded
+- Cinematic
+- Tactile
+- Ritual-led
+- Quietly luxurious
+
+Prioritize amber light, natural shadow, textured materials, Black skin in luminous light, stone, linen, ceramics, botanicals, amber glass, wood, and earth tones.
+
+Do not over-brighten or flatten images. Preserve warmth, shadow, grain, and dimension.
+
+## Homepage Integration
+
+Use the strongest editorial hero image at the top of the homepage.
+
+Hero requirements:
+
+- Full-width or cinematic split layout
+- Text overlay only when readable
+- Clear call-to-action
+- Mobile crop must preserve the product, face, or core focal point
+- Maintain generous spacing
+- Avoid clutter
+
+Below the hero, create visual rhythm using:
+
+- Scent cards as featured collection tiles
+- Ingredient graphics as educational sections
+- Editorial text imagery as atmospheric brand storytelling
+- Product stills for shop sections
+- Lifestyle imagery for ritual and brand philosophy sections
+
+The homepage should feel like a guided editorial experience, not a standard product grid.
+
+## Product Pages
+
+For each product page, integrate:
+
+1. Product still
+2. Scent card
+3. Ingredient graphic
+4. Scent notes graphic
+5. Editorial/lifestyle image
+6. Ritual image where available
+
+Suggested section flow:
+
+- Product hero
+- Scent story
+- Texture and ritual
+- Key ingredients
+- Scent notes
+- How to use
+- Related products
+
+Use uploaded scent cards and ingredient graphics as premium visual education assets.
+
+## Collections Page
+
+Use editorial imagery to introduce each scent world:
+
+- Transform
+- Root
+- Become
+
+Each scent should feel like its own atmosphere while remaining part of the SEREIN system.
+
+Use image-led cards with restrained copy and clear shop links.
+
+## Image Handling
+
+Optimize all uploaded images for web performance.
+
+Create responsive versions for:
+
+- Desktop
+- Tablet
+- Mobile
+
+Use lazy loading below the fold.
+
+Use descriptive alt text that reflects the image and brand language.
+
+Example alt text:
+
+“Amber glass jar of SEREIN body butter on warm stone with botanical shadows.”
+
+Do not use generic alt text like “image” or “product photo.”
+
+## Layout Guidance
+
+Use generous white space.
+
+Let images breathe.
+
+Avoid overcrowded sections.
+
+Mix full-bleed imagery with quiet framed image blocks.
+
+Use asymmetry where appropriate so the site feels composed, not overly staged.
+
+The visual rhythm should feel like:
+
+light
+texture
+ritual
+product
+pause
+story
+product
+
+## Brand Copy Alignment
+
+When placing or revising copy around imagery, preserve this voice:
+
+Quiet.
+Warm.
+Refined.
+Sensory.
+Grounded.
+Intentional.
+
+Use phrases such as:
+
+- Luxury for living
+- Evocative texture
+- The study of warmth
+- Daily ritual
+- Quiet richness
+- Rooted in nature
+- Made with intention
+- Skin, light, texture, and ritual
+
+Avoid generic beauty language such as:
+
+- Premium
+- High-end
+- Must-have
+- Pamper yourself
+- Game changer
+- Obsessed
+- Ultimate luxury
+- Transform your life
+
+## Editorial Imagery With Text
+
+If an uploaded image already contains text, do not duplicate the same text directly beside it.
+
+Place those images in moments where they can stand alone.
+
+Ensure text within images remains readable on desktop and mobile.
+
+If readability is poor on mobile, use a different crop or display the image in a contained format rather than full-bleed.
+
+## Mobile Requirements
+
+Mobile experience must feel intentional, not like a compressed desktop page.
+
+For mobile:
+
+- Crop images carefully
+- Preserve faces, hands, products, and text
+- Stack sections with breathing room
+- Avoid tiny text inside images where possible
+- Use contained cards for text-heavy graphics
+- Keep CTAs visible and calm
+
+## Final Review Checklist
+
+Before finalizing, review the site and confirm:
+
+- The imagery feels cohesive
+- The site feels warm, not sterile
+- The product feels integrated into daily ritual
+- Scent cards and ingredient graphics are easy to understand
+- Editorial images create emotional depth
+- Mobile crops are beautiful and readable
+- The website feels like luxury for living
+- The overall experience reveals quiet richness rather than announcing luxury
+
+The final website should feel like entering the kindest room in a beautiful home.
