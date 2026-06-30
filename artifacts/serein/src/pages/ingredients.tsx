@@ -117,6 +117,12 @@ export default function Ingredients() {
       history.pushState(null, "", window.location.pathname + window.location.search);
     }
     setOpenId(next);
+    if (next) {
+      requestAnimationFrame(() => {
+        const el = document.getElementById(next);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
   }
 
   return (
@@ -153,7 +159,7 @@ export default function Ingredients() {
 
           return (
             <FadeIn key={item.id} direction="none" delay={i * 0.07}>
-              <div id={item.id} className="border-b border-foreground/10">
+              <div id={item.id} className="border-b border-foreground/10 scroll-mt-20">
 
                 {/* ROW — always visible */}
                 <button
@@ -193,17 +199,18 @@ export default function Ingredients() {
                   {isOpen && (
                     <motion.div
                       key="panel"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
                       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
+                      style={{ willChange: "height" }}
                     >
                       <motion.div
-                        initial={{ opacity: 0, y: 12 }}
+                        initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 8 }}
-                        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                        exit={{ opacity: 0, y: 6 }}
+                        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
                         className="pb-16 pt-4 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start"
                       >
                         {/* TEXT SIDE */}
