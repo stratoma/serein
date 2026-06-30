@@ -8,6 +8,7 @@ const productList = [
   { id: "supple-oud", name: "Supple Oud" },
   { id: "mint-moss", name: "Mint + Moss" },
   { id: "lithe-bloom", name: "Lithe Bloom" },
+  { id: "morrow-trio", name: "Morrow Trio" },
 ];
 
 const ingredientProducts: Record<string, typeof productList> = {
