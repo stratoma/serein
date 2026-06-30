@@ -101,7 +101,7 @@ export default function ProductDetail() {
             <img
               src={product.scentCard}
               alt={`${product.name} — scent story`}
-              className="w-full object-cover max-h-[70vh] object-center"
+              className="w-full h-auto"
               loading="lazy"
             />
           </FadeIn>
@@ -130,39 +130,25 @@ export default function ProductDetail() {
 
       {/* HOW IT FEELS */}
       <section className="py-28 md:py-40 px-8 md:px-16">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-20 md:gap-32 items-center">
-          <FadeIn direction="none" className="w-full md:w-1/2">
-            <div className="aspect-[3/4] overflow-hidden">
-              <img
-                src={product.lifestyle}
-                alt={`${product.name} lifestyle`}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-foreground/35 font-sans">
-              {product.lifestyleCaption}
+        <div className="max-w-4xl mx-auto flex flex-col gap-12">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-4">
+              Texture &amp; Feel
+            </span>
+            <p className="font-serif italic text-foreground/70 text-2xl md:text-3xl lg:text-4xl leading-relaxed">
+              {product.feelNote}
             </p>
           </FadeIn>
-          <div className="w-full md:w-1/2 flex flex-col gap-10">
-            <FadeIn direction="none" delay={0.1}>
-              <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-4">
-                Texture &amp; Feel
+          <FadeIn direction="none" delay={0.2}>
+            <div className="border-t border-foreground/10 pt-8 flex flex-col md:flex-row md:gap-24 gap-6">
+              <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans shrink-0 md:pt-1">
+                How to Use
               </span>
-              <p className="font-serif italic text-foreground/70 text-xl md:text-2xl lg:text-3xl leading-relaxed">
-                {product.feelNote}
+              <p className="text-foreground/55 text-base leading-loose max-w-[44ch]">
+                {product.howToUse}
               </p>
-            </FadeIn>
-            <FadeIn direction="none" delay={0.25}>
-              <div className="border-t border-foreground/10 pt-8">
-                <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans block mb-4">
-                  How to Use
-                </span>
-                <p className="text-foreground/50 text-sm leading-loose max-w-[38ch]">
-                  {product.howToUse}
-                </p>
-              </div>
-            </FadeIn>
-          </div>
+            </div>
+          </FadeIn>
         </div>
       </section>
 
@@ -194,7 +180,7 @@ export default function ProductDetail() {
                 <img
                   src={product.ingredientsGraphic}
                   alt={`${product.name} ingredients`}
-                  className="w-full object-cover rounded-none"
+                  className="w-full h-auto"
                   loading="lazy"
                 />
               </div>
@@ -216,21 +202,6 @@ export default function ProductDetail() {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* FULL-BLEED PHOTOGRAPHY */}
-      <section className="relative h-[70vh] overflow-hidden">
-        <img
-          src={`${BASE}images/hero.png`}
-          alt="SEREIN body butter in natural light"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/20" />
-        <FadeIn direction="none" className="absolute inset-0 flex items-center justify-center">
-          <p className="font-serif italic text-[#F3EBDD]/80 text-2xl md:text-4xl lg:text-5xl text-center px-8 max-w-2xl leading-relaxed">
-            Small-batch. Blended by hand.
-          </p>
-        </FadeIn>
       </section>
 
       {/* PURCHASE */}

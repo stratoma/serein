@@ -211,49 +211,34 @@ export default function Ingredients() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 6 }}
                         transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
-                        className="pb-16 pt-4 grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start"
+                        className="pb-16 pt-4 max-w-2xl flex flex-col gap-6"
                       >
-                        {/* TEXT SIDE */}
-                        <div className="flex flex-col gap-6">
-                          <p className="font-serif italic text-foreground/60 text-xl md:text-2xl leading-relaxed">
-                            {item.description}
-                          </p>
-                          <p className="text-[9px] uppercase tracking-[0.3em] text-foreground/30 font-sans mt-2">
-                            {item.provenance}
-                          </p>
-                          {ingredientProducts[item.id] && (
-                            <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-4 border-t border-foreground/10">
-                              <span className="text-[9px] uppercase tracking-[0.3em] text-foreground/30 font-sans shrink-0">
-                                Find it in:
+                        <p className="font-serif italic text-foreground/60 text-xl md:text-2xl leading-relaxed">
+                          {item.description}
+                        </p>
+                        <p className="text-[9px] uppercase tracking-[0.3em] text-foreground/30 font-sans">
+                          {item.provenance}
+                        </p>
+                        {ingredientProducts[item.id] && (
+                          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 pt-4 border-t border-foreground/10">
+                            <span className="text-[9px] uppercase tracking-[0.3em] text-foreground/30 font-sans shrink-0">
+                              Find it in:
+                            </span>
+                            {ingredientProducts[item.id].map((product, idx, arr) => (
+                              <span key={product.id} className="inline-flex items-baseline gap-x-2">
+                                <a
+                                  href={`${BASE}#${product.id}`}
+                                  className="font-sans text-[9px] uppercase tracking-[0.2em] text-primary border-b border-primary/30 pb-px hover:border-primary transition-colors duration-300"
+                                >
+                                  {product.name}
+                                </a>
+                                {idx < arr.length - 1 && (
+                                  <span className="text-foreground/20 font-sans text-[9px]">·</span>
+                                )}
                               </span>
-                              {ingredientProducts[item.id].map((product, idx, arr) => (
-                                <span key={product.id} className="inline-flex items-baseline gap-x-2">
-                                  <a
-                                    href={`${BASE}#${product.id}`}
-                                    className="font-sans text-[9px] uppercase tracking-[0.2em] text-primary border-b border-primary/30 pb-px hover:border-primary transition-colors duration-300"
-                                  >
-                                    {product.name}
-                                  </a>
-                                  {idx < arr.length - 1 && (
-                                    <span className="text-foreground/20 font-sans text-[9px]">·</span>
-                                  )}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-
-                        {/* IMAGE SIDE */}
-                        <div className="overflow-hidden">
-                          <img
-                            src={item.image}
-                            alt={item.name}
-                            className="w-full aspect-[4/3] object-cover"
-                          />
-                          <p className="mt-3 text-[9px] uppercase tracking-[0.2em] text-foreground/30 font-sans">
-                            {item.imageCaption}
-                          </p>
-                        </div>
+                            ))}
+                          </div>
+                        )}
                       </motion.div>
                     </motion.div>
                   )}

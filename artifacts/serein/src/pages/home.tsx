@@ -6,23 +6,6 @@ import { products } from "@/data/products";
 
 const BASE = import.meta.env.BASE_URL;
 
-const journalArticles = [
-  {
-    title: "Morning Mist",
-    img: `${BASE}images/journal-1.png`,
-    caption: "Thoughtfully sourced.",
-  },
-  {
-    title: "The Weight of Linen",
-    img: `${BASE}images/journal-2.png`,
-    caption: "Light through linen.",
-  },
-  {
-    title: "Why Amber Glass",
-    img: `${BASE}images/journal-3.png`,
-    caption: "Quiet mornings.",
-  },
-];
 
 const ingredients = [
   { name: "Shea Butter", note: "Rich in fatty acids and vitamins A and E — deeply softens and supports the skin barrier. The foundation of every batch." },
@@ -114,18 +97,6 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
-
-      {/* BRAND TRIPTYCH — Transform / Root / Become */}
-      <section className="relative overflow-hidden">
-        <FadeIn direction="none">
-          <img
-            src={`${BASE}images/brand-triptych.png`}
-            alt="SEREIN — Transform. Root. Become. Three rituals, one world."
-            className="w-full object-cover max-h-[85vh]"
-            loading="lazy"
-          />
-        </FadeIn>
       </section>
 
       {/* COLLECTION */}
@@ -284,12 +255,12 @@ export default function Home() {
       </section>
 
       {/* EDITORIAL — brand atmosphere */}
-      <section className="relative overflow-hidden">
+      <section className="overflow-hidden">
         <FadeIn direction="none">
           <img
             src={`${BASE}images/editorial-grid.png`}
             alt="SEREIN — a study of warmth. Amber glass, natural light, botanicals, and skin."
-            className="w-full object-cover max-h-[90vh]"
+            className="w-full h-auto"
             loading="lazy"
           />
         </FadeIn>
@@ -397,41 +368,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* JOURNAL */}
-      <section id="journal" className="py-28 md:py-40 bg-[#e9dfd0] px-8 md:px-16">
-        <div className="max-w-7xl mx-auto">
-          <FadeIn direction="none">
-            <div className="mb-20 flex items-end justify-between">
-              <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-serif text-primary leading-none">
-                Journal.
-              </h2>
-              <a href="#journal" className="hidden md:block text-[10px] uppercase tracking-[0.25em] text-foreground/40 border-b border-foreground/20 pb-1 hover:text-primary hover:border-primary transition-all duration-300 font-sans">
-                Read All
-              </a>
-            </div>
-          </FadeIn>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-            {journalArticles.map((article, i) => (
-              <FadeIn key={article.title} direction="none" delay={i * 0.15}>
-                <div className="group cursor-pointer">
-                  <div className="overflow-hidden mb-5">
-                    <img
-                      src={article.img}
-                      alt={article.title}
-                      className="w-full aspect-[3/4] object-cover transition-all duration-[1200ms] ease-out group-hover:brightness-95 group-hover:scale-[1.02]"
-                    />
-                  </div>
-                  <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/40 font-sans mb-3">
-                    {article.caption}
-                  </p>
-                  <h3 className="font-serif text-xl text-primary">{article.title}</h3>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
 
     </main>
   );
