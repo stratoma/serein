@@ -119,9 +119,9 @@ export default function Home() {
                 <div id={product.id} className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-10 md:gap-20 items-center`}>
                   <div className="w-full md:w-[58%] relative overflow-hidden group">
                     <img
-                      src={product.img}
+                      src={product.cleanStill ?? product.img}
                       alt={product.name}
-                      className="w-full aspect-[4/5] object-cover [object-position:right_center] transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                      className="w-full aspect-[4/5] object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                     />
                     <p className="absolute bottom-4 left-5 text-[10px] uppercase tracking-[0.2em] text-white/60 font-sans">
                       {product.caption}
