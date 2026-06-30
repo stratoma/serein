@@ -1,6 +1,6 @@
 kind = "web"
 previewPath = "/serein/"
-title = "SEREIN Body Butter"
+title = "SEREIN Skin"
 version = "1.0.0"
 id = "artifacts/serein"
 router = "path"
