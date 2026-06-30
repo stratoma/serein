@@ -25,12 +25,12 @@ const journalArticles = [
 ];
 
 const ingredients = [
-  { name: "Shea Butter", note: "Warmth and memory. The foundation of every batch." },
-  { name: "Mango Butter", note: "Melts into skin. Stays long after." },
-  { name: "Jojoba Oil", note: "Mirrors the skin's own composition. Balances without weight." },
-  { name: "Vitamin E", note: "Quiet protection. Asks nothing in return." },
-  { name: "Arrowroot", note: "A light finish. Nothing unnecessary." },
-  { name: "Fragrance", note: "Each scent begins with a feeling." },
+  { name: "Shea Butter", note: "Rich in fatty acids and vitamins A and E — deeply softens and supports the skin barrier. The foundation of every batch." },
+  { name: "Mango Butter", note: "Rich in oleic and stearic fatty acids, it nourishes and restores resilience. Melts into skin like it was always there." },
+  { name: "Jojoba Oil", note: "Structurally identical to the skin's own sebum — absorbs without residue, balances without stripping." },
+  { name: "Vitamin E", note: "A powerful antioxidant that shields the skin from environmental stress and supports moisture retention. Quiet in its work." },
+  { name: "Arrowroot", note: "Absorbs excess moisture and softens skin texture, giving every formula a dry-touch finish that feels effortless." },
+  { name: "Fragrance", note: "Meets rigorous safety standards. Chosen to evoke, never to overwhelm." },
 ];
 
 function ParallaxHero() {
@@ -83,6 +83,11 @@ export default function Home() {
         <FadeIn direction="none">
           <p className="font-serif italic text-2xl md:text-3xl lg:text-4xl text-primary leading-relaxed tracking-wide">
             The quiet architecture of everyday ritual.
+          </p>
+        </FadeIn>
+        <FadeIn direction="none" delay={0.2}>
+          <p className="mt-8 text-foreground/50 text-base leading-loose max-w-[42ch] mx-auto font-sans">
+            Small-batch body butters made with rich botanical butters that deeply nourish and soften the skin — crafted for the rituals that anchor your day.
           </p>
         </FadeIn>
       </section>

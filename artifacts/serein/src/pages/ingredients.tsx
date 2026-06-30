@@ -36,7 +36,7 @@ const ingredients = [
     provenance: "South Asia — India & Sri Lanka",
     note: "Tropical. Quietly rich.",
     description:
-      "Drawn from the seed of the mango fruit. It melts on contact, leaving skin velvety and settled — as though it had been tended to for a long time.",
+      "Rich in oleic and stearic fatty acids, mango butter deeply nourishes the skin while restoring softness and resilience. Drawn from the seed of the mango fruit, it melts on contact, leaving skin velvety, comforted, and beautifully cared for.",
     image: `${BASE}images/journal-1.png`,
     imageCaption: "Sourced with care.",
   },
@@ -56,7 +56,7 @@ const ingredients = [
     provenance: "Cold-pressed from sunflower & wheat germ",
     note: "Time, slowed.",
     description:
-      "Quiet in its work. It protects what the skin already has — working before anything notices the day has begun. The kind of ingredient that asks nothing, and gives generously.",
+      "A powerful antioxidant that helps protect the skin from environmental stress while supporting the skin's moisture barrier. Quiet in its work, it preserves what the skin already holds.",
     image: `${BASE}images/journal-3.png`,
     imageCaption: "Quiet protection.",
   },
