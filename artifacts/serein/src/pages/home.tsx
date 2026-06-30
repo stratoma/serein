@@ -1,47 +1,10 @@
 import { FadeIn } from "@/components/ui/fade-in";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { Link } from "wouter";
+import { products } from "@/data/products";
 
 const BASE = import.meta.env.BASE_URL;
-
-const products = [
-  {
-    id: "supple-oud",
-    name: "Supple Oud",
-    price: "$22",
-    pillar: "Transform.",
-    scent: "Smoke. Wood. Depth.",
-    desc: "Saffron, amber, and oud — a grounding scent that stays with you.",
-    notes: ["Saffron", "Amber", "Oud Wood", "Cashmere Woods & Tonka", "Sweet Amber Musk"],
-    tagline: "Rich. Grounded. Timeless.",
-    img: `${BASE}images/product-oud.png`,
-    caption: "A grounding scent that stays with you.",
-  },
-  {
-    id: "mint-moss",
-    name: "Mint + Moss",
-    price: "$22",
-    pillar: "Root.",
-    scent: "Fresh mint. Earth. Green renewal.",
-    desc: "Garden mint, green tea, and vetiver — a return to what grounds you.",
-    notes: ["Garden Mint", "Green Tea", "Vetiver Blend", "Cedarwood", "Sweet Amber Musk"],
-    tagline: "Fresh. Green. Spa-like.",
-    img: `${BASE}images/product-mint.png`,
-    caption: "A scent that restores and rebalances.",
-  },
-  {
-    id: "lithe-bloom",
-    name: "Lithe Bloom",
-    price: "$22",
-    pillar: "Become.",
-    scent: "Soft florals. Warm citrus. Light.",
-    desc: "Orange blossom, bergamot, neroli, and sweet amber musk — a scent that opens you to what's next.",
-    notes: ["Orange Blossom", "Bergamot", "Neroli", "Sweet Amber Musk"],
-    tagline: "Bright. Clean. Sophisticated.",
-    img: `${BASE}images/product-bloom.png`,
-    caption: "A scent that becomes you.",
-  },
-];
 
 const journalArticles = [
   {
@@ -195,9 +158,12 @@ export default function Home() {
                     <FadeIn direction="none" delay={0.4}>
                       <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
                         <span className="text-foreground/40 text-sm font-sans">{product.price}</span>
-                        <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                        <Link
+                          href={`/collection/${product.id}`}
+                          className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans"
+                        >
                           Choose This Scent
-                        </button>
+                        </Link>
                       </div>
                     </FadeIn>
                   </div>
@@ -241,9 +207,12 @@ export default function Home() {
               <FadeIn direction="none" delay={0.45}>
                 <div className="flex items-center justify-between pt-6 border-t border-foreground/10 max-w-xs">
                   <span className="text-foreground/40 text-sm font-sans">$11</span>
-                  <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                  <Link
+                    href="/collection/morrow-trio"
+                    className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans"
+                  >
                     Bring It Home
-                  </button>
+                  </Link>
                 </div>
               </FadeIn>
             </div>

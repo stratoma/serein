@@ -6,6 +6,8 @@ import { NavBar } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import Home from "@/pages/home";
 import Ingredients from "@/pages/ingredients";
+import ProductDetail from "@/pages/product-detail";
+import MorrowTrio from "@/pages/morrow-trio";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient();
@@ -18,6 +20,8 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/ingredients" component={Ingredients} />
+          <Route path="/collection/morrow-trio" component={MorrowTrio} />
+          <Route path="/collection/:slug" component={ProductDetail} />
           <Route component={NotFound} />
         </Switch>
       </div>

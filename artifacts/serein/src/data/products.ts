@@ -1,0 +1,71 @@
+const BASE = import.meta.env.BASE_URL;
+
+export const products = [
+  {
+    id: "supple-oud",
+    name: "Supple Oud",
+    price: "$22",
+    pillar: "Transform.",
+    scent: "Smoke. Wood. Depth.",
+    desc: "Saffron, amber, and oud — a grounding scent that stays with you.",
+    notes: ["Saffron", "Amber", "Oud Wood", "Cashmere Woods & Tonka", "Sweet Amber Musk"],
+    tagline: "Rich. Grounded. Timeless.",
+    img: `${BASE}images/product-oud.png`,
+    caption: "A grounding scent that stays with you.",
+    story: [
+      "Supple Oud was born in the quiet of an evening ritual — the kind of moment where everything slows and the air itself becomes warm.",
+      "We drew from the ancient tradition of oud, used for centuries across the Middle East and West Africa to mark moments of significance. This isn't imitation. It's reverence.",
+    ],
+    feelNote: "Sinks in slowly. Leaves a warmth that stays through the night. Rich without weight — the skin drinks it rather than wears it.",
+    howToUse: "Apply to warm skin after a shower, when pores are open and willing. Let it sit. Don't rush it.",
+    lifestyle: `${BASE}images/story.png`,
+    lifestyleCaption: "An evening ritual. Unhurried.",
+    ingredients: ["Shea Butter", "Mango Butter", "Jojoba Oil", "Vitamin E", "Arrowroot", "Saffron & Oud Fragrance Blend"],
+  },
+  {
+    id: "mint-moss",
+    name: "Mint + Moss",
+    price: "$22",
+    pillar: "Root.",
+    scent: "Fresh mint. Earth. Green renewal.",
+    desc: "Garden mint, green tea, and vetiver — a return to what grounds you.",
+    notes: ["Garden Mint", "Green Tea", "Vetiver Blend", "Cedarwood", "Sweet Amber Musk"],
+    tagline: "Fresh. Green. Spa-like.",
+    img: `${BASE}images/product-mint.png`,
+    caption: "A scent that restores and rebalances.",
+    story: [
+      "Mint + Moss started as a morning formula. A way to feel restored before the day asked anything of you.",
+      "The mint is immediate — a clean, garden freshness. The vetiver and cedarwood come slowly, pulling you back to earth before you float away. It is, in every sense, a return.",
+    ],
+    feelNote: "Light on application, absorbed quickly. Leaves a cool, dry finish that feels alive without feeling heavy.",
+    howToUse: "Best in the morning. Apply to pulse points — wrists, the back of the knee — and let the cool top notes settle your nervous system before you step out.",
+    lifestyle: `${BASE}images/journal-1.png`,
+    lifestyleCaption: "Morning light. A quiet start.",
+    ingredients: ["Shea Butter", "Mango Butter", "Jojoba Oil", "Vitamin E", "Arrowroot", "Garden Mint & Vetiver Fragrance Blend"],
+  },
+  {
+    id: "lithe-bloom",
+    name: "Lithe Bloom",
+    price: "$22",
+    pillar: "Become.",
+    scent: "Soft florals. Warm citrus. Light.",
+    desc: "Orange blossom, bergamot, neroli, and sweet amber musk — a scent that opens you to what's next.",
+    notes: ["Orange Blossom", "Bergamot", "Neroli", "Sweet Amber Musk"],
+    tagline: "Bright. Clean. Sophisticated.",
+    img: `${BASE}images/product-bloom.png`,
+    caption: "A scent that becomes you.",
+    story: [
+      "Lithe Bloom is a scent about possibility. Neroli and orange blossom — flowers that bloom once, briefly, and smell like nothing else on earth.",
+      "The bergamot keeps it from becoming too sweet. The amber musk keeps it from disappearing. Together, they create something that feels both effortless and intentional.",
+    ],
+    feelNote: "The lightest of the three. Disappears into skin like it was always there. Wears invisibly — you sense it more than feel it.",
+    howToUse: "Layer freely. This one is designed to be worn close — on the décolletage, the inner arms, the neck. Let it speak softly.",
+    lifestyle: `${BASE}images/journal-2.png`,
+    lifestyleCaption: "Quiet light. Something opening.",
+    ingredients: ["Shea Butter", "Mango Butter", "Jojoba Oil", "Vitamin E", "Arrowroot", "Orange Blossom & Neroli Fragrance Blend"],
+  },
+];
+
+export function getProductById(id: string) {
+  return products.find((p) => p.id === id) ?? null;
+}
