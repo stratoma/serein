@@ -25,7 +25,7 @@ function ParallaxHero() {
     <section ref={ref} className="relative h-[100dvh] overflow-hidden flex items-end">
       <motion.div style={{ y }} className="absolute inset-0 will-change-transform">
         <img
-          src={`${BASE}images/hero.png`}
+          src={`${BASE}images/hero-tonal.png`}
           alt="Warm architectural earthy tones with linen"
           className="w-full h-full object-cover"
         />
