@@ -269,18 +269,6 @@ export default function Home() {
       {/* OUR STORY */}
       <section id="story" className="py-28 md:py-40 bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-8 md:px-16 flex flex-col md:flex-row items-center gap-16 md:gap-28">
-          <FadeIn direction="none" className="w-full md:w-1/2">
-            <div className="aspect-[3/4] overflow-hidden">
-              <img
-                src={`${BASE}images/story.png`}
-                alt="Hands holding an amber jar in natural light"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-primary-foreground/30 font-sans">
-              Made by hand. Always.
-            </p>
-          </FadeIn>
           <div className="w-full md:w-1/2 flex flex-col gap-8">
             <FadeIn direction="none" delay={0.1}>
               <span className="text-[10px] uppercase tracking-[0.25em] text-primary-foreground/30 font-sans">
