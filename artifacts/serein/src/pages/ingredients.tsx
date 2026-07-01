@@ -299,9 +299,6 @@ export default function Ingredients() {
                   className="w-full h-auto"
                   loading="lazy"
                 />
-                <p className="absolute bottom-3 left-4 text-[9px] uppercase tracking-[0.2em] text-foreground/50 font-sans">
-                  {card.label}
-                </p>
               </div>
             </FadeIn>
           ))}
