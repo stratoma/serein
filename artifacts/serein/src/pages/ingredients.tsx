@@ -14,10 +14,12 @@ const productList = [
 const ingredientProducts: Record<string, typeof productList> = {
   "shea-butter": productList,
   "mango-butter": productList,
+  "argan-oil": productList,
+  "grapeseed-oil": productList,
+  "sweet-almond-oil": productList,
   "jojoba-oil": productList,
   "vitamin-e": productList,
   "arrowroot": productList,
-  "fragrance": productList,
 };
 
 const ingredients = [
@@ -28,8 +30,6 @@ const ingredients = [
     note: "Centuries of skin memory.",
     description:
       "Pressed from the nut of the karité tree, raw shea has been used across West Africa for generations. Its fatty-acid richness forms a breathable seal on the skin — softening without suffocating.",
-    image: `${BASE}images/ingredients.png`,
-    imageCaption: "Shea. In its natural state.",
   },
   {
     id: "mango-butter",
@@ -38,8 +38,30 @@ const ingredients = [
     note: "Tropical. Quietly rich.",
     description:
       "Rich in oleic and stearic fatty acids, mango butter deeply nourishes the skin while restoring softness and resilience. Drawn from the seed of the mango fruit, it melts on contact, leaving skin velvety, comforted, and beautifully cared for.",
-    image: `${BASE}images/journal-1.png`,
-    imageCaption: "Sourced with care.",
+  },
+  {
+    id: "argan-oil",
+    name: "Argan Oil",
+    provenance: "Morocco — Souss Valley",
+    note: "Liquid gold. Earned slowly.",
+    description:
+      "Cold-pressed from the kernels of the argan tree, this oil is prized for its exceptional concentration of vitamin E, essential fatty acids, and antioxidants. It absorbs quickly, leaves no greasy residue, and gives the skin a quiet luminosity that feels like it came from within.",
+  },
+  {
+    id: "grapeseed-oil",
+    name: "Grapeseed Oil",
+    provenance: "France & Italy — wine-country press houses",
+    note: "Light. Protective. Efficient.",
+    description:
+      "A byproduct of winemaking, grapeseed oil is one of the lightest carriers we use. Rich in linoleic acid and proanthocyanidins, it helps reinforce the skin barrier without adding weight. Ideal for layering — it disappears into skin and makes room for what follows.",
+  },
+  {
+    id: "sweet-almond-oil",
+    name: "Sweet Almond Oil",
+    provenance: "Mediterranean — Spain & Morocco",
+    note: "Ancient. Nourishing. Gentle.",
+    description:
+      "One of the oldest cosmetic oils in recorded use. Pressed from the kernels of the Prunus dulcis tree, sweet almond oil is rich in oleic acid and vitamin A. It softens, soothes, and leaves skin feeling fed — not coated.",
   },
   {
     id: "jojoba-oil",
@@ -48,8 +70,6 @@ const ingredients = [
     note: "Mirrors the skin's own oils.",
     description:
       "Technically a liquid wax, jojoba is structurally identical to the sebum your skin already makes. It absorbs without residue, balances without stripping, and keeps working long after it disappears.",
-    image: `${BASE}images/journal-2.png`,
-    imageCaption: "Light. Purposeful.",
   },
   {
     id: "vitamin-e",
@@ -58,8 +78,6 @@ const ingredients = [
     note: "Time, slowed.",
     description:
       "A powerful antioxidant that helps protect the skin from environmental stress while supporting the skin's moisture barrier. Quiet in its work, it preserves what the skin already holds.",
-    image: `${BASE}images/journal-3.png`,
-    imageCaption: "Quiet protection.",
   },
   {
     id: "arrowroot",
@@ -68,18 +86,24 @@ const ingredients = [
     note: "Comfort without heaviness.",
     description:
       "A fine white powder derived from the Maranta plant root. It absorbs excess moisture, softens the skin's texture, and gives our butters the dry-touch finish that makes them feel effortless rather than greasy.",
-    image: `${BASE}images/story.png`,
-    imageCaption: "Made carefully.",
+  },
+];
+
+const ingredientVisuals = [
+  {
+    src: `${BASE}images/supple-oud-ingredients.png`,
+    alt: "Supple Oud — ingredient portrait",
+    label: "Supple Oud",
   },
   {
-    id: "fragrance",
-    name: "Fragrance",
-    provenance: "Thoughtfully sourced. Always intentional.",
-    note: "Chosen, not added.",
-    description:
-      "Every scent in the SEREIN line begins with a memory — a place, a time of day, a feeling. We work with fragrance blends that meet rigorous safety standards, using the lightest hand needed to evoke, not overwhelm.",
-    image: `${BASE}images/hero.png`,
-    imageCaption: "A feeling, bottled.",
+    src: `${BASE}images/mint-moss-scent-notes.png`,
+    alt: "Mint + Moss — ingredient portrait",
+    label: "Mint + Moss",
+  },
+  {
+    src: `${BASE}images/lithe-bloom-ingredients.png`,
+    alt: "Lithe Bloom — ingredient portrait",
+    label: "Lithe Bloom",
   },
 ];
 
@@ -144,9 +168,35 @@ export default function Ingredients() {
           </FadeIn>
           <FadeIn direction="none" delay={0.25} className="md:max-w-[32ch] md:pb-3">
             <p className="font-serif italic text-foreground/50 text-lg md:text-xl leading-relaxed">
-              Six ingredients. Each one earned its place.
+              Eight ingredients. Each one earned its place.
             </p>
           </FadeIn>
+        </div>
+      </section>
+
+      {/* INGREDIENT PORTRAITS */}
+      <section className="px-8 md:px-16 pb-20 max-w-7xl mx-auto">
+        <FadeIn direction="none">
+          <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/30 font-sans block mb-8">
+            Ingredient Portraits
+          </span>
+        </FadeIn>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {ingredientVisuals.map((visual, i) => (
+            <FadeIn key={visual.label} direction="none" delay={i * 0.12}>
+              <div className="relative overflow-hidden bg-[#F3EBDD]">
+                <img
+                  src={visual.src}
+                  alt={visual.alt}
+                  className="w-full h-auto"
+                  loading="lazy"
+                />
+                <p className="absolute bottom-3 left-4 text-[9px] uppercase tracking-[0.2em] text-foreground/50 font-sans">
+                  {visual.label}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
         </div>
       </section>
 
@@ -159,7 +209,7 @@ export default function Ingredients() {
           const isOpen = openId === item.id;
 
           return (
-            <FadeIn key={item.id} direction="none" delay={i * 0.07}>
+            <FadeIn key={item.id} direction="none" delay={i * 0.06}>
               <div id={item.id} className="border-b border-foreground/10 scroll-mt-20">
 
                 {/* ROW — always visible */}

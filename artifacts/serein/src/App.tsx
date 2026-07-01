@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { NavBar } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import Home from "@/pages/home";
 import Ingredients from "@/pages/ingredients";
 import ProductDetail from "@/pages/product-detail";
@@ -15,6 +16,7 @@ const queryClient = new QueryClient();
 function Router() {
   return (
     <div className="flex flex-col min-h-screen">
+      <ScrollToTop />
       <NavBar />
       <div className="flex-grow">
         <Switch>

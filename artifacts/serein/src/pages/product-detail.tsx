@@ -27,10 +27,8 @@ export default function ProductDetail() {
   }
 
   const carouselImages: CarouselImage[] = [
-    product.cleanStill && { src: product.cleanStill, alt: `${product.name} — product still`, variant: "product" as const },
     { src: product.img, alt: `${product.name} — editorial still`, variant: "product" as const },
     product.scentCard && { src: product.scentCard, alt: `${product.name} — scent notes`, variant: "card" as const },
-    product.ingredientsGraphic && { src: product.ingredientsGraphic, alt: `${product.name} — ingredients`, variant: "card" as const },
   ].filter(Boolean) as CarouselImage[];
 
   return (
