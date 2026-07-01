@@ -89,20 +89,20 @@ const ingredients = [
   },
 ];
 
-const ingredientVisuals = [
+const fragranceCards = [
   {
     src: `${BASE}images/supple-oud-ingredients.png`,
-    alt: "Supple Oud — ingredient portrait",
+    alt: "Supple Oud — fragrance portrait",
     label: "Supple Oud",
   },
   {
-    src: `${BASE}images/mint-moss-scent-notes.png`,
-    alt: "Mint + Moss — ingredient portrait",
+    src: `${BASE}images/mint-moss-scent-card.png`,
+    alt: "Mint + Moss — fragrance card",
     label: "Mint + Moss",
   },
   {
     src: `${BASE}images/lithe-bloom-ingredients.png`,
-    alt: "Lithe Bloom — ingredient portrait",
+    alt: "Lithe Bloom — fragrance portrait",
     label: "Lithe Bloom",
   },
 ];
@@ -171,32 +171,6 @@ export default function Ingredients() {
               Eight ingredients. Each one earned its place.
             </p>
           </FadeIn>
-        </div>
-      </section>
-
-      {/* INGREDIENT PORTRAITS */}
-      <section className="px-8 md:px-16 pb-20 max-w-7xl mx-auto">
-        <FadeIn direction="none">
-          <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/30 font-sans block mb-8">
-            Ingredient Portraits
-          </span>
-        </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          {ingredientVisuals.map((visual, i) => (
-            <FadeIn key={visual.label} direction="none" delay={i * 0.12}>
-              <div className="relative overflow-hidden bg-[#F3EBDD]">
-                <img
-                  src={visual.src}
-                  alt={visual.alt}
-                  className="w-full h-auto"
-                  loading="lazy"
-                />
-                <p className="absolute bottom-3 left-4 text-[9px] uppercase tracking-[0.2em] text-foreground/50 font-sans">
-                  {visual.label}
-                </p>
-              </div>
-            </FadeIn>
-          ))}
         </div>
       </section>
 
@@ -299,6 +273,39 @@ export default function Ingredients() {
             </FadeIn>
           );
         })}
+      </section>
+
+      {/* FRAGRANCE SECTION */}
+      <section className="px-8 md:px-16 pb-32 max-w-7xl mx-auto">
+        <div className="border-t border-foreground/10 pt-20 mb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+          <FadeIn direction="none">
+            <h2 className="text-[clamp(2rem,5vw,4rem)] font-serif text-primary leading-none tracking-tight">
+              Fragrance
+            </h2>
+          </FadeIn>
+          <FadeIn direction="none" delay={0.15} className="md:max-w-[36ch] md:pb-1">
+            <p className="font-serif italic text-foreground/45 text-base md:text-lg leading-relaxed">
+              Every scent begins with a memory — a place, a time of day, a feeling. Each blend is chosen with the lightest hand needed to evoke, not overwhelm.
+            </p>
+          </FadeIn>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {fragranceCards.map((card, i) => (
+            <FadeIn key={card.label} direction="none" delay={i * 0.12}>
+              <div className="relative overflow-hidden bg-[#F3EBDD]">
+                <img
+                  src={card.src}
+                  alt={card.alt}
+                  className="w-full h-auto"
+                  loading="lazy"
+                />
+                <p className="absolute bottom-3 left-4 text-[9px] uppercase tracking-[0.2em] text-foreground/50 font-sans">
+                  {card.label}
+                </p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
       </section>
 
       {/* CLOSING NOTE */}

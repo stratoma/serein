@@ -37,7 +37,7 @@ export const products = [
     img: `${BASE}images/mint-moss-still.png`,
     cleanStill: `${BASE}images/mint-moss-clean.png`,
     scentCard: `${BASE}images/mint-moss-scent-card.png`,
-    ingredientsGraphic: `${BASE}images/mint-moss-scent-notes.png`,
+    ingredientsGraphic: `${BASE}images/mint-moss-scent-card.png`,
     caption: "A scent that restores and rebalances.",
     story: [
       "Mint + Moss started as a morning formula. A way to feel restored before the day asked anything of you.",
