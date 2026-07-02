@@ -85,7 +85,7 @@ export default function Home() {
               { word: "Become.", sub: "Daily rituals. Lasting change." },
             ].map(({ word, sub }, i) => (
               <FadeIn key={word} delay={i * 0.18} direction="none">
-                <div className="py-16 md:py-24 px-8 md:px-14 flex flex-col justify-between gap-10">
+                <div className="py-16 md:py-24 px-8 md:px-14 flex flex-col justify-center gap-6">
                   <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif leading-none">
                     {word}
                   </h2>
