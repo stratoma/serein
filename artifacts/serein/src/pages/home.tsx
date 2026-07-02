@@ -218,11 +218,11 @@ export default function Home() {
             <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-serif text-primary leading-none mb-8">
               Sourced with<br />intention.
             </h2>
-            <div className="w-full aspect-[3/4] overflow-hidden">
+            <div className="w-full overflow-hidden">
               <img
                 src={`${BASE}images/portrait-butter-base.png`}
                 alt="Raw shea butter and seeds"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-auto"
               />
             </div>
             <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-sans">
