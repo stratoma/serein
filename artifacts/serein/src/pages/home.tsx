@@ -168,7 +168,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
             <FadeIn direction="none" className="w-full md:w-1/2">
               <img
-                src={`${BASE}images/product-trio.png`}
+                src={`${BASE}images/morrow.png`}
                 alt="The Morrow Trio — three travel-sized body butters"
                 className="w-full aspect-square object-cover"
               />
