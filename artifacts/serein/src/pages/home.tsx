@@ -220,7 +220,7 @@ export default function Home() {
             </h2>
             <div className="w-full overflow-hidden">
               <img
-                src={`${BASE}images/portrait-butter-base.png`}
+                src={`${BASE}images/pasha-butter-base.png`}
                 alt="Raw shea butter and seeds"
                 className="w-full h-auto"
               />
