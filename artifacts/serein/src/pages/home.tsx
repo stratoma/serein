@@ -172,7 +172,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-10 md:gap-20 items-center">
             <div className="w-full md:w-[58%] relative overflow-hidden group">
               <img
-                src={`${BASE}images/morrow.png`}
+                src={`${BASE}images/morrow-trio-gd.png`}
                 alt="The Morrow Trio — three travel-sized body butters"
                 className="w-full aspect-[4/5] object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                 style={{ filter: "brightness(1.12) contrast(0.94) saturate(0.78) hue-rotate(-6deg)" }}
