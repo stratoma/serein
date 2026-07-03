@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "wouter";
 import { products } from "@/data/products";
+import terracottaWall from "@assets/terracott_walls_1783048465994.png";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -262,18 +263,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* EDITORIAL — brand atmosphere */}
-      <section className="overflow-hidden">
-        <FadeIn direction="none">
-          <img
-            src={`${BASE}images/editorial-grid.png`}
-            alt="SEREIN — a study of warmth. Amber glass, natural light, botanicals, and skin."
-            className="w-full h-auto"
-            loading="lazy"
-          />
-        </FadeIn>
-      </section>
-
       {/* OUR STORY */}
       <section id="story" className="py-28 md:py-40 bg-primary text-primary-foreground">
         <div className="max-w-7xl mx-auto px-8 md:px-16 flex flex-col md:flex-row items-center gap-16 md:gap-28">
@@ -364,6 +353,29 @@ export default function Home() {
         </div>
       </section>
 
+      {/* CLOSING ATMOSPHERE — quiet architectural exhale before the footer */}
+      <section className="relative h-[70vh] md:h-[80vh] lg:h-[85vh] overflow-hidden">
+        <FadeIn direction="none" className="absolute inset-0">
+          <img
+            src={terracottaWall}
+            alt="Sunlit terracotta wall and staircase with a dark bowl resting on linen"
+            className="absolute inset-0 w-full h-full object-cover object-[75%_center] md:object-[60%_center]"
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/45 via-black/15 to-black/10" />
+        </FadeIn>
+
+        <div className="relative z-10 h-full flex items-center px-8 md:px-16">
+          <FadeIn direction="none" delay={0.15} className="max-w-md">
+            <p className="font-serif italic text-[#F3EBDD] text-2xl md:text-3xl lg:text-4xl leading-relaxed">
+              Every ritual begins with intention.
+            </p>
+            <p className="mt-6 text-[#F3EBDD]/70 text-sm md:text-base font-sans leading-relaxed max-w-[36ch]">
+              Join the Serein list for quiet rituals, seasonal notes, and first access.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
 
     </main>
   );
