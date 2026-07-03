@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 export interface FragranceCard {
@@ -53,19 +53,18 @@ function ZoomOutIcon() {
   );
 }
 
-function CircleButton({
-  onClick,
-  ariaLabel,
-  children,
-  className = "",
-}: {
-  onClick: () => void;
-  ariaLabel: string;
-  children: React.ReactNode;
-  className?: string;
-}) {
+const CircleButton = forwardRef<
+  HTMLButtonElement,
+  {
+    onClick: () => void;
+    ariaLabel: string;
+    children: React.ReactNode;
+    className?: string;
+  }
+>(function CircleButton({ onClick, ariaLabel, children, className = "" }, ref) {
   return (
     <button
+      ref={ref}
       type="button"
       onClick={onClick}
       aria-label={ariaLabel}
@@ -74,7 +73,10 @@ function CircleButton({
       {children}
     </button>
   );
-}
+});
+
+const FOCUSABLE_SELECTOR =
+  'button:not([disabled]), [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export function FragranceCarousel({ cards }: FragranceCarouselProps) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -82,6 +84,8 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
   const [zoom, setZoom] = useState(1);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const carouselRegionRef = useRef<HTMLDivElement | null>(null);
 
   const count = cards.length;
 
@@ -93,6 +97,10 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
     setActiveIndex((i) => (i + 1) % count);
   }, [count]);
 
+  const selectCard = (index: number) => {
+    setActiveIndex(index);
+  };
+
   const openLightbox = (index: number, el: HTMLButtonElement | null) => {
     setActiveIndex(index);
     setZoom(1);
@@ -103,25 +111,76 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
   const closeLightbox = useCallback(() => {
     setLightboxOpen(false);
     setZoom(1);
-    triggerRef.current?.focus();
+    // The trigger button that originally opened the lightbox may have been
+    // unmounted/remounted since (e.g. arrow-key navigation swaps the active
+    // card, which remounts the featured-card button with a new key). Falling
+    // back to the stable carousel region keeps focus from being lost to body.
+    if (triggerRef.current && document.contains(triggerRef.current)) {
+      triggerRef.current.focus();
+    } else {
+      carouselRegionRef.current?.focus();
+    }
   }, []);
 
+  // Carousel-level arrow key navigation (works when the carousel region has focus,
+  // independent of whether the lightbox is open).
+  const handleCarouselKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (lightboxOpen) return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      goPrev();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      goNext();
+    }
+  };
+
+  // Lightbox: keyboard nav (arrows/escape), focus trap, and scroll lock.
   useEffect(() => {
     if (!lightboxOpen) return;
     closeButtonRef.current?.focus();
+
+    function getFocusable(): HTMLElement[] {
+      if (!modalRef.current) return [];
+      return Array.from(modalRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR));
+    }
 
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === "Escape") {
         e.preventDefault();
         closeLightbox();
-      } else if (e.key === "ArrowLeft") {
+        return;
+      }
+      if (e.key === "ArrowLeft") {
         e.preventDefault();
         goPrev();
         setZoom(1);
-      } else if (e.key === "ArrowRight") {
+        return;
+      }
+      if (e.key === "ArrowRight") {
         e.preventDefault();
         goNext();
         setZoom(1);
+        return;
+      }
+      if (e.key === "Tab") {
+        const focusable = getFocusable();
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const activeEl = document.activeElement;
+
+        if (e.shiftKey) {
+          if (activeEl === first || !modalRef.current?.contains(activeEl)) {
+            e.preventDefault();
+            last.focus();
+          }
+        } else {
+          if (activeEl === last || !modalRef.current?.contains(activeEl)) {
+            e.preventDefault();
+            first.focus();
+          }
+        }
       }
     }
 
@@ -137,7 +196,15 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
   const active = cards[activeIndex];
 
   return (
-    <div className="w-full">
+    <div
+      className="w-full focus:outline-none"
+      ref={carouselRegionRef}
+      role="region"
+      aria-label="Fragrance scent card carousel"
+      aria-roledescription="carousel"
+      tabIndex={0}
+      onKeyDown={handleCarouselKeyDown}
+    >
       {/* FEATURED CARD */}
       <div className="relative w-full">
         <div className="relative overflow-hidden bg-[#F3EBDD] w-full">
@@ -178,14 +245,15 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
         )}
       </div>
 
-      {/* THUMBNAILS */}
+      {/* THUMBNAILS — select the active card in-place; the accessible name
+          reflects that activating a thumbnail opens/brings up that scent card. */}
       {count > 1 && (
         <div className="mt-6 flex items-center justify-center gap-4">
           {cards.map((card, i) => (
             <button
               key={card.label}
               type="button"
-              onClick={(e) => openLightbox(i, e.currentTarget)}
+              onClick={() => selectCard(i)}
               aria-label={`Open ${card.label} scent card`}
               aria-current={i === activeIndex}
               className={`relative overflow-hidden bg-[#F3EBDD] w-16 h-16 md:w-20 md:h-20 shrink-0 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-2 ${
@@ -202,6 +270,7 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
       <AnimatePresence>
         {lightboxOpen && (
           <motion.div
+            ref={modalRef}
             role="dialog"
             aria-modal="true"
             aria-label={`${active.label} scent card, enlarged view`}
@@ -215,7 +284,7 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
             }}
           >
             <div className="absolute top-4 right-4 md:top-6 md:right-6 z-10">
-              <CircleButton onClick={closeLightbox} ariaLabel="Close scent card viewer">
+              <CircleButton ref={closeButtonRef} onClick={closeLightbox} ariaLabel="Close scent card viewer">
                 <CloseIcon />
               </CircleButton>
             </div>
@@ -277,10 +346,6 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
               >
                 <ZoomInIcon />
               </CircleButton>
-              {/* close ref target — visually hidden close button for initial focus handled above */}
-              <button ref={closeButtonRef} className="sr-only" onClick={closeLightbox} tabIndex={-1} aria-hidden="true">
-                Close
-              </button>
             </div>
 
             <p className="mt-4 text-primary-foreground/50 text-[10px] uppercase tracking-[0.25em] font-sans text-center">

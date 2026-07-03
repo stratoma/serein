@@ -1,0 +1,52 @@
+Copy this into Replit:
+
+```text
+Please refine the “Sourced with intention” section layout.
+
+Goals:
+1. Improve visual balance between the left image/headline column and the right ingredient list.
+2. Make the ingredient descriptions feel connected to their ingredient names.
+3. Improve readability while keeping the quiet luxury, editorial aesthetic.
+
+Specific changes:
+- Keep the section background warm cream.
+- Use a two-column desktop layout: left column 42%, right column 58%.
+- Add generous but controlled spacing between columns, around 80px.
+- Left-align the ingredient names and descriptions as paired content blocks.
+- Move each description closer to its ingredient name instead of pushing it far right.
+- Structure each ingredient row like:
+  - Small number: 01, 02, 03, 04
+  - Ingredient name in large serif type
+  - Description below or beside it, but visually connected
+  - Thin divider line below each item
+
+Desktop layout recommendation:
+- Left column:
+  - Small label: “A BOTANICAL STUDY”
+  - Large headline: “Sourced with intention.”
+  - Image below, slightly smaller than current, max-width around 520 to 580px
+  - Caption below image
+
+- Right column:
+  - Ingredient list starts aligned slightly below the headline, not too high.
+  - Each ingredient item should have 64 to 80px vertical padding.
+  - Ingredient name should be dark brown.
+  - Description should be medium warm taupe, slightly darker than now for readability.
+  - Divider lines should be subtle, around rgba(45, 31, 25, 0.12).
+
+Typography:
+- Ingredient names: serif, 42 to 56px desktop.
+- Descriptions: italic, 18 to 22px, line-height 1.5.
+- Small labels/captions: uppercase, letter-spacing 0.18em.
+
+Mobile:
+- Stack the layout vertically.
+- Headline first, image second, ingredient list third.
+- Ingredient names 34 to 40px.
+- Descriptions full width below each ingredient name.
+- Reduce vertical spacing between ingredient rows to 40 to 56px.
+
+Important:
+Do not change the brand colors, fonts, image, or copy unless necessary.
+The final result should feel like a luxury editorial spread, not a standard product list.
+```
