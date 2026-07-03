@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
+import { FragranceCarousel } from "@/components/fragrance-carousel";
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -289,20 +290,9 @@ export default function Ingredients() {
             </p>
           </FadeIn>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
-          {fragranceCards.map((card, i) => (
-            <FadeIn key={card.label} direction="none" delay={i * 0.12}>
-              <div className="relative overflow-hidden bg-[#F3EBDD]">
-                <img
-                  src={card.src}
-                  alt={card.alt}
-                  className="w-full h-auto"
-                  loading="lazy"
-                />
-              </div>
-            </FadeIn>
-          ))}
-        </div>
+        <FadeIn direction="none" delay={0.2}>
+          <FragranceCarousel cards={fragranceCards} />
+        </FadeIn>
       </section>
 
       {/* CLOSING NOTE */}

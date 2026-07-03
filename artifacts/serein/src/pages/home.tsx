@@ -78,15 +78,18 @@ export default function Home() {
       {/* BRAND PILLARS — Transform / Root / Become */}
       <section className="py-10 md:py-16 bg-primary text-primary-foreground overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 md:px-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 divide-y md:divide-y-0 md:divide-x divide-primary-foreground/10">
+          <div
+            className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-primary-foreground/10 gap-y-2 md:gap-y-0"
+            style={{ columnGap: "clamp(40px, 6vw, 96px)" }}
+          >
             {[
               { word: "Transform.", sub: "Rich botanicals. Skin that knows it has been tended to." },
               { word: "Root.", sub: "Grounded in nature. Made with intention." },
               { word: "Become.", sub: "Daily rituals. Lasting change." },
             ].map(({ word, sub }, i) => (
               <FadeIn key={word} delay={i * 0.18} direction="none">
-                <div className="py-16 md:py-24 px-8 md:px-14 flex flex-col justify-center gap-6">
-                  <h2 className="text-5xl md:text-6xl lg:text-7xl font-serif leading-none">
+                <div className="py-10 md:py-20 flex flex-col justify-center gap-5 min-w-0">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-none break-words">
                     {word}
                   </h2>
                   <p className="text-primary-foreground/50 text-sm leading-loose tracking-wide max-w-[22ch]">
