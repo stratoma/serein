@@ -97,10 +97,6 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
     setActiveIndex((i) => (i + 1) % count);
   }, [count]);
 
-  const selectCard = (index: number) => {
-    setActiveIndex(index);
-  };
-
   const openLightbox = (index: number, el: HTMLButtonElement | null) => {
     setActiveIndex(index);
     setZoom(1);
@@ -245,15 +241,15 @@ export function FragranceCarousel({ cards }: FragranceCarouselProps) {
         )}
       </div>
 
-      {/* THUMBNAILS — select the active card in-place; the accessible name
-          reflects that activating a thumbnail opens/brings up that scent card. */}
+      {/* THUMBNAILS — clicking a thumbnail both selects it as the featured
+          card and opens the lightbox for a closer look. */}
       {count > 1 && (
         <div className="mt-6 flex items-center justify-center gap-4">
           {cards.map((card, i) => (
             <button
               key={card.label}
               type="button"
-              onClick={() => selectCard(i)}
+              onClick={(e) => openLightbox(i, e.currentTarget)}
               aria-label={`Open ${card.label} scent card`}
               aria-current={i === activeIndex}
               className={`relative overflow-hidden bg-[#F3EBDD] w-16 h-16 md:w-20 md:h-20 shrink-0 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary/40 focus:ring-offset-2 ${
