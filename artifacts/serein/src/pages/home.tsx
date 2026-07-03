@@ -167,7 +167,7 @@ export default function Home() {
       </section>
 
       {/* THE MORROW TRIO */}
-      <section id="morrow-trio" className="py-28 md:py-40 px-8 md:px-16">
+      <section id="morrow-trio" className="py-28 md:py-40 px-8 md:px-16 scroll-mt-20">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row gap-10 md:gap-20 items-center">
             <div className="w-full md:w-[58%] relative overflow-hidden group">
