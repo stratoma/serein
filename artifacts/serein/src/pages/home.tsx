@@ -167,37 +167,31 @@ export default function Home() {
       </section>
 
       {/* THE MORROW TRIO */}
-      <section id="morrow-trio" className="py-28 md:py-40 bg-[#e9dfd0]">
-        <div className="max-w-7xl mx-auto px-8 md:px-16">
-          <div className="flex flex-col md:flex-row items-center gap-16 md:gap-24">
-            <FadeIn direction="none" className="w-full md:w-1/2">
+      <section id="morrow-trio" className="py-28 md:py-40 px-8 md:px-16">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row gap-10 md:gap-20 items-center">
+            <div className="w-full md:w-[58%] relative overflow-hidden group">
               <img
                 src={`${BASE}images/morrow.png`}
                 alt="The Morrow Trio — three travel-sized body butters"
-                className="w-full aspect-square object-cover"
+                className="w-full aspect-[4/5] object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
+                style={{ filter: "brightness(1.12) contrast(0.94) saturate(0.78) hue-rotate(-6deg)" }}
               />
-              <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-sans">
-                Thoughtfully packaged.
-              </p>
-            </FadeIn>
-            <div className="w-full md:w-1/2 flex flex-col gap-8">
-              <FadeIn direction="none" delay={0.15}>
-                <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans">
-                  The Morrow Trio
-                </span>
+            </div>
+            <div className="w-full md:w-[42%] flex flex-col gap-6 md:py-12">
+              <FadeIn direction="none" delay={0.2}>
+                <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans">The Morrow Trio</span>
+                <h3 className="text-3xl md:text-4xl font-serif text-primary leading-none mt-2">
+                  The complete collection.
+                </h3>
               </FadeIn>
-              <FadeIn direction="none" delay={0.25}>
-                <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-serif text-primary leading-none">
-                  Your ritual,<br />wherever you are.
-                </h2>
-              </FadeIn>
-              <FadeIn direction="none" delay={0.35}>
-                <p className="font-serif italic text-foreground/60 text-lg leading-relaxed max-w-[32ch]">
-                  Three rituals. One discovery. All three scents, together.
+              <FadeIn direction="none" delay={0.3}>
+                <p className="text-foreground/50 text-sm leading-relaxed max-w-[32ch]">
+                  Discover all three signature scents in one thoughtfully curated set. An invitation to experience the full Serein ritual before choosing the fragrance that becomes yours.
                 </p>
               </FadeIn>
-              <FadeIn direction="none" delay={0.45}>
-                <div className="flex items-center justify-between pt-6 border-t border-foreground/10 max-w-xs">
+              <FadeIn direction="none" delay={0.4}>
+                <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
                   <span className="text-foreground/40 text-sm font-sans">$11</span>
                   <Link
                     href="/collection/morrow-trio"
