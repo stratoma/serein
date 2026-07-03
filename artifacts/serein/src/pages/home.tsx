@@ -213,41 +213,46 @@ export default function Home() {
 
       {/* INGREDIENTS */}
       <section id="ingredients" className="py-28 md:py-40 px-8 md:px-16 overflow-hidden">
-        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-20 lg:gap-32 items-start">
-          <FadeIn direction="none" className="w-full lg:w-[45%] lg:sticky lg:top-28">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-8">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:gap-[80px] items-start">
+          <FadeIn direction="none" className="w-full lg:w-[42%] lg:sticky lg:top-28">
+            <span className="text-[10px] uppercase tracking-[0.18em] text-foreground/40 font-sans block mb-8">
               A Botanical Study
             </span>
             <h2 className="text-[clamp(2.5rem,5vw,4rem)] font-serif text-primary leading-none mb-8">
               Sourced with<br />intention.
             </h2>
-            <div className="w-full overflow-hidden">
+            <div className="w-full max-w-[560px] overflow-hidden">
               <img
                 src={`${BASE}images/pasha-butter-base.png`}
                 alt="Raw shea butter and seeds"
                 className="w-full h-auto"
               />
             </div>
-            <p className="mt-4 text-[10px] uppercase tracking-[0.2em] text-foreground/40 font-sans">
+            <p className="mt-4 text-[10px] uppercase tracking-[0.18em] text-foreground/40 font-sans">
               Shea. In its natural state.
             </p>
           </FadeIn>
 
-          <div className="w-full lg:w-[55%] pt-0 lg:pt-24 space-y-0">
+          <div className="w-full lg:w-[58%] pt-14 lg:pt-24 space-y-0">
             {ingredients.map((item, i) => (
               <FadeIn key={item.name} direction="none" delay={i * 0.1}>
-                <div className="border-b border-foreground/10 py-10 flex flex-col sm:flex-row sm:items-end justify-between gap-3 group">
-                  <h3 className="font-serif text-3xl md:text-4xl text-primary leading-none group-hover:translate-x-1 transition-transform duration-500">
-                    {item.name}
-                  </h3>
-                  <p className="text-foreground/40 text-sm font-sans italic max-w-[24ch] text-right leading-relaxed">
-                    {item.note}
-                  </p>
+                <div className="border-b border-[rgba(45,31,25,0.12)] py-10 md:py-12 flex gap-5 md:gap-8 group">
+                  <span className="font-sans text-xs md:text-sm text-foreground/30 tracking-[0.1em] pt-2 shrink-0 w-8">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-serif text-[34px] md:text-[42px] lg:text-[52px] text-primary leading-[1.05] group-hover:translate-x-1 transition-transform duration-500">
+                      {item.name}
+                    </h3>
+                    <p className="mt-3 text-[#8a7568] text-lg md:text-xl font-sans italic leading-[1.5] max-w-[52ch]">
+                      {item.note}
+                    </p>
+                  </div>
                 </div>
               </FadeIn>
             ))}
             <FadeIn direction="none" delay={0.6}>
-              <div className="pt-10">
+              <div className="pt-10 pl-[52px]">
                 <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
                   View Full Ingredients
                 </button>
