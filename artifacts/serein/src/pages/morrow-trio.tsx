@@ -126,7 +126,7 @@ export default function MorrowTrio() {
                     <img
                       src={product.img}
                       alt={product.name}
-                      className="w-full aspect-[3/4] object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
+                      className="w-full aspect-square object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]"
                     />
                   </div>
                   <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/35 font-sans mb-2">
