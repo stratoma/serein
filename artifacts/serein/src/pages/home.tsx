@@ -230,11 +230,11 @@ export default function Home() {
           <div className="w-full lg:w-[55%] pt-0 lg:pt-24 space-y-0">
             {ingredients.map((item, i) => (
               <FadeIn key={item.name} direction="none" delay={i * 0.1}>
-                <div className="border-b border-foreground/10 py-10 flex flex-col sm:flex-row sm:items-end justify-between gap-3 group">
+                <div className="border-b border-foreground/10 py-10 flex flex-col gap-3 group">
                   <h3 className="font-serif text-3xl md:text-4xl text-primary leading-none group-hover:translate-x-1 transition-transform duration-500">
                     {item.name}
                   </h3>
-                  <p className="text-foreground/40 text-sm font-sans italic max-w-[24ch] text-right leading-relaxed">
+                  <p className="text-foreground/40 text-sm font-sans italic max-w-[46ch] leading-relaxed">
                     {item.note}
                   </p>
                 </div>
