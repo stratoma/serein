@@ -90,7 +90,7 @@ export default function Home() {
             ].map(({ word, sub }, i) => (
               <FadeIn key={word} delay={i * 0.18} direction="none">
                 <div className="py-10 md:py-20 flex flex-col justify-center gap-5 min-w-0">
-                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-none break-words">
+                  <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-none break-words text-center">
                     {word}
                   </h2>
                   <p className="text-primary-foreground/50 text-sm leading-loose tracking-wide max-w-[22ch]">
