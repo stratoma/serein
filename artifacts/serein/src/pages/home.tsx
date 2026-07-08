@@ -93,7 +93,7 @@ export default function Home() {
                   <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-none break-words text-right">
                     {word}
                   </h2>
-                  <p className="text-primary-foreground/50 text-sm leading-loose tracking-wide max-w-[22ch]">
+                  <p className="text-primary-foreground/50 text-sm leading-loose tracking-wide max-w-[22ch] text-right ml-auto">
                     {sub}
                   </p>
                 </div>
