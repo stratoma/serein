@@ -130,25 +130,45 @@ export default function ProductDetail() {
         </div>
       </section>
 
-      {/* HOW IT FEELS */}
+      {/* TEXTURE */}
       <section className="py-28 md:py-40 px-8 md:px-16">
         <div className="max-w-4xl mx-auto flex flex-col gap-12">
           <FadeIn direction="none">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-4">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/50 font-sans block mb-4">
               Texture &amp; Feel
             </span>
             <p className="font-serif italic text-foreground/70 text-2xl md:text-3xl lg:text-4xl leading-relaxed">
               {product.feelNote}
             </p>
           </FadeIn>
-          <FadeIn direction="none" delay={0.2}>
-            <div className="border-t border-foreground/10 pt-8 flex flex-col md:flex-row md:gap-24 gap-6">
-              <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans shrink-0 md:pt-1">
-                How to Use
-              </span>
-              <p className="text-foreground/55 text-base leading-loose max-w-[44ch]">
-                {product.howToUse}
-              </p>
+        </div>
+      </section>
+
+      {/* RITUAL */}
+      <section className="py-20 md:py-28 px-8 md:px-16 bg-[#f5efe6]">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/50 font-sans block mb-10">
+              The Ritual
+            </span>
+          </FadeIn>
+          <FadeIn direction="none" delay={0.15}>
+            <p className="font-serif italic text-foreground/65 text-xl md:text-2xl leading-relaxed mb-12 max-w-[44ch]">
+              {product.howToUse}
+            </p>
+          </FadeIn>
+          <FadeIn direction="none" delay={0.25}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 border-t border-foreground/10">
+              {[
+                { label: "Skin Feel", value: "Absorbs without residue. Leaves skin soft, not coated." },
+                { label: "Scent Strength", value: "Moderate — present on application, softens to a quiet warmth." },
+                { label: "Who It's For", value: `Anyone drawn to ${product.pillar.replace(".", "").toLowerCase()} — those who want ritual, not routine.` },
+              ].map(({ label, value }) => (
+                <div key={label} className="py-8 pr-8 flex flex-col gap-3 border-b sm:border-b-0 sm:border-r border-foreground/10 last:border-r-0">
+                  <span className="text-[9px] uppercase tracking-[0.3em] text-foreground/40 font-sans">{label}</span>
+                  <p className="text-foreground/60 text-sm font-sans leading-relaxed">{value}</p>
+                </div>
+              ))}
             </div>
           </FadeIn>
         </div>

@@ -11,6 +11,9 @@ export function Footer() {
             <p className="text-primary-foreground/40 font-serif italic text-base leading-relaxed max-w-[22ch]">
               Transform. Root. Become.
             </p>
+            <p className="mt-3 text-primary-foreground/25 font-sans text-[10px] uppercase tracking-[0.2em]">
+              Made with intention. Shared with care.
+            </p>
             <div className="mt-8">
               <a href="#" className="text-[10px] uppercase tracking-[0.2em] text-primary-foreground/30 hover:text-primary-foreground/70 transition-colors duration-400 font-sans">
                 @serein.skin
@@ -37,7 +40,7 @@ export function Footer() {
             <form className="flex flex-col space-y-4" onSubmit={(e) => e.preventDefault()}>
               <input
                 type="email"
-                placeholder="your@email.com"
+                placeholder="Enter your email"
                 className="bg-transparent border-b border-primary-foreground/15 py-2 px-0 text-sm font-sans focus:outline-none focus:border-primary-foreground/40 placeholder:text-primary-foreground/25 transition-colors duration-300"
                 required
               />

@@ -1,0 +1,171 @@
+Paste this into Replit AI:
+
+```text
+Update the Serein website based on the latest brand review.
+
+Do not redesign the site. Preserve the current quiet luxury, editorial, minimal aesthetic. Focus on copy refinement, narrative depth, trust signals, accessibility, and conversion clarity.
+
+1. Homepage
+
+Keep the hero line:
+
+For skin that remembers touch.
+
+Add supporting copy beneath it:
+
+Botanical body care rooted in ritual, created to soften skin and slow the pace of everyday life.
+
+Change CTA:
+
+Explore the Collection
+
+to:
+
+Discover the Collection
+
+Add a new homepage section titled:
+
+Why We Created Serein
+
+Use this copy:
+
+We began with a simple belief.
+
+That caring for the body should feel less like maintenance and more like remembrance.
+
+A quiet pause.
+
+A familiar scent.
+
+The feeling of skin cared for with intention.
+
+Serein exists to create those moments again and again.
+
+2. Add a craftsmanship section
+
+Add a discreet section titled:
+
+Crafted With Intention
+
+Use this copy:
+
+Every ingredient has a purpose.
+Every texture has been considered.
+Every fragrance is composed to accompany rather than dominate.
+Nothing is added simply because it is fashionable.
+
+Include this as a quiet editorial section, not as sales copy.
+
+3. Ingredients page
+
+Replace the current intro copy with:
+
+Nothing unnecessary. Nothing decorative. Eight ingredients. Each earned its place.
+
+Replace fragrance copy with:
+
+Every fragrance begins with a memory.
+A place.
+A season.
+A quiet moment.
+
+Chosen to evoke, never overwhelm.
+
+4. Add brand philosophy section
+
+Add a section titled:
+
+The Quiet Art of Care
+
+Use this copy:
+
+We believe beauty is rarely found in excess.
+
+It lives in thoughtful materials.
+Honest ingredients.
+Objects made to last.
+Rituals repeated often enough to become memory.
+
+Serein is our expression of that belief.
+
+5. Product or collection pages
+
+For each product, include clear sections:
+
+Story
+Texture
+Ritual
+Ingredients
+Fragrance
+
+Keep the writing sensory, minimal, and useful.
+
+Add practical trust information where relevant:
+skin feel
+how to use
+who it is for
+scent strength
+batch or production detail
+shipping or care details
+
+6. FAQ section
+
+Add a small FAQ section:
+
+Who is Serein for?
+For those who want body care that feels considered, sensory, and quietly effective.
+
+How should I use it?
+Apply to clean skin after bathing or whenever the body asks for softness.
+
+Is it heavily fragranced?
+No. Each scent is composed with restraint, designed to linger softly rather than overwhelm.
+
+7. Footer
+
+Keep:
+
+Transform. Root. Become.
+
+Add:
+
+Made with intention. Shared with care.
+
+Change email placeholder from:
+
+your@email.com
+
+to:
+
+Enter your email
+
+8. Accessibility and functionality
+
+Increase contrast for small gray text on cream backgrounds.
+Make navigation slightly more legible.
+Add visible hover states for all links and buttons.
+Ensure all images have descriptive alt text.
+Check heading hierarchy: one H1 per page, then logical H2 and H3 sections.
+Test all navigation links, cart, CTA buttons, newsletter form, and product interactions.
+
+9. Tone rules
+
+Keep the voice:
+quiet
+refined
+sensory
+literary
+intentional
+confident
+
+Avoid:
+sales-heavy language
+wellness clichés
+overexplaining
+exaggerated product claims
+urgency language
+generic skincare copy
+
+Goal:
+Move Serein from beautiful to truly memorable by adding narrative depth and subtle signals of craftsmanship, provenance, and trust while preserving the brand’s restraint.
+```

@@ -40,14 +40,17 @@ function ParallaxHero() {
           </h1>
         </FadeIn>
         <FadeIn delay={0.45} direction="none" className="md:text-right max-w-xs">
-          <p className="text-[#F3EBDD]/80 font-serif italic text-lg md:text-xl leading-relaxed mb-6">
+          <p className="text-[#F3EBDD]/80 font-serif italic text-lg md:text-xl leading-relaxed mb-2">
             For skin that remembers touch.
+          </p>
+          <p className="text-[#F3EBDD]/50 font-sans text-xs leading-relaxed mb-6 max-w-[28ch]">
+            Botanical body care rooted in ritual, created to soften skin and slow the pace of everyday life.
           </p>
           <a
             href="#collection"
             className="inline-block text-[10px] uppercase tracking-[0.25em] text-[#F3EBDD]/70 border-b border-[#F3EBDD]/30 pb-1 hover:text-[#F3EBDD] hover:border-[#F3EBDD]/70 transition-all duration-500"
           >
-            Explore the Collection
+            Discover the Collection
           </a>
         </FadeIn>
       </div>
@@ -74,6 +77,33 @@ export default function Home() {
             Small-batch body butters made with rich botanical butters that deeply nourish and soften the skin — crafted for the rituals that anchor your day.
           </p>
         </FadeIn>
+      </section>
+
+      {/* WHY WE CREATED SEREIN */}
+      <section className="py-28 md:py-40 px-8 md:px-16 bg-[#f5efe6]">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-12">
+              Why We Created Serein
+            </span>
+          </FadeIn>
+          <div className="flex flex-col gap-10">
+            {[
+              "We began with a simple belief.",
+              "That caring for the body should feel less like maintenance and more like remembrance.",
+              "A quiet pause.",
+              "A familiar scent.",
+              "The feeling of skin cared for with intention.",
+              "Serein exists to create those moments again and again.",
+            ].map((line, i) => (
+              <FadeIn key={i} direction="none" delay={i * 0.1}>
+                <p className={`font-serif ${i === 0 || i === 5 ? "text-2xl md:text-3xl text-primary" : "text-xl md:text-2xl text-foreground/50 italic"} leading-relaxed`}>
+                  {line}
+                </p>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* BRAND PILLARS — Transform / Root / Become */}
@@ -160,6 +190,31 @@ export default function Home() {
                     </FadeIn>
                   </div>
                 </div>
+              </FadeIn>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CRAFTED WITH INTENTION */}
+      <section className="py-28 md:py-40 px-8 md:px-16 bg-primary text-primary-foreground">
+        <div className="max-w-4xl mx-auto">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-primary-foreground/30 font-sans block mb-12">
+              Crafted With Intention
+            </span>
+          </FadeIn>
+          <div className="flex flex-col gap-8 border-t border-primary-foreground/10 pt-12">
+            {[
+              "Every ingredient has a purpose.",
+              "Every texture has been considered.",
+              "Every fragrance is composed to accompany rather than dominate.",
+              "Nothing is added simply because it is fashionable.",
+            ].map((line, i) => (
+              <FadeIn key={i} direction="none" delay={i * 0.12}>
+                <p className="font-serif italic text-primary-foreground/70 text-xl md:text-2xl leading-relaxed">
+                  {line}
+                </p>
               </FadeIn>
             ))}
           </div>
@@ -278,6 +333,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* THE QUIET ART OF CARE */}
+      <section className="py-28 md:py-40 px-8 md:px-16">
+        <div className="max-w-3xl mx-auto">
+          <FadeIn direction="none">
+            <h2 className="text-[clamp(2rem,5vw,3.5rem)] font-serif text-primary leading-none mb-16">
+              The Quiet Art<br />of Care.
+            </h2>
+          </FadeIn>
+          <div className="flex flex-col gap-8">
+            <FadeIn direction="none" delay={0.1}>
+              <p className="font-serif italic text-foreground/60 text-lg md:text-xl leading-relaxed">
+                We believe beauty is rarely found in excess.
+              </p>
+            </FadeIn>
+            <FadeIn direction="none" delay={0.2}>
+              <div className="border-l-2 border-foreground/10 pl-8 flex flex-col gap-4">
+                {[
+                  "It lives in thoughtful materials.",
+                  "Honest ingredients.",
+                  "Objects made to last.",
+                  "Rituals repeated often enough to become memory.",
+                ].map((line, i) => (
+                  <p key={i} className="text-foreground/45 text-base font-sans leading-relaxed">
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </FadeIn>
+            <FadeIn direction="none" delay={0.35}>
+              <p className="font-serif italic text-foreground/70 text-lg md:text-xl leading-relaxed mt-4">
+                Serein is our expression of that belief.
+              </p>
+            </FadeIn>
+          </div>
+        </div>
+      </section>
+
       {/* MARKETS */}
       <section id="markets" className="py-28 md:py-40 px-8 md:px-16">
         <div className="max-w-4xl mx-auto">
@@ -332,6 +424,45 @@ export default function Home() {
               </button>
             </div>
           </FadeIn>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-28 md:py-40 px-8 md:px-16 bg-[#f5efe6]">
+        <div className="max-w-3xl mx-auto">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40 font-sans block mb-16">
+              Questions
+            </span>
+          </FadeIn>
+          <div className="space-y-0">
+            {[
+              {
+                q: "Who is Serein for?",
+                a: "For those who want body care that feels considered, sensory, and quietly effective.",
+              },
+              {
+                q: "How should I use it?",
+                a: "Apply to clean skin after bathing or whenever the body asks for softness.",
+              },
+              {
+                q: "Is it heavily fragranced?",
+                a: "No. Each scent is composed with restraint, designed to linger softly rather than overwhelm.",
+              },
+            ].map(({ q, a }, i) => (
+              <FadeIn key={i} direction="none" delay={i * 0.1}>
+                <div className="border-t border-foreground/10 py-10 flex flex-col md:flex-row md:gap-20 gap-4">
+                  <h3 className="font-serif text-xl md:text-2xl text-primary leading-snug md:w-[38%] shrink-0">
+                    {q}
+                  </h3>
+                  <p className="text-foreground/55 text-base font-sans leading-loose">
+                    {a}
+                  </p>
+                </div>
+              </FadeIn>
+            ))}
+            <div className="border-t border-foreground/10" />
+          </div>
         </div>
       </section>
 

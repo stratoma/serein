@@ -43,7 +43,7 @@ export function NavBar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300 font-sans"
+                className="text-[10px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 font-sans"
               >
                 {link.name}
               </a>
@@ -51,13 +51,13 @@ export function NavBar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300 font-sans"
+                className="text-[10px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300 font-sans"
               >
                 {link.name}
               </Link>
             )
           )}
-          <button className="flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] text-foreground/60 hover:text-primary transition-colors duration-300">
+          <button className="flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] text-foreground/70 hover:text-primary transition-colors duration-300">
             <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span>Cart</span>
           </button>

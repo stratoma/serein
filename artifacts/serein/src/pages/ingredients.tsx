@@ -169,7 +169,7 @@ export default function Ingredients() {
           </FadeIn>
           <FadeIn direction="none" delay={0.25} className="md:max-w-[32ch] md:pb-3">
             <p className="font-serif italic text-foreground/50 text-lg md:text-xl leading-relaxed">
-              Eight ingredients. Each one earned its place.
+              Nothing unnecessary. Nothing decorative. Eight ingredients. Each earned its place.
             </p>
           </FadeIn>
         </div>
@@ -286,7 +286,11 @@ export default function Ingredients() {
           </FadeIn>
           <FadeIn direction="none" delay={0.15} className="md:max-w-[36ch] md:pb-1">
             <p className="font-serif italic text-foreground/45 text-base md:text-lg leading-relaxed">
-              Every scent begins with a memory — a place, a time of day, a feeling. Each blend is chosen with the lightest hand needed to evoke, not overwhelm.
+              Every fragrance begins with a memory.
+              <br />A place.
+              <br />A season.
+              <br />A quiet moment.
+              <br /><br />Chosen to evoke, never overwhelm.
             </p>
           </FadeIn>
         </div>
@@ -309,7 +313,7 @@ export default function Ingredients() {
               onClick={(e) => { e.preventDefault(); window.location.href = import.meta.env.BASE_URL; }}
               className="inline-block mt-14 text-[10px] uppercase tracking-[0.25em] text-primary-foreground/50 border-b border-primary-foreground/20 pb-1 hover:text-primary-foreground hover:border-primary-foreground/50 transition-all duration-500 font-sans"
             >
-              Explore the Collection
+              Discover the Collection
             </a>
           </FadeIn>
         </div>
