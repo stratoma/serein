@@ -10,6 +10,11 @@ import Ingredients from "@/pages/ingredients";
 import ProductDetail from "@/pages/product-detail";
 import MorrowTrio from "@/pages/morrow-trio";
 import NotFound from "@/pages/not-found";
+import Checkout from "@/pages/checkout";
+import Markets from "@/pages/markets";
+import { Privacy, Shipping } from "@/pages/policy";
+import { CartProvider } from "@/context/cart-context";
+import { CartDrawer } from "@/components/cart-drawer";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +27,10 @@ function Router() {
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/ingredients" component={Ingredients} />
+          <Route path="/markets" component={Markets} />
+          <Route path="/checkout" component={Checkout} />
+          <Route path="/privacy" component={Privacy} />
+          <Route path="/shipping" component={Shipping} />
           <Route path="/collection/morrow-trio" component={MorrowTrio} />
           <Route path="/collection/:slug" component={ProductDetail} />
           <Route component={NotFound} />
@@ -35,12 +44,15 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
+      <CartProvider>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+            <Router />
+          </WouterRouter>
+          <CartDrawer />
+          <Toaster />
+        </TooltipProvider>
+      </CartProvider>
     </QueryClientProvider>
   );
 }

@@ -17,6 +17,14 @@ const ingredients = [
   { name: "Fragrance", note: "Meets rigorous safety standards. Chosen to evoke, never to overwhelm." },
 ];
 
+const marketEvents = [
+  { name: "Lagos Handcraft Fair", location: "Victoria Island Community Centre", date: "2026-07-12" },
+  { name: "The Makers Market", location: "Lekki Phase 1", date: "2026-08-02" },
+  { name: "Craft & Co. Pop-Up", location: "Ikoyi Arts Quarter", date: "2026-08-23" },
+];
+
+const formatMarketDate = (date: string) => new Intl.DateTimeFormat("en-US", { month: "long", day: "numeric", year: "numeric" }).format(new Date(`${date}T12:00:00`));
+
 function ParallaxHero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
@@ -59,6 +67,10 @@ function ParallaxHero() {
 }
 
 export default function Home() {
+  const today = new Date();
+  const upcomingMarkets = marketEvents.filter((event) => new Date(`${event.date}T23:59:59`) >= today);
+  const pastMarkets = marketEvents.filter((event) => new Date(`${event.date}T23:59:59`) < today);
+
   return (
     <main className="w-full bg-background overflow-hidden">
 
@@ -291,9 +303,9 @@ export default function Home() {
             ))}
             <FadeIn direction="none" delay={0.6}>
               <div className="pt-10">
-                <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+                <Link href="/ingredients" className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
                   View Full Ingredients
-                </button>
+                </Link>
               </div>
             </FadeIn>
           </div>
@@ -385,43 +397,26 @@ export default function Home() {
           </FadeIn>
 
           <div className="space-y-0">
-            <FadeIn direction="none" delay={0.1}>
-              <div className="border-t border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
-                <div className="flex flex-col gap-2">
-                  <span className="text-[9px] uppercase tracking-[0.3em] text-[#C48C1E] font-sans">Next Up</span>
-                  <h3 className="text-2xl font-serif text-primary group-hover:translate-x-0.5 transition-transform duration-500">Lagos Handcraft Fair</h3>
-                  <p className="text-foreground/40 text-xs font-sans tracking-wide">Victoria Island Community Centre</p>
+            {upcomingMarkets.map((event, i) => (
+              <FadeIn key={event.date} direction="none" delay={0.1 + i * 0.1}>
+                <div className="border-t border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
+                  <div className="flex flex-col gap-2">
+                    {i === 0 && <span className="text-[9px] uppercase tracking-[0.3em] text-[#C48C1E] font-sans">Next Up</span>}
+                    <h3 className="text-2xl font-serif text-primary group-hover:translate-x-0.5 transition-transform duration-500">{event.name}</h3>
+                    <p className="text-foreground/40 text-xs font-sans tracking-wide">{event.location}</p>
+                  </div>
+                  <p className="font-serif italic text-foreground/50 text-lg sm:text-xl whitespace-nowrap">{formatMarketDate(event.date)}</p>
                 </div>
-                <p className="font-serif italic text-foreground/50 text-lg sm:text-xl whitespace-nowrap">July 12, 2026</p>
-              </div>
-            </FadeIn>
-
-            <FadeIn direction="none" delay={0.2}>
-              <div className="border-t border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-serif text-primary/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-500">The Makers Market</h3>
-                  <p className="text-foreground/30 text-xs font-sans tracking-wide">Lekki Phase 1</p>
-                </div>
-                <p className="font-serif italic text-foreground/40 text-lg sm:text-xl whitespace-nowrap">August 2, 2026</p>
-              </div>
-            </FadeIn>
-
-            <FadeIn direction="none" delay={0.3}>
-              <div className="border-t border-b border-foreground/10 py-10 flex flex-col sm:flex-row justify-between sm:items-end gap-3 group">
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-2xl font-serif text-primary/70 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-500">Craft & Co. Pop-Up</h3>
-                  <p className="text-foreground/30 text-xs font-sans tracking-wide">Ikoyi Arts Quarter</p>
-                </div>
-                <p className="font-serif italic text-foreground/40 text-lg sm:text-xl whitespace-nowrap">August 23, 2026</p>
-              </div>
-            </FadeIn>
+              </FadeIn>
+            ))}
+            {pastMarkets.length > 0 && <p className="border-t border-foreground/10 pt-6 text-xs uppercase tracking-[0.2em] text-foreground/30">{pastMarkets.length} past market{pastMarkets.length === 1 ? "" : "s"} archived below</p>}
           </div>
 
           <FadeIn direction="none" delay={0.4}>
             <div className="mt-14">
-              <button className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
+              <Link href="/markets" className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans">
                 See Full Market Calendar
-              </button>
+              </Link>
             </div>
           </FadeIn>
         </div>

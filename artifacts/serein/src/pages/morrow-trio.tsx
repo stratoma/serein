@@ -2,10 +2,16 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
 import { products } from "@/data/products";
+import { useCart } from "@/context/cart-context";
+import { useToast } from "@/hooks/use-toast";
 
 const BASE = import.meta.env.BASE_URL;
 
 export default function MorrowTrio() {
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  const trioImage = `${BASE}images/product-trio.png`;
+
   return (
     <main className="w-full bg-background overflow-hidden">
 
@@ -71,6 +77,49 @@ export default function MorrowTrio() {
               <p className="font-serif italic text-foreground/50 text-base md:text-lg leading-relaxed">
                 Carry all three. Layer them. Take your time. There is no wrong way to begin a ritual.
               </p>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* PURCHASE — placed after the introduction so the discovery set is available before the long-form content */}
+      <section className="bg-[#f5efe6] py-20 md:py-24 px-8 md:px-16">
+        <div className="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans block mb-4">
+              The Morrow Trio
+            </span>
+            <h2 className="text-[clamp(2.5rem,7vw,5rem)] font-serif text-primary leading-none mb-5">
+              Begin here.
+            </h2>
+            <p className="font-serif italic text-foreground/50 text-lg leading-relaxed max-w-[34ch] mx-auto">
+              Three rituals. One discovery set. All three scents, together — at the price of one.
+            </p>
+          </FadeIn>
+
+          <FadeIn direction="none" delay={0.2}>
+            <div className="flex flex-col items-center gap-5 pt-1">
+              <span className="text-foreground/55 text-sm font-sans tracking-wide">$11</span>
+              <button
+                type="button"
+                onClick={() => {
+                  addItem({ id: "morrow-trio", name: "The Morrow Trio", price: 11, image: trioImage });
+                  toast({ title: "The Morrow Trio added", description: "Your ritual is waiting in the cart." });
+                }}
+                className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              >
+                Bring It Home
+              </button>
+            </div>
+          </FadeIn>
+          <FadeIn direction="none" delay={0.35}>
+            <div className="flex flex-col items-center gap-4 pt-2">
+              <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/30 font-sans">Or explore each scent individually</p>
+              <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+                {products.map((product) => (
+                  <Link key={product.id} href={`/collection/${product.id}`} className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans">{product.name}</Link>
+                ))}
+              </div>
             </div>
           </FadeIn>
         </div>
@@ -196,51 +245,6 @@ export default function MorrowTrio() {
             Made by hand. Always.
           </p>
         </FadeIn>
-      </section>
-
-      {/* PURCHASE */}
-      <section className="py-28 md:py-40 px-8 md:px-16">
-        <div className="max-w-2xl mx-auto text-center flex flex-col items-center gap-10">
-          <FadeIn direction="none">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans block mb-4">
-              The Morrow Trio
-            </span>
-            <h2 className="text-[clamp(2.5rem,7vw,5rem)] font-serif text-primary leading-none mb-6">
-              Begin here.
-            </h2>
-            <p className="font-serif italic text-foreground/50 text-lg leading-relaxed max-w-[34ch] mx-auto">
-              Three rituals. One discovery set. All three scents, together — at the price of one.
-            </p>
-          </FadeIn>
-
-          <FadeIn direction="none" delay={0.2}>
-            <div className="flex flex-col items-center gap-6 pt-2">
-              <span className="text-foreground/40 text-sm font-sans tracking-wide">$11</span>
-              <button className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans">
-                Bring It Home
-              </button>
-            </div>
-          </FadeIn>
-
-          <FadeIn direction="none" delay={0.35}>
-            <div className="pt-4 flex flex-col items-center gap-4">
-              <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/30 font-sans">
-                Or explore each scent individually
-              </p>
-              <div className="flex gap-8">
-                {products.map((p) => (
-                  <Link
-                    key={p.id}
-                    href={`/collection/${p.id}`}
-                    className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans"
-                  >
-                    {p.name}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        </div>
       </section>
 
     </main>

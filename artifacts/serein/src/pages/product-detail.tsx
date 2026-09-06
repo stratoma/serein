@@ -3,12 +3,16 @@ import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
 import { getProductById } from "@/data/products";
 import { ProductCarousel, CarouselImage } from "@/components/product-carousel";
+import { useCart } from "@/context/cart-context";
+import { useToast } from "@/hooks/use-toast";
 
 const BASE = import.meta.env.BASE_URL;
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
   const product = getProductById(slug ?? "");
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   if (!product) {
     return (
@@ -100,6 +104,52 @@ export default function ProductDetail() {
                   {paragraph}
                 </p>
               ))}
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
+      {/* PURCHASE — placed after the scent story so visitors can add this product before exploring the long-form detail */}
+      <section className="bg-[#f5efe6] py-20 md:py-24 px-8 md:px-16">
+        <div className="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
+          <FadeIn direction="none">
+            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans block mb-4">
+              {product.pillar}
+            </span>
+            <h2 className="text-[clamp(2.5rem,7vw,5rem)] font-serif text-primary leading-none mb-5">
+              {product.name}
+            </h2>
+            <p className="font-serif italic text-foreground/50 text-lg leading-relaxed max-w-[34ch] mx-auto">
+              {product.desc}
+            </p>
+          </FadeIn>
+
+          <FadeIn direction="none" delay={0.2}>
+            <div className="flex flex-col items-center gap-5 pt-1">
+              <span className="text-foreground/55 text-sm font-sans tracking-wide">{product.price}</span>
+              <button
+                type="button"
+                onClick={() => {
+                  addItem({ id: product.id, name: product.name, price: Number(product.price.replace(/[^0-9.]/g, "")), image: product.cleanStill ?? product.img });
+                  toast({ title: `${product.name} added`, description: "Your ritual is waiting in the cart." });
+                }}
+                className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </FadeIn>
+          <FadeIn direction="none" delay={0.35}>
+            <div className="flex flex-col items-center gap-4 pt-2">
+              <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/30 font-sans">Or explore the full collection</p>
+              <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
+                {["supple-oud", "mint-moss", "lithe-bloom"].filter((id) => id !== product.id).map((id) => (
+                  <Link key={id} href={`/collection/${id}`} className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans">
+                    {id.replace("-", " ").replace(/\b\w/g, (character) => character.toUpperCase())}
+                  </Link>
+                ))}
+                <Link href="/collection/morrow-trio" className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans">The Trio</Link>
+              </div>
             </div>
           </FadeIn>
         </div>
@@ -210,59 +260,6 @@ export default function ProductDetail() {
               </FadeIn>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* PURCHASE */}
-      <section className="py-28 md:py-40 px-8 md:px-16">
-        <div className="max-w-2xl mx-auto text-center flex flex-col items-center gap-10">
-          <FadeIn direction="none">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans block mb-4">
-              {product.pillar}
-            </span>
-            <h2 className="text-[clamp(2.5rem,7vw,5rem)] font-serif text-primary leading-none mb-6">
-              {product.name}
-            </h2>
-            <p className="font-serif italic text-foreground/50 text-lg leading-relaxed max-w-[34ch] mx-auto">
-              {product.desc}
-            </p>
-          </FadeIn>
-
-          <FadeIn direction="none" delay={0.2}>
-            <div className="flex flex-col items-center gap-6 pt-2">
-              <span className="text-foreground/40 text-sm font-sans tracking-wide">{product.price}</span>
-              <button className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans">
-                Add to Cart
-              </button>
-            </div>
-          </FadeIn>
-
-          <FadeIn direction="none" delay={0.35}>
-            <div className="pt-4 flex flex-col items-center gap-4">
-              <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/30 font-sans">
-                Or explore the full collection
-              </p>
-              <div className="flex gap-8">
-                {["supple-oud", "mint-moss", "lithe-bloom"]
-                  .filter((id) => id !== product.id)
-                  .map((id) => (
-                    <Link
-                      key={id}
-                      href={`/collection/${id}`}
-                      className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans"
-                    >
-                      {id.replace("-", " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                    </Link>
-                  ))}
-                <Link
-                  href="/collection/morrow-trio"
-                  className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans"
-                >
-                  The Trio
-                </Link>
-              </div>
-            </div>
-          </FadeIn>
         </div>
       </section>
 

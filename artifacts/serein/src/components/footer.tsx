@@ -1,6 +1,15 @@
 import { Link } from "wouter";
+import { useState, type FormEvent } from "react";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setSubscribed(true);
+  }
+
   return (
     <footer className="bg-primary text-primary-foreground py-24 px-8 md:px-16">
       <div className="max-w-6xl mx-auto">
@@ -15,7 +24,7 @@ export function Footer() {
               Made with intention. Shared with care.
             </p>
             <div className="mt-8">
-              <a href="#" className="text-[10px] uppercase tracking-[0.2em] text-primary-foreground/30 hover:text-primary-foreground/70 transition-colors duration-400 font-sans">
+              <a href="https://www.instagram.com/serein.skin" target="_blank" rel="noreferrer" className="text-[10px] uppercase tracking-[0.2em] text-primary-foreground/30 hover:text-primary-foreground/70 transition-colors duration-400 font-sans">
                 @serein.skin
               </a>
             </div>
@@ -24,11 +33,11 @@ export function Footer() {
           <div>
             <h3 className="text-[10px] uppercase tracking-[0.25em] font-sans text-primary-foreground/30 mb-8">Explore</h3>
             <ul className="space-y-5 text-sm text-primary-foreground/50 font-sans">
-              <li><a href="#collection" className="hover:text-primary-foreground/90 transition-colors duration-300">Collection</a></li>
-              <li><a href="#ingredients" className="hover:text-primary-foreground/90 transition-colors duration-300">Ingredients</a></li>
-              <li><a href="#morrow-trio" className="hover:text-primary-foreground/90 transition-colors duration-300">The Morrow Trio</a></li>
-              <li><a href="#markets" className="hover:text-primary-foreground/90 transition-colors duration-300">Markets</a></li>
-              <li><a href="#story" className="hover:text-primary-foreground/90 transition-colors duration-300">About</a></li>
+              <li><a href="/#collection" className="hover:text-primary-foreground/90 transition-colors duration-300">Collection</a></li>
+              <li><a href="/#ingredients" className="hover:text-primary-foreground/90 transition-colors duration-300">Ingredients</a></li>
+              <li><a href="/#morrow-trio" className="hover:text-primary-foreground/90 transition-colors duration-300">The Morrow Trio</a></li>
+              <li><a href="/#markets" className="hover:text-primary-foreground/90 transition-colors duration-300">Markets</a></li>
+              <li><a href="/#story" className="hover:text-primary-foreground/90 transition-colors duration-300">About</a></li>
             </ul>
           </div>
 
@@ -37,9 +46,16 @@ export function Footer() {
             <p className="text-xs text-primary-foreground/40 font-sans leading-relaxed mb-6 max-w-[26ch]">
               New batches and quiet news, when it matters.
             </p>
-            <form className="flex flex-col space-y-4" onSubmit={(e) => e.preventDefault()}>
+            {subscribed ? (
+              <p className="border-t border-primary-foreground/15 pt-4 text-sm font-serif italic text-primary-foreground/70" role="status">You’re on the list. We’ll be in touch when there’s something worth sharing.</p>
+            ) : <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+              <label htmlFor="footer-email" className="sr-only">Email address</label>
               <input
+                id="footer-email"
                 type="email"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                autoComplete="email"
                 placeholder="Enter your email"
                 className="bg-transparent border-b border-primary-foreground/15 py-2 px-0 text-sm font-sans focus:outline-none focus:border-primary-foreground/40 placeholder:text-primary-foreground/25 transition-colors duration-300"
                 required
@@ -50,7 +66,7 @@ export function Footer() {
               >
                 Subscribe
               </button>
-            </form>
+            </form>}
           </div>
         </div>
 

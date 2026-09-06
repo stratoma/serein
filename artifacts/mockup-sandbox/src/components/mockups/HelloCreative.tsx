@@ -94,7 +94,7 @@ function AnimatedHeadline({ text, className = "" }: { text: string; className?: 
   };
   const word = {
     hidden: { opacity: 0, y: "110%", rotateX: -15 },
-    visible: { opacity: 1, y: "0%", rotateX: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] } },
+    visible: { opacity: 1, y: "0%", rotateX: 0, transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] as const } },
   };
   return (
     <motion.h1
