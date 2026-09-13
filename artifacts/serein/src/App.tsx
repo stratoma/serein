@@ -14,7 +14,9 @@ import Checkout from "@/pages/checkout";
 import Markets from "@/pages/markets";
 import { Privacy, Shipping } from "@/pages/policy";
 import { CartProvider } from "@/context/cart-context";
+import { AuthProvider } from "@/context/auth-context";
 import { CartDrawer } from "@/components/cart-drawer";
+import Auth from "@/pages/auth";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +31,7 @@ function Router() {
           <Route path="/ingredients" component={Ingredients} />
           <Route path="/markets" component={Markets} />
           <Route path="/checkout" component={Checkout} />
+          <Route path="/auth" component={Auth} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/shipping" component={Shipping} />
           <Route path="/collection/morrow-trio" component={MorrowTrio} />
@@ -44,15 +47,17 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <TooltipProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <Router />
-          </WouterRouter>
-          <CartDrawer />
-          <Toaster />
-        </TooltipProvider>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <TooltipProvider>
+            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+              <Router />
+            </WouterRouter>
+            <CartDrawer />
+            <Toaster />
+          </TooltipProvider>
+        </CartProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

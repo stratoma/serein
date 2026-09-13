@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
-import { Menu, X, ShoppingBag } from "lucide-react";
+import { Menu, X, ShoppingBag, UserRound } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/cart-context";
+import { useAuth } from "@/context/auth-context";
 
 export function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { itemCount, setIsOpen } = useCart();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,6 +69,17 @@ export function NavBar() {
                 {link.name}
               </Link>
             )
+          )}
+          {user ? (
+            <button type="button" onClick={() => void signOut()} className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
+              <UserRound className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span>Sign out</span>
+            </button>
+          ) : (
+            <Link href="/auth" className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
+              <UserRound className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span>Sign in</span>
+            </Link>
           )}
           <button type="button" onClick={() => setIsOpen(true)} aria-label={`Open cart${itemCount ? `, ${itemCount} item${itemCount === 1 ? "" : "s"}` : ""}`} className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
             <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
@@ -132,6 +145,35 @@ export function NavBar() {
                   </Link>
                 </motion.div>
               )
+            )}
+            {user ? (
+              <motion.button
+                type="button"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navLinks.length * 0.07 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  void signOut();
+                }}
+                className="text-left text-4xl font-serif text-primary leading-none"
+              >
+                Sign out
+              </motion.button>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navLinks.length * 0.07 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <Link
+                  href="/auth"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-4xl font-serif text-primary leading-none"
+                >
+                  Sign in
+                </Link>
+              </motion.div>
             )}
           </motion.div>
         )}
