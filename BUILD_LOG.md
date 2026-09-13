@@ -362,6 +362,34 @@ Verification:
 - Production HTML at `https://serein.stratoma.workers.dev/` references `assets/index-hRClWz1r.js` and `assets/index-CYFg_iaf.css`.
 - Cloudflare deployment version: `6849fa1a-aa66-44c8-8422-1f9288bd3e8a`.
 
+### Auth Page Provider-Neutral Copy
+
+Status: Completed
+
+Implemented:
+
+- Removed public Firebase/provider wording from the authentication page.
+- Replaced configuration and session messages with customer-facing account language.
+- Kept implementation details in code and developer documentation only.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/pages/auth.tsx
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- Confirmed `artifacts/serein/src/pages/auth.tsx` no longer contains `Firebase` or `firebase`.
+- `corepack pnpm@10 --filter @workspace/serein run typecheck` passed.
+- `PORT=4173 BASE_PATH=/ corepack pnpm@10 --filter @workspace/serein run build` passed.
+
 ### Homepage Copy And Caption Readability
 
 Status: Completed

@@ -85,7 +85,7 @@ export default function Auth() {
             Your ritual, remembered.
           </h1>
           <p className="mt-8 max-w-md text-sm leading-7 text-foreground/55">
-            Sign in or create an account with Firebase Authentication. Password reset uses Firebase email actions and avoids revealing whether an email is registered.
+            Sign in or create an account to keep your Serein details close. Password reset is handled privately and never reveals whether an email is registered.
           </p>
         </section>
 
@@ -100,9 +100,9 @@ export default function Auth() {
                 <ShieldCheck className="h-5 w-5" strokeWidth={1.5} />
                 <p className="text-[10px] uppercase tracking-[0.25em]">Configuration needed</p>
               </div>
-              <h2 className="mt-7 font-serif text-3xl text-primary">Firebase is not available in this build.</h2>
+              <h2 className="mt-7 font-serif text-3xl text-primary">Account access is not available in this build.</h2>
               <p className="mt-5 text-sm leading-7 text-foreground/55">
-                Add the Firebase Vite variables locally or rebuild from the Cloudflare environment where they were configured.
+                Add the account access configuration locally or rebuild from the production environment where it is configured.
               </p>
               <ul className="mt-6 space-y-2 text-xs text-foreground/50">
                 {missingConfig.map((key) => (
@@ -116,7 +116,7 @@ export default function Auth() {
                 <ShieldCheck className="h-5 w-5" strokeWidth={1.5} />
                 <p className="text-[10px] uppercase tracking-[0.25em]">Signed in</p>
               </div>
-              <h2 className="mt-7 font-serif text-3xl text-primary">Firebase session active.</h2>
+              <h2 className="mt-7 font-serif text-3xl text-primary">Your session is active.</h2>
               <p className="mt-5 break-words text-sm leading-7 text-foreground/55">
                 {user.email ?? "Authenticated customer"}
               </p>
