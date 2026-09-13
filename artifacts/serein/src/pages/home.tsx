@@ -47,16 +47,16 @@ function ParallaxHero() {
             Serein
           </h1>
         </FadeIn>
-        <FadeIn delay={0.45} direction="none" className="md:text-right max-w-xs">
-          <p className="text-[#F3EBDD]/80 font-serif italic text-lg md:text-xl leading-relaxed mb-2">
+        <FadeIn delay={0.45} direction="none" className="md:text-right max-w-sm">
+          <p className="whitespace-nowrap text-[#FFF8EC] font-serif italic text-xl md:text-2xl leading-relaxed mb-3 [text-shadow:0_2px_18px_rgba(0,0,0,0.95)]">
             For skin that remembers touch.
           </p>
-          <p className="text-[#F3EBDD]/50 font-sans text-xs leading-relaxed mb-6 max-w-[28ch]">
+          <p className="text-[#FFF8EC] font-sans text-[15px] font-medium leading-8 tracking-[0.01em] mb-6 max-w-[36ch] ml-auto [text-shadow:0_2px_18px_rgba(0,0,0,0.95)]">
             Botanical body care rooted in ritual, created to soften skin and slow the pace of everyday life.
           </p>
           <a
             href="#collection"
-            className="inline-block text-[10px] uppercase tracking-[0.25em] text-[#F3EBDD]/70 border-b border-[#F3EBDD]/30 pb-1 hover:text-[#F3EBDD] hover:border-[#F3EBDD]/70 transition-all duration-500"
+            className="inline-block text-[11px] font-semibold uppercase tracking-[0.25em] text-[#FFF8EC] border-b border-[#FFF8EC]/70 pb-1 [text-shadow:0_2px_14px_rgba(0,0,0,0.95)] hover:text-[#F3EBDD] hover:border-[#F3EBDD] transition-all duration-500"
           >
             Discover the Collection
           </a>
@@ -86,7 +86,7 @@ export default function Home() {
         </FadeIn>
         <FadeIn direction="none" delay={0.2}>
           <p className="mt-8 text-foreground/50 text-base leading-loose max-w-[42ch] mx-auto font-sans">
-            Small-batch body butters made with rich botanical butters that deeply nourish and soften the skin — crafted for the rituals that anchor your day.
+            Small-batch body butters made with rich botanical butters that deeply nourish and soften the skin. Crafted for the rituals that anchor your day.
           </p>
         </FadeIn>
       </section>
@@ -169,7 +169,8 @@ export default function Home() {
                       alt={product.name}
                       className="w-full aspect-[4/5] object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                     />
-                    <p className="absolute bottom-4 left-5 text-[10px] uppercase tracking-[0.2em] text-white/60 font-sans">
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/45 via-black/20 to-transparent" />
+                    <p className="absolute bottom-5 left-5 right-5 text-[10px] uppercase tracking-[0.22em] text-white/90 font-sans font-medium leading-relaxed [text-shadow:0_2px_12px_rgba(0,0,0,0.85)]">
                       {product.caption}
                     </p>
                   </div>

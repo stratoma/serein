@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Current Phase: Firebase authentication integration
+Current Phase: Storefront copy and visual refinement
 Last Updated: 2026-09-13
 Overall Status: Active development
 
@@ -17,6 +17,7 @@ Overall Status: Active development
 - API server artifact present with Express router mounting.
 - Playwright test coverage exists for ingredient links.
 - Firebase Authentication client integration added for sign-in and password reset testing.
+- Homepage hero copy styling and product-caption readability refinements completed.
 
 ## In Progress
 
@@ -219,6 +220,34 @@ Unfinished:
 
 - Real sign-in and password reset email delivery are not verified locally because Firebase Vite variables are not present in the local runtime.
 - Need to test against a Cloudflare preview/production build with the configured variables, or add the same values to a local `.env.local`.
+
+### Homepage Copy And Caption Readability
+
+Status: Completed
+
+Implemented:
+
+- Increased hero supporting-copy contrast and readability.
+- Adjusted hero supporting-copy spacing and max width.
+- Replaced the homepage section em dash sentence with two shorter sentences.
+- Added product-card caption gradient backing and stronger text treatment for image readability.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/pages/home.tsx
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- `corepack pnpm@10 --filter @workspace/serein run typecheck` passed.
+- `PORT=4173 BASE_PATH=/ corepack pnpm@10 --filter @workspace/serein run build` passed.
 
 ## Security Findings
 
