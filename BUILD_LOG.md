@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Current Phase: Firebase authentication integration
+Current Phase: Google authentication reliability verification
 Last Updated: 2026-09-13
 Overall Status: Active development
 
@@ -19,6 +19,7 @@ Overall Status: Active development
 - Firebase Authentication client integration added for sign-in and password reset testing.
 - Firebase signup UI and account creation added.
 - Google authentication added for sign-in and first-time signup.
+- Google redirect sign-in added for browsers that block popup authentication.
 - Homepage hero copy styling and product-caption readability refinements completed.
 
 ## In Progress
@@ -31,6 +32,7 @@ Overall Status: Active development
 - Real Firebase login/password reset verification with configured environment variables.
 - Real Firebase signup and email verification delivery verification with configured environment variables.
 - Google provider verification in Firebase production configuration.
+- Production verification of the Google redirect flow.
 
 ## Planned
 
@@ -362,6 +364,48 @@ Verification:
 - Production HTML at `https://serein.stratoma.workers.dev/` references `assets/index-hRClWz1r.js` and `assets/index-CYFg_iaf.css`.
 - Cloudflare deployment version: `6849fa1a-aa66-44c8-8422-1f9288bd3e8a`.
 
+### Google Authentication Reliability
+
+Status: Blocked on project-console configuration
+
+Implemented:
+
+- Uses redirect sign-in to avoid browser popup and embedded-browser restrictions.
+- Reads the redirect result when the app returns to the auth page.
+- Preserves generic customer-facing error messaging after redirect failures.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/context/auth-context.tsx
+```
+
+1.
+```
+artifacts/serein/src/pages/auth.tsx
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- `corepack pnpm@10 --filter @workspace/serein run typecheck` passed.
+- Production-configured Vite build passed.
+- Local auth page smoke test confirmed the Google button remains available in sign-in mode.
+- Production test confirmed the request is rejected before the Google account picker opens.
+- Clean redirect build deployed to Cloudflare Worker version `313a0862-b9dc-4af2-9574-6662c5cc036f`.
+
+Unfinished:
+
+- Production Google account completion must be re-tested after deployment.
+- The Google provider must be enabled in the project console.
+- `serein.stratoma.workers.dev` must be listed under authorized domains in the project console.
+- The available browser account cannot access the `sereinskn` project, so those console settings were not changed by this task.
+
 ### Auth Page Provider-Neutral Copy
 
 Status: Completed
@@ -438,5 +482,5 @@ Verification:
   - `artifacts/serein/src/pages/home.tsx`
   - `serein-main.zip`
 - Full build, typecheck, dependency audit, and Playwright test suite were not run during this log initialization.
-- Production deployment status is not verified.
+- Production deployment is verified through Cloudflare Worker version `313a0862-b9dc-4af2-9574-6662c5cc036f`; Google account completion remains blocked on project-console settings.
 - Local Firebase login/reset cannot be fully tested until Firebase environment variables are available to the running app.

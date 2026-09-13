@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Link } from "wouter";
 import { Eye, EyeOff, KeyRound, Mail, ShieldCheck } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
@@ -11,6 +11,7 @@ export default function Auth() {
     user,
     isReady,
     isConfigured,
+    hasGoogleAuthError,
     signIn,
     signUp,
     signInWithGoogle,
@@ -24,6 +25,12 @@ export default function Auth() {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (hasGoogleAuthError) {
+      setError("We could not complete Google authentication.");
+    }
+  }, [hasGoogleAuthError]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

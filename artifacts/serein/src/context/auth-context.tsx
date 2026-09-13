@@ -10,13 +10,14 @@ import {
 import {
   browserLocalPersistence,
   createUserWithEmailAndPassword,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
-  signInWithPopup,
+  signInWithRedirect,
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
@@ -26,6 +27,7 @@ type AuthContextValue = {
   user: User | null;
   isReady: boolean;
   isConfigured: boolean;
+  hasGoogleAuthError: boolean;
   missingConfig: string[];
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
@@ -39,6 +41,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState(false);
+  const [hasGoogleAuthError, setHasGoogleAuthError] = useState(false);
   const auth = getFirebaseAuth();
   const isConfigured = Boolean(auth);
 
@@ -49,6 +52,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     void setPersistence(auth, browserLocalPersistence);
+
+    void getRedirectResult(auth).catch(() => {
+      setHasGoogleAuthError(true);
+    });
 
     return onAuthStateChanged(auth, (nextUser) => {
       setUser(nextUser);
@@ -85,7 +92,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!auth) throw new Error("Firebase is not configured.");
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
-    await signInWithPopup(auth, provider);
+    try {
+      await signInWithRedirect(auth, provider);
+    } catch {
+      throw new Error("Google authentication could not be started.");
+    }
   }, [auth]);
 
   const signOut = useCallback(async () => {
@@ -98,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       isReady,
       isConfigured,
+      hasGoogleAuthError,
       missingConfig: missingFirebaseConfig,
       signIn,
       signUp,
@@ -105,7 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       requestPasswordReset,
       signOut,
     }),
-    [isConfigured, isReady, requestPasswordReset, signIn, signInWithGoogle, signOut, signUp, user],
+    [hasGoogleAuthError, isConfigured, isReady, requestPasswordReset, signIn, signInWithGoogle, signOut, signUp, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
