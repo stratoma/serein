@@ -265,6 +265,34 @@ Unfinished:
 
 - Real account creation and email verification delivery must be tested against Cloudflare production/preview with real Firebase web config.
 
+### Production Deployment
+
+Status: Completed
+
+Implemented:
+
+- Deployed the current Serein static asset build to Cloudflare Workers.
+- Production now references the latest built JavaScript asset bundle.
+
+Files affected:
+
+1.
+```
+artifacts/serein/dist/public
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- `CLOUDFLARE_ACCOUNT_ID=ebba4f358bac6d74783717739970c11f npx wrangler deploy` completed successfully.
+- Wrangler uploaded `/index.html` and `/assets/index-79oNh3Gd.js`.
+- Production HTML at `https://serein.stratoma.workers.dev/` references `assets/index-79oNh3Gd.js` and `assets/index-BFr7Etst.css`.
+- Cloudflare deployment version: `eeb1f99a-944e-4a0c-b561-8f8ddd012813`.
+
 ### Homepage Copy And Caption Readability
 
 Status: Completed
