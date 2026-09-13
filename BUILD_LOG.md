@@ -335,6 +335,33 @@ Verification:
 - Production HTML at `https://serein.stratoma.workers.dev/` references `assets/index-79oNh3Gd.js` and `assets/index-BFr7Etst.css`.
 - Cloudflare deployment version: `eeb1f99a-944e-4a0c-b561-8f8ddd012813`.
 
+### Google Authentication Deployment
+
+Status: Completed
+
+Implemented:
+
+- Deployed the Google authentication UI and Firebase provider integration to Cloudflare Workers.
+
+Files affected:
+
+1.
+```
+artifacts/serein/dist/public
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- `CLOUDFLARE_ACCOUNT_ID=ebba4f358bac6d74783717739970c11f npx wrangler deploy` completed successfully.
+- Wrangler uploaded `/index.html`, `/assets/index-CYFg_iaf.css`, and `/assets/index-hRClWz1r.js`.
+- Production HTML at `https://serein.stratoma.workers.dev/` references `assets/index-hRClWz1r.js` and `assets/index-CYFg_iaf.css`.
+- Cloudflare deployment version: `6849fa1a-aa66-44c8-8422-1f9288bd3e8a`.
+
 ### Homepage Copy And Caption Readability
 
 Status: Completed
