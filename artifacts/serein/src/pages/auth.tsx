@@ -11,7 +11,6 @@ export default function Auth() {
     user,
     isReady,
     isConfigured,
-    missingConfig,
     signIn,
     signUp,
     signInWithGoogle,
@@ -102,13 +101,8 @@ export default function Auth() {
               </div>
               <h2 className="mt-7 font-serif text-3xl text-primary">Account access is not available in this build.</h2>
               <p className="mt-5 text-sm leading-7 text-foreground/55">
-                Add the account access configuration locally or rebuild from the production environment where it is configured.
+                Account access is being refreshed. Please try again shortly.
               </p>
-              <ul className="mt-6 space-y-2 text-xs text-foreground/50">
-                {missingConfig.map((key) => (
-                  <li key={key}>{key}</li>
-                ))}
-              </ul>
             </div>
           ) : user ? (
             <div className="bg-[#f5efe6] p-8 md:p-10">

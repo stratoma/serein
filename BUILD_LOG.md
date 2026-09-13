@@ -389,6 +389,9 @@ Verification:
 - Confirmed `artifacts/serein/src/pages/auth.tsx` no longer contains `Firebase` or `firebase`.
 - `corepack pnpm@10 --filter @workspace/serein run typecheck` passed.
 - `PORT=4173 BASE_PATH=/ corepack pnpm@10 --filter @workspace/serein run build` passed.
+- Deployed provider-neutral copy to Cloudflare Workers.
+- Production `/auth` no longer displays provider names or internal `VITE_FIREBASE_*` variable names.
+- Cloudflare deployment version: `49031d57-1164-4c07-9dc8-1b6aa0af1b4b`.
 
 ### Homepage Copy And Caption Readability
 
