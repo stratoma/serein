@@ -18,6 +18,7 @@ Overall Status: Active development
 - Playwright test coverage exists for ingredient links.
 - Firebase Authentication client integration added for sign-in and password reset testing.
 - Firebase signup UI and account creation added.
+- Google authentication added for sign-in and first-time signup.
 - Homepage hero copy styling and product-caption readability refinements completed.
 
 ## In Progress
@@ -29,6 +30,7 @@ Overall Status: Active development
 - Security review of public storefront and API boundaries.
 - Real Firebase login/password reset verification with configured environment variables.
 - Real Firebase signup and email verification delivery verification with configured environment variables.
+- Google provider verification in Firebase production configuration.
 
 ## Planned
 
@@ -264,6 +266,46 @@ Verification:
 Unfinished:
 
 - Real account creation and email verification delivery must be tested against Cloudflare production/preview with real Firebase web config.
+
+### Google Authentication
+
+Status: In Progress
+
+Implemented:
+
+- Added Firebase Google provider support.
+- Added a shared Continue with Google button for sign-in and sign-up modes.
+- Google flow prompts customers to choose an account.
+- Google auth errors are shown as generic public UI messages.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/context/auth-context.tsx
+```
+
+1.
+```
+artifacts/serein/src/pages/auth.tsx
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- `corepack pnpm@10 --filter @workspace/serein run typecheck` passed.
+- `PORT=4173 BASE_PATH=/ corepack pnpm@10 --filter @workspace/serein run build` passed.
+- Local dummy-config smoke test on `http://localhost:4175/auth` confirmed Continue with Google renders in sign-in mode.
+- Local dummy-config smoke test confirmed Sign up mode keeps Continue with Google visible and changes the email submit button to Create account.
+
+Unfinished:
+
+- Firebase Console must have Google as an enabled sign-in provider.
+- Production domain must remain listed in Firebase Authorized domains.
 
 ### Production Deployment
 

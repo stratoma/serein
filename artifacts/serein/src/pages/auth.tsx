@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "wouter";
 import { Eye, EyeOff, KeyRound, Mail, ShieldCheck } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "@/context/auth-context";
 
 type AuthMode = "sign-in" | "sign-up" | "reset";
@@ -13,6 +14,7 @@ export default function Auth() {
     missingConfig,
     signIn,
     signUp,
+    signInWithGoogle,
     requestPasswordReset,
     signOut,
   } = useAuth();
@@ -49,6 +51,21 @@ export default function Auth() {
       } else {
         setError("We could not sign you in with those details.");
       }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    setError("");
+    setStatus("");
+    setIsSubmitting(true);
+
+    try {
+      await signInWithGoogle();
+      setStatus("You are signed in with Google.");
+    } catch {
+      setError("We could not complete Google authentication.");
     } finally {
       setIsSubmitting(false);
     }
@@ -160,6 +177,25 @@ export default function Auth() {
                   Reset
                 </button>
               </div>
+
+              {mode !== "reset" && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => void handleGoogleAuth()}
+                    disabled={isSubmitting}
+                    className="mt-8 flex w-full items-center justify-center gap-3 border border-foreground/15 bg-background/40 px-6 py-4 text-[10px] uppercase tracking-[0.2em] text-primary transition-colors hover:border-primary/50 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <FcGoogle className="h-4 w-4" />
+                    Continue with Google
+                  </button>
+                  <div className="mt-8 flex items-center gap-4">
+                    <span className="h-px flex-1 bg-foreground/10" />
+                    <span className="text-[9px] uppercase tracking-[0.2em] text-foreground/35">Or use email</span>
+                    <span className="h-px flex-1 bg-foreground/10" />
+                  </div>
+                </>
+              )}
 
               <div className="mt-10">
                 <label htmlFor="auth-email" className="text-[10px] uppercase tracking-[0.25em] text-foreground/45">

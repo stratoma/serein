@@ -10,11 +10,13 @@ import {
 import {
   browserLocalPersistence,
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   onAuthStateChanged,
   sendEmailVerification,
   sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signOut as firebaseSignOut,
   type User,
 } from "firebase/auth";
@@ -27,6 +29,7 @@ type AuthContextValue = {
   missingConfig: string[];
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -78,6 +81,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [auth],
   );
 
+  const signInWithGoogle = useCallback(async () => {
+    if (!auth) throw new Error("Firebase is not configured.");
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: "select_account" });
+    await signInWithPopup(auth, provider);
+  }, [auth]);
+
   const signOut = useCallback(async () => {
     if (!auth) return;
     await firebaseSignOut(auth);
@@ -91,10 +101,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       missingConfig: missingFirebaseConfig,
       signIn,
       signUp,
+      signInWithGoogle,
       requestPasswordReset,
       signOut,
     }),
-    [isConfigured, isReady, requestPasswordReset, signIn, signOut, signUp, user],
+    [isConfigured, isReady, requestPasswordReset, signIn, signInWithGoogle, signOut, signUp, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
