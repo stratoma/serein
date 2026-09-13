@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { Eye, EyeOff, KeyRound, Mail, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/context/auth-context";
 
-type AuthMode = "sign-in" | "reset";
+type AuthMode = "sign-in" | "sign-up" | "reset";
 
 export default function Auth() {
   const {
@@ -12,6 +12,7 @@ export default function Auth() {
     isConfigured,
     missingConfig,
     signIn,
+    signUp,
     requestPasswordReset,
     signOut,
   } = useAuth();
@@ -33,6 +34,9 @@ export default function Auth() {
       if (mode === "reset") {
         await requestPasswordReset(email.trim());
         setStatus("If an account exists for this email, a reset link has been sent.");
+      } else if (mode === "sign-up") {
+        await signUp(email.trim(), password);
+        setStatus("Your account was created. Check your inbox to verify your email.");
       } else {
         await signIn(email.trim(), password);
         setStatus("You are signed in.");
@@ -40,6 +44,8 @@ export default function Auth() {
     } catch {
       if (mode === "reset") {
         setStatus("If an account exists for this email, a reset link has been sent.");
+      } else if (mode === "sign-up") {
+        setError("We could not create an account with those details.");
       } else {
         setError("We could not sign you in with those details.");
       }
@@ -62,7 +68,7 @@ export default function Auth() {
             Your ritual, remembered.
           </h1>
           <p className="mt-8 max-w-md text-sm leading-7 text-foreground/55">
-            Sign in to test Firebase Authentication for Serein. Password reset uses Firebase email actions and avoids revealing whether an email is registered.
+            Sign in or create an account with Firebase Authentication. Password reset uses Firebase email actions and avoids revealing whether an email is registered.
           </p>
         </section>
 
@@ -107,7 +113,7 @@ export default function Auth() {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="bg-[#f5efe6] p-8 md:p-10">
-              <div className="flex gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <button
                   type="button"
                   onClick={() => {
@@ -126,11 +132,26 @@ export default function Auth() {
                 <button
                   type="button"
                   onClick={() => {
+                    setMode("sign-up");
+                    setError("");
+                    setStatus("");
+                  }}
+                  className={`border px-3 py-3 text-[10px] uppercase tracking-[0.16em] transition-colors ${
+                    mode === "sign-up"
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-foreground/15 text-foreground/55 hover:text-primary"
+                  }`}
+                >
+                  Sign up
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
                     setMode("reset");
                     setError("");
                     setStatus("");
                   }}
-                  className={`flex-1 border px-4 py-3 text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                  className={`border px-3 py-3 text-[10px] uppercase tracking-[0.16em] transition-colors ${
                     mode === "reset"
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-foreground/15 text-foreground/55 hover:text-primary"
@@ -159,7 +180,7 @@ export default function Auth() {
                 </div>
               </div>
 
-              {mode === "sign-in" && (
+              {mode !== "reset" && (
                 <div className="mt-8">
                   <label htmlFor="auth-password" className="text-[10px] uppercase tracking-[0.25em] text-foreground/45">
                     Password
@@ -169,8 +190,9 @@ export default function Auth() {
                     <input
                       id="auth-password"
                       type={showPassword ? "text" : "password"}
-                      autoComplete="current-password"
+                      autoComplete={mode === "sign-up" ? "new-password" : "current-password"}
                       required
+                      minLength={6}
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       className="h-12 flex-1 bg-transparent px-4 text-sm text-primary outline-none placeholder:text-foreground/35"
@@ -196,7 +218,13 @@ export default function Auth() {
                 disabled={isSubmitting}
                 className="mt-8 w-full bg-primary px-6 py-4 text-[10px] uppercase tracking-[0.25em] text-primary-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isSubmitting ? "Please wait" : mode === "reset" ? "Send reset email" : "Sign in"}
+                {isSubmitting
+                  ? "Please wait"
+                  : mode === "reset"
+                    ? "Send reset email"
+                    : mode === "sign-up"
+                      ? "Create account"
+                      : "Sign in"}
               </button>
             </form>
           )}

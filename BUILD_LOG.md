@@ -2,7 +2,7 @@
 
 ## Project Status
 
-Current Phase: Storefront copy and visual refinement
+Current Phase: Firebase authentication integration
 Last Updated: 2026-09-13
 Overall Status: Active development
 
@@ -17,6 +17,7 @@ Overall Status: Active development
 - API server artifact present with Express router mounting.
 - Playwright test coverage exists for ingredient links.
 - Firebase Authentication client integration added for sign-in and password reset testing.
+- Firebase signup UI and account creation added.
 - Homepage hero copy styling and product-caption readability refinements completed.
 
 ## In Progress
@@ -27,6 +28,7 @@ Overall Status: Active development
 - Runtime/API integration review.
 - Security review of public storefront and API boundaries.
 - Real Firebase login/password reset verification with configured environment variables.
+- Real Firebase signup and email verification delivery verification with configured environment variables.
 
 ## Planned
 
@@ -155,12 +157,13 @@ Implemented:
 
 - Added Firebase client SDK dependency to the Serein frontend package.
 - Added Firebase initialization through Vite environment variables.
-- Added authentication context with session tracking, email/password sign-in, password reset, and sign-out.
-- Added `/auth` page with sign-in, reset-password, signed-in, loading, and missing-configuration states.
+- Added authentication context with session tracking, email/password sign-in, account creation, email verification, password reset, and sign-out.
+- Added `/auth` page with sign-in, sign-up, reset-password, signed-in, loading, and missing-configuration states.
 - Added desktop and mobile navigation access for sign-in/sign-out.
 - Added `.env.example` with required Firebase Vite variable names.
 - Added `.env.local` ignore coverage so local Firebase values are not committed.
 - Password reset UI uses a generic success message to avoid revealing whether an email address is registered.
+- Signup sends a Firebase email-verification message after account creation.
 
 Files affected:
 
@@ -215,11 +218,52 @@ Verification:
 - `PORT=4173 BASE_PATH=/ corepack pnpm@10 --filter @workspace/serein run build` passed.
 - Local dev server started on `http://localhost:4174/`.
 - Browser smoke test confirmed `/auth` renders and fails closed with a missing Firebase configuration message when local env vars are absent.
+- Signup UI added after the initial auth push; current verification is recorded in the latest auth milestone update.
 
 Unfinished:
 
 - Real sign-in and password reset email delivery are not verified locally because Firebase Vite variables are not present in the local runtime.
+- Real signup and email verification delivery are not verified locally because Firebase Vite variables are not present in the local runtime.
 - Need to test against a Cloudflare preview/production build with the configured variables, or add the same values to a local `.env.local`.
+
+### Firebase Signup
+
+Status: In Progress
+
+Implemented:
+
+- Added Firebase email/password account creation.
+- Sends Firebase email verification after a customer account is created.
+- Added Sign up tab to `/auth`.
+- Reuses the password input with `new-password` autocomplete and minimum client-side length.
+- Keeps account-creation errors generic in the public UI.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/context/auth-context.tsx
+```
+
+1.
+```
+artifacts/serein/src/pages/auth.tsx
+```
+
+1.
+```
+BUILD_LOG.md
+```
+
+Verification:
+
+- `corepack pnpm@10 --filter @workspace/serein run typecheck` passed.
+- `PORT=4173 BASE_PATH=/ corepack pnpm@10 --filter @workspace/serein run build` passed.
+- Local dummy-config smoke test on `http://localhost:4175/auth` confirmed the Sign up tab renders and changes the submit button to Create account.
+
+Unfinished:
+
+- Real account creation and email verification delivery must be tested against Cloudflare production/preview with real Firebase web config.
 
 ### Homepage Copy And Caption Readability
 

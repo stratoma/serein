@@ -9,7 +9,9 @@ import {
 } from "react";
 import {
   browserLocalPersistence,
+  createUserWithEmailAndPassword,
   onAuthStateChanged,
+  sendEmailVerification,
   sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
@@ -24,6 +26,7 @@ type AuthContextValue = {
   isConfigured: boolean;
   missingConfig: string[];
   signIn: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string) => Promise<void>;
   requestPasswordReset: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
 };
@@ -58,6 +61,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     [auth],
   );
 
+  const signUp = useCallback(
+    async (email: string, password: string) => {
+      if (!auth) throw new Error("Firebase is not configured.");
+      const credential = await createUserWithEmailAndPassword(auth, email, password);
+      await sendEmailVerification(credential.user);
+    },
+    [auth],
+  );
+
   const requestPasswordReset = useCallback(
     async (email: string) => {
       if (!auth) throw new Error("Firebase is not configured.");
@@ -78,10 +90,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isConfigured,
       missingConfig: missingFirebaseConfig,
       signIn,
+      signUp,
       requestPasswordReset,
       signOut,
     }),
-    [isConfigured, isReady, requestPasswordReset, signIn, signOut, user],
+    [isConfigured, isReady, requestPasswordReset, signIn, signOut, signUp, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
