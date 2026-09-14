@@ -484,3 +484,12 @@ Verification:
 - Full build, typecheck, dependency audit, and Playwright test suite were not run during this log initialization.
 - Production deployment is verified through Cloudflare Worker version `313a0862-b9dc-4af2-9574-6662c5cc036f`; Google account completion remains blocked on project-console settings.
 - Local Firebase login/reset cannot be fully tested until Firebase environment variables are available to the running app.
+# Stripe sandbox Checkout — 2026-09-14
+
+- Implemented and deployed hosted Checkout from the existing cart, server-owned prices, D1 orders, signed webhook verification, and token-protected confirmation polling.
+- Test-only key enforcement prevents real payments. No shipping/tax/physical fulfillment is performed.
+- Passed cart validation and signed webhook tests (including forged signatures, unpaid events, mismatched amounts, duplicate events, and paid-state regression), frontend/Worker typechecks, production build, and Wrangler dry run.
+- End-to-end verification: bought Supple Oud for $22 in Stripe sandbox using a fictitious test card; corrected existing destination `we_1UFjAbHiM6owGJBCzanLqaTQ` from `https://sereinskn.com/` to the deployed webhook; resent event `evt_1UFjQrHiM6owGJBCUHpCJEi1`; observed “Test payment confirmed” in Serein.
+- Deployment: `d10b37bc-bce3-439e-961a-ede82e9a4e49`. Database migration applied to dedicated `serein-orders`.
+- Secrets remained in Cloudflare; no secret values were read or committed. Build retains pre-existing large-chunk/sourcemap warnings.
+- Remaining for real sales: shipping/address collection, tax configuration, inventory/fulfillment and notifications, rate limits, and explicit live-mode setup. See `worker/README.md`.

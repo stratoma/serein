@@ -1,8 +1,14 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "serein",
+  "main": "worker/index.ts",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "d1_databases": [{ "binding": "ORDERS", "database_name": "serein-orders", "database_id": "93850b3f-2696-4466-984a-4acd9d38c3c8", "migrations_dir": "worker/migrations" }],
   "compatibility_date": "2026-08-09",
   "assets": {
+    "binding": "ASSETS",
+    "run_worker_first": ["/api/*"],
     "directory": "./artifacts/serein/dist/public",
     "not_found_handling": "single-page-application"
   }
