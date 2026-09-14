@@ -37,7 +37,9 @@ export default function Checkout() {
   async function pay() {
     setBusy(true); setError("");
     try {
-      const token = sessionStorage.getItem('serein-checkout-token') || crypto.randomUUID();
+      // Scope the idempotency token to this click. Reusing a token from a
+      // completed or expired Checkout Session can send Stripe an old session.
+      const token = crypto.randomUUID();
       sessionStorage.setItem('serein-checkout-token', token);
       const response = await fetch('/api/stripe/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, items: items.map(({ id, quantity }) => ({ id, quantity })) }) });
       const data = await response.json();

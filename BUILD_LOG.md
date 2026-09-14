@@ -502,3 +502,10 @@ Verification:
 - Passed payment/webhook tests, frontend and Worker typechecks, production build, and Wrangler dry run. Final deployed Worker version: `683feae1-db8e-4371-9ef9-3faec754238c`.
 - Live sandbox inspection confirmed `customer_creation: always`, invoice creation, required billing address, phone collection, U.S. delivery-address collection, and the expected $22 USD total.
 - Completed a fresh $22 sandbox purchase through the deployed flow with fictitious contact, U.S. delivery, billing, and test-card data; Stripe marked it paid and complete, created a customer and invoice, retained the delivery details, and the signed webhook confirmed the order. Serein showed the order reference, cleared the cart, and retained the correct $22 paid total after refresh. A receipt-total regression found during this check was fixed before final verification.
+
+# Checkout retry token fix — 2026-09-14
+
+- Fixed checkout attempts reusing a browser token from an earlier completed or expired Stripe Checkout Session.
+- Each click now creates a fresh attempt token while retaining it through Stripe's return redirect for token-protected order confirmation.
+- Frontend and Worker typechecks passed; the production build passed with the existing sourcemap and large-chunk warnings; Wrangler dry run completed.
+- Deployed Worker version `435ebb4d-2650-42a1-88b8-e90be98c062c`. Two consecutive live sandbox requests for the same cart returned distinct Stripe Checkout Sessions.
