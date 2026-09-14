@@ -1,6 +1,6 @@
 # Stripe sandbox checkout
 
-The deployed Worker accepts test keys only. Hosted Checkout uses the server catalog (USD cents), never submitted browser prices. The D1 order status becomes paid only after a verified Stripe webhook. Repeat paid events are idempotent; failed or expired events cannot revert a paid order. Status access requires the browser's random checkout token; no personal data is returned.
+The deployed Worker accepts test keys only. Hosted Checkout uses the server catalog (USD cents), never submitted browser prices. It requires billing address, U.S. delivery address, phone, and email; creates a Stripe customer and invoice; and returns an order confirmation. The D1 order status becomes paid only after a verified Stripe webhook. Repeat paid events are idempotent; failed or expired events cannot revert a paid order. Status access requires the browser's random checkout token; no personal data is returned.
 
 ## Development
 
@@ -28,6 +28,6 @@ resent the signed event, and observed the site's test-payment-confirmed screen.
 No real charge or shipment occurred.
 
 This is a sandbox purchase demonstration. Before real sales: agree on shipping regions/rates,
-collect delivery addresses, configure applicable tax registrations, implement operational
+configure applicable tax registrations, implement operational
 fulfillment/customer notifications and inventory, add abuse/rate controls, and explicitly
 enable a separately validated live integration. The sandbox cart remains available for repeat tests.

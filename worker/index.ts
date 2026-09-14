@@ -69,6 +69,11 @@ export default {
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
         integration_identifier: 'serein_checkout_vqhrbczm',
+        billing_address_collection: 'required',
+        customer_creation: 'always',
+        invoice_creation: { enabled: true },
+        phone_number_collection: { enabled: true },
+        shipping_address_collection: { allowed_countries: ['US'] },
         line_items: items.map(item => ({ quantity: item.quantity, price_data: { currency: 'usd', unit_amount: catalog[item.id].amount, product_data: { name: catalog[item.id].name } } })),
         metadata: { app: 'serein' },
         success_url: `${url.origin}/checkout?session_id={CHECKOUT_SESSION_ID}`,

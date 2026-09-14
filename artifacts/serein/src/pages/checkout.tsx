@@ -5,10 +5,11 @@ import { useCart } from "@/context/cart-context";
 const formatPrice = (value: number) => `$${value.toFixed(2)}`;
 
 export default function Checkout() {
-  const { items, subtotal } = useCart();
+  const { items, subtotal, clearCart } = useCart();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
+  const [confirmedTotal, setConfirmedTotal] = useState<number | null>(null);
   const sessionId = new URLSearchParams(window.location.search).get("session_id");
   const canceled = new URLSearchParams(window.location.search).has("canceled");
   useEffect(() => {
@@ -23,12 +24,16 @@ export default function Checkout() {
         if (!response.ok) throw new Error(data.error);
         if (stopped) return;
         setStatus(data.status);
+        if (typeof data.amount === 'number') setConfirmedTotal(data.amount / 100);
         if (data.status === 'pending' && ++attempts < 30) timer = setTimeout(check, 2000);
       } catch (e) { if (!stopped) setError(e instanceof Error ? e.message : 'Unable to confirm payment.'); }
     }
     void check();
     return () => { stopped = true; clearTimeout(timer); };
   }, [sessionId]);
+  useEffect(() => {
+    if (status === 'paid') clearCart();
+  }, [status]);
   async function pay() {
     setBusy(true); setError("");
     try {
@@ -51,9 +56,10 @@ export default function Checkout() {
           <section>
             <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40">Checkout</span>
             <h1 className="mt-5 font-serif text-5xl leading-none text-primary md:text-7xl">Make it yours.</h1>
-            {sessionId && <p role="status" className="mt-8 text-lg text-primary">{status === 'paid' ? 'Test payment confirmed. Thank you! No real charge or shipment will be made.' : status === 'failed' || status === 'expired' ? 'This payment did not complete. Return to checkout to try again.' : 'Waiting for payment confirmation. This can take a moment. You can refresh this page to check again.'}</p>}
+            {sessionId && status === 'paid' && <div role="status" className="mt-8 border-y border-foreground/10 py-8"><p className="text-[10px] uppercase tracking-[0.25em] text-foreground/45">Order confirmed</p><p className="mt-3 font-serif text-2xl text-primary">Thank you. Your order is complete.</p><p className="mt-3 text-sm text-foreground/55">Order reference {sessionId.slice(-12).toUpperCase()}</p><p className="mt-2 text-xs text-foreground/45">Sandbox order — Stripe processed the full test transaction, but no money was charged and no package will ship.</p></div>}
+            {sessionId && status !== 'paid' && <p role="status" className="mt-8 text-lg text-primary">{status === 'failed' || status === 'expired' ? 'This payment did not complete. Return to checkout to try again.' : 'Confirming your order. This can take a moment.'}</p>}
             {canceled && <p role="status" className="mt-8 text-primary">Checkout canceled. Your cart is still here.</p>}
-            {items.length === 0 ? (
+            {items.length === 0 && status !== 'paid' ? (
               <div className="mt-12 border-t border-foreground/10 pt-8">
                 <p className="font-serif italic text-xl text-foreground/55">Your cart is empty.</p>
                 <Link href="/#collection" className="mt-6 inline-block text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1">Explore the collection</Link>
@@ -71,10 +77,10 @@ export default function Checkout() {
           </section>
           <aside className="self-start bg-[#f5efe6] p-8 md:p-10">
             <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/40">Order summary</p>
-            <div className="mt-8 flex justify-between border-t border-foreground/10 pt-5 font-serif text-2xl text-primary"><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
-            <p className="mt-5 text-sm leading-relaxed text-foreground/60">Test checkout — use Stripe’s test card 4242 4242 4242 4242, any future expiry, and any three-digit CVC. No real charges or shipments. Shipping and tax are not included in this test.</p>
+            <div className="mt-8 flex justify-between border-t border-foreground/10 pt-5 font-serif text-2xl text-primary"><span>{status === 'paid' ? 'Total paid' : 'Subtotal'}</span><span>{formatPrice(status === 'paid' && confirmedTotal !== null ? confirmedTotal : subtotal)}</span></div>
+            <p className="mt-5 text-sm leading-relaxed text-foreground/60">Complete the full order in Stripe’s sandbox with card 4242 4242 4242 4242, any future expiry, and any three-digit CVC. Billing, delivery, contact details, and payment confirmation work like a live order.</p>
             {error && <p role="alert" className="mt-5 text-sm text-red-800">{error}</p>}
-            {sessionId ? <Link href="/checkout" className="mt-8 inline-block text-primary underline" onClick={() => { sessionStorage.removeItem('serein-checkout-token'); window.location.assign('/checkout'); }}>Return to checkout</Link> : <button type="button" disabled={busy || !items.length} onClick={pay} className="mt-8 w-full bg-primary px-6 py-4 text-[10px] uppercase tracking-[0.25em] text-primary-foreground disabled:opacity-40">{busy ? 'Opening secure checkout…' : 'Test checkout with Stripe'}</button>}
+            {sessionId ? <Link href="/#collection" className="mt-8 inline-block text-primary underline" onClick={() => sessionStorage.removeItem('serein-checkout-token')}>Continue shopping</Link> : <button type="button" disabled={busy || !items.length} onClick={pay} className="mt-8 w-full bg-primary px-6 py-4 text-[10px] uppercase tracking-[0.25em] text-primary-foreground disabled:opacity-40">{busy ? 'Opening secure checkout…' : 'Place sandbox order'}</button>}
           </aside>
         </div>
       </div>

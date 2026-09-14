@@ -492,4 +492,13 @@ Verification:
 - End-to-end verification: bought Supple Oud for $22 in Stripe sandbox using a fictitious test card; corrected existing destination `we_1UFjAbHiM6owGJBCzanLqaTQ` from `https://sereinskn.com/` to the deployed webhook; resent event `evt_1UFjQrHiM6owGJBCUHpCJEi1`; observed “Test payment confirmed” in Serein.
 - Deployment: `d10b37bc-bce3-439e-961a-ede82e9a4e49`. Database migration applied to dedicated `serein-orders`.
 - Secrets remained in Cloudflare; no secret values were read or committed. Build retains pre-existing large-chunk/sourcemap warnings.
-- Remaining for real sales: shipping/address collection, tax configuration, inventory/fulfillment and notifications, rate limits, and explicit live-mode setup. See `worker/README.md`.
+- Remaining for real sales: shipping rates and regions, tax configuration, inventory/fulfillment and notifications, rate limits, and explicit live-mode setup. See `worker/README.md`.
+
+# Realistic sandbox order flow — 2026-09-14
+
+- Expanded sandbox Checkout to require billing address, U.S. delivery address, phone, and email, and to create Stripe customers and one-time invoices.
+- Paid confirmation now reads like an order receipt, includes a reference, and clears the cart after the signed webhook confirms payment.
+- Stripe sandbox currently has no shipping rates or tax registrations, so the flow does not invent shipping charges, delivery promises, or tax collection.
+- Passed payment/webhook tests, frontend and Worker typechecks, production build, and Wrangler dry run. Final deployed Worker version: `683feae1-db8e-4371-9ef9-3faec754238c`.
+- Live sandbox inspection confirmed `customer_creation: always`, invoice creation, required billing address, phone collection, U.S. delivery-address collection, and the expected $22 USD total.
+- Completed a fresh $22 sandbox purchase through the deployed flow with fictitious contact, U.S. delivery, billing, and test-card data; Stripe marked it paid and complete, created a customer and invoice, retained the delivery details, and the signed webhook confirmed the order. Serein showed the order reference, cleared the cart, and retained the correct $22 paid total after refresh. A receipt-total regression found during this check was fixed before final verification.
