@@ -35,10 +35,15 @@ export default function ProductDetail() {
     product.scentCard && { src: product.scentCard, alt: `${product.name} — scent notes`, variant: "card" as const },
   ].filter(Boolean) as CarouselImage[];
 
+  const addToCart = () => {
+    addItem({ id: product.id, name: product.name, price: Number(product.price.replace(/[^0-9.]/g, "")), image: product.cleanStill ?? product.img });
+    toast({ title: `${product.name} added`, description: "A considered ritual, saved for you." });
+  };
+
   return (
     <main className="w-full bg-background overflow-hidden">
 
-      {/* HERO — full-bleed image, text anchored to safe negative-space zones */}
+      {/* HERO */}
       <section className="relative h-[100dvh] overflow-hidden">
         <motion.div
           initial={{ scale: 1.04 }}
@@ -51,27 +56,28 @@ export default function ProductDetail() {
             alt={product.name}
             className="w-full h-full object-cover [object-position:center_45%]"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-transparent to-black/15" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/5 to-black/60" />
         </motion.div>
 
-        {/* Top-left: pillar label + product name — sits in clear wall/background space */}
-        <div className="absolute top-0 left-0 z-10 px-8 md:px-16 pt-24 md:pt-28">
-          <FadeIn delay={0.2} direction="none">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-white/55 font-sans block mb-3">
-              {product.pillar}
-            </span>
-            <h1 className="text-[clamp(2.8rem,7vw,6.5rem)] font-serif text-[#F3EBDD] leading-none tracking-tight">
+        <div className="absolute inset-x-0 bottom-0 z-10 px-8 md:px-16 pb-10 md:pb-16">
+          <FadeIn delay={0.2} direction="none" className="max-w-xl">
+            <h1 className="text-[clamp(2.8rem,7vw,6.5rem)] font-serif text-[#F3EBDD] leading-none tracking-tight mb-5">
               {product.name}
             </h1>
-          </FadeIn>
-        </div>
-
-        {/* Bottom-right: scent descriptor — sits in the stone/linen negative space */}
-        <div className="absolute bottom-0 right-0 z-10 px-8 md:px-16 pb-14 md:pb-20 text-right">
-          <FadeIn delay={0.5} direction="none">
-            <p className="font-serif italic text-[#F3EBDD]/65 text-lg md:text-xl leading-relaxed max-w-[22ch] ml-auto">
-              {product.scent}
+            <p className="font-serif italic text-[#F3EBDD]/85 text-lg md:text-xl leading-relaxed max-w-[42ch]">
+              {product.productSensoryIntro}
             </p>
+            <div className="mt-7 flex flex-col items-start gap-4">
+              <span className="text-[#F3EBDD] text-base font-sans tracking-wide">{product.price}</span>
+              {product.size && <span className="text-[#F3EBDD]/70 text-[10px] uppercase tracking-[0.2em] font-sans">Size: {product.size}</span>}
+              <button
+                type="button"
+                onClick={addToCart}
+                className="text-[11px] uppercase tracking-[0.3em] text-[#F3EBDD] border border-[#F3EBDD]/60 px-8 py-3.5 hover:bg-[#F3EBDD] hover:text-primary transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F3EBDD]"
+              >
+                Add to Cart
+              </button>
+            </div>
           </FadeIn>
         </div>
       </section>
@@ -104,52 +110,6 @@ export default function ProductDetail() {
                   {paragraph}
                 </p>
               ))}
-            </div>
-          </FadeIn>
-        </div>
-      </section>
-
-      {/* PURCHASE — placed after the scent story so visitors can add this product before exploring the long-form detail */}
-      <section className="bg-[#f5efe6] py-20 md:py-24 px-8 md:px-16">
-        <div className="max-w-2xl mx-auto text-center flex flex-col items-center gap-8">
-          <FadeIn direction="none">
-            <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans block mb-4">
-              {product.pillar}
-            </span>
-            <h2 className="text-[clamp(2.5rem,7vw,5rem)] font-serif text-primary leading-none mb-5">
-              {product.name}
-            </h2>
-            <p className="font-serif italic text-foreground/50 text-lg leading-relaxed max-w-[34ch] mx-auto">
-              {product.desc}
-            </p>
-          </FadeIn>
-
-          <FadeIn direction="none" delay={0.2}>
-            <div className="flex flex-col items-center gap-5 pt-1">
-              <span className="text-foreground/55 text-sm font-sans tracking-wide">{product.price}</span>
-              <button
-                type="button"
-                onClick={() => {
-                  addItem({ id: product.id, name: product.name, price: Number(product.price.replace(/[^0-9.]/g, "")), image: product.cleanStill ?? product.img });
-                  toast({ title: `${product.name} added`, description: "Your ritual is waiting in the cart." });
-                }}
-                className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </FadeIn>
-          <FadeIn direction="none" delay={0.35}>
-            <div className="flex flex-col items-center gap-4 pt-2">
-              <p className="text-[9px] uppercase tracking-[0.25em] text-foreground/30 font-sans">Or explore the full collection</p>
-              <div className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-                {["supple-oud", "mint-moss", "lithe-bloom"].filter((id) => id !== product.id).map((id) => (
-                  <Link key={id} href={`/collection/${id}`} className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans">
-                    {id.replace("-", " ").replace(/\b\w/g, (character) => character.toUpperCase())}
-                  </Link>
-                ))}
-                <Link href="/collection/morrow-trio" className="text-[9px] uppercase tracking-[0.2em] text-foreground/40 border-b border-foreground/15 pb-0.5 hover:text-primary hover:border-primary/40 transition-all duration-300 font-sans">The Trio</Link>
-              </div>
             </div>
           </FadeIn>
         </div>
@@ -210,9 +170,9 @@ export default function ProductDetail() {
           <FadeIn direction="none" delay={0.25}>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-0 border-t border-foreground/10">
               {[
-                { label: "Skin Feel", value: "Absorbs without residue. Leaves skin soft, not coated." },
-                { label: "Scent Strength", value: "Moderate — present on application, softens to a quiet warmth." },
-                { label: "Who It's For", value: `Anyone drawn to ${product.pillar.replace(".", "").toLowerCase()} — those who want ritual, not routine.` },
+                { label: "Skin Feel", value: "Melts in with a soft, dry-touch finish. Skin feels supple, never coated." },
+                { label: "Scent Presence", value: "Noticeable at first, then designed to rest close to the skin." },
+                { label: "Made For", value: `Those drawn to ${product.pillar.replace(".", "").toLowerCase()} moments and body care with a point of view.` },
               ].map(({ label, value }) => (
                 <div key={label} className="py-8 pr-8 flex flex-col gap-3 border-b sm:border-b-0 sm:border-r border-foreground/10 last:border-r-0">
                   <span className="text-[9px] uppercase tracking-[0.3em] text-foreground/40 font-sans">{label}</span>

@@ -72,10 +72,10 @@ export default function MorrowTrio() {
           <FadeIn direction="none" delay={0.2}>
             <div className="flex flex-col gap-7 md:pt-24">
               <p className="font-serif italic text-foreground/60 text-lg md:text-xl leading-relaxed">
-                The Morrow Trio is how most people find their scent. Three travel-sized butters, each one a different ritual — so you can discover which one becomes yours.
+                The Morrow Trio is an easy way to meet the collection. Three travel-sized body butters, each with its own mood, so you can notice which one becomes part of your day.
               </p>
               <p className="font-serif italic text-foreground/50 text-base md:text-lg leading-relaxed">
-                Carry all three. Layer them. Take your time. There is no wrong way to begin a ritual.
+                Keep all three close. Move between them with the season, the hour, or simply how you want to feel. There is no prescribed way to begin.
               </p>
             </div>
           </FadeIn>
@@ -93,7 +93,7 @@ export default function MorrowTrio() {
               Begin here.
             </h2>
             <p className="font-serif italic text-foreground/50 text-lg leading-relaxed max-w-[34ch] mx-auto">
-              Three rituals. One discovery set. All three scents, together — at the price of one.
+              Three distinct scents in a considered discovery set, made for trying slowly and choosing naturally.
             </p>
           </FadeIn>
 
@@ -104,7 +104,7 @@ export default function MorrowTrio() {
                 type="button"
                 onClick={() => {
                   addItem({ id: "morrow-trio", name: "The Morrow Trio", price: 11, image: trioImage });
-                  toast({ title: "The Morrow Trio added", description: "Your ritual is waiting in the cart." });
+                  toast({ title: "The Morrow Trio added", description: "Your discovery set is saved in the cart." });
                 }}
                 className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
               >

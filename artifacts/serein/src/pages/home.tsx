@@ -52,7 +52,7 @@ function ParallaxHero() {
             For skin that remembers touch.
           </p>
           <p className="text-[#FFF8EC] font-sans text-[15px] font-medium leading-8 tracking-[0.01em] mb-6 max-w-[36ch] ml-auto [text-shadow:0_2px_18px_rgba(0,0,0,0.95)]">
-            Botanical body care rooted in ritual, created to soften skin and slow the pace of everyday life.
+            Small-batch body care for the moments you keep for yourself: made to soften skin, scent the air, and slow the pace a little.
           </p>
           <a
             href="#collection"
@@ -86,7 +86,7 @@ export default function Home() {
         </FadeIn>
         <FadeIn direction="none" delay={0.2}>
           <p className="mt-8 text-foreground/50 text-base leading-loose max-w-[42ch] mx-auto font-sans">
-            Small-batch body butters made with rich botanical butters that deeply nourish and soften the skin. Crafted for the rituals that anchor your day.
+            Small-batch body butters with a plush, dry-touch finish and scents composed to stay close. Made for the rituals that make an ordinary day feel considered.
           </p>
         </FadeIn>
       </section>
@@ -126,9 +126,9 @@ export default function Home() {
             style={{ columnGap: "clamp(40px, 6vw, 96px)" }}
           >
             {[
-              { word: "Transform.", sub: "Rich botanicals. Skin that knows it has been tended to." },
-              { word: "Root.", sub: "Grounded in nature. Made with intention." },
-              { word: "Become.", sub: "Daily rituals. Lasting change." },
+              { word: "Transform.", sub: "Rich botanical butters, blended for skin that feels genuinely tended to." },
+              { word: "Root.", sub: "Earthy, familiar notes composed with a steady hand." },
+              { word: "Become.", sub: "Small rituals with room to become your own." },
             ].map(({ word, sub }, i) => (
               <FadeIn key={word} delay={i * 0.18} direction="none">
                 <div className={`py-10 md:py-20 flex flex-col justify-center gap-5 min-w-0 ${i < 2 ? "border-b border-primary-foreground/10 md:border-b-0" : ""}`}>
@@ -255,7 +255,7 @@ export default function Home() {
               </FadeIn>
               <FadeIn direction="none" delay={0.3}>
                 <p className="text-foreground/50 text-sm leading-relaxed max-w-[32ch]">
-                  Discover all three signature scents in one thoughtfully curated set. An invitation to experience the full Serein ritual before choosing the fragrance that becomes yours.
+                  Meet all three scents in one considered set. A gentle way to live with the collection before choosing the one you reach for most.
                 </p>
               </FadeIn>
               <FadeIn direction="none" delay={0.4}>
@@ -329,12 +329,12 @@ export default function Home() {
             </FadeIn>
             <FadeIn direction="none" delay={0.3}>
               <p className="text-primary-foreground/60 leading-loose text-base max-w-[38ch]">
-                A quiet insistence that beauty should be slower. That the jar you reach for each morning should be something you chose — not something you grabbed.
+                A quiet insistence that body care can be slower. That the jar you reach for each morning can be something you chose, not simply something you grabbed.
               </p>
             </FadeIn>
             <FadeIn direction="none" delay={0.4}>
               <p className="text-primary-foreground/60 leading-loose text-base max-w-[38ch]">
-                We blend every batch by hand, in small quantities, because the act of care matters as much as the ingredients inside it.
+                Each small batch is made with an attention to texture, scent, and the way it lives on skin, because the experience matters as much as what is inside the jar.
               </p>
             </FadeIn>
             <FadeIn direction="none" delay={0.5}>
@@ -480,7 +480,7 @@ export default function Home() {
               Every ritual begins with intention.
             </p>
             <p className="mt-6 text-[#F3EBDD]/70 text-sm md:text-base font-sans leading-relaxed max-w-[36ch]">
-              Join the Serein list for quiet rituals, seasonal notes, and first access.
+              Join the Serein list for seasonal notes, quiet rituals, and first access to what is being made next.
             </p>
           </FadeIn>
         </div>

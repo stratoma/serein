@@ -3,7 +3,7 @@
 ## Project Status
 
 Current Phase: Google authentication reliability verification
-Last Updated: 2026-09-13
+Last Updated: 2026-09-18
 Overall Status: Active development
 
 ## Completed
@@ -21,6 +21,7 @@ Overall Status: Active development
 - Google authentication added for sign-in and first-time signup.
 - Google redirect sign-in added for browsers that block popup authentication.
 - Homepage hero copy styling and product-caption readability refinements completed.
+- Product-page copy system refined for a quiet, sensory, editorial Serein voice; tracked in `feedback.md`.
 
 ## In Progress
 
@@ -44,7 +45,111 @@ Overall Status: Active development
 - Dependency/security audit.
 - Build/test verification after meaningful changes.
 
+### Product-Page Copy System
+
+Status: Completed
+
+Implemented:
+
+- Updated shared product descriptions, stories, texture notes, use guidance, captions, and taglines.
+- Refined collection, product-detail, and Morrow Trio copy to support a considered small-batch product experience without unsupported luxury claims.
+- Added `feedback.md` with the implementation status for the submitted feedback.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/data/products.ts
+```
+
+1.
+```
+artifacts/serein/src/pages/home.tsx
+```
+
+1.
+```
+artifacts/serein/src/pages/product-detail.tsx
+```
+
+1.
+```
+artifacts/serein/src/pages/morrow-trio.tsx
+```
+
+1.
+```
+feedback.md
+```
+
+Verification:
+
+- Source review completed.
+- `corepack pnpm@10.11.1 --filter @workspace/serein run typecheck` passed on 2026-09-18.
+- Production Vite build passed on 2026-09-18; it retains the existing advisory for a JavaScript chunk above 500 kB.
+
 ## Changes
+
+### Above-the-Fold Purchase Module
+
+Status: Completed with a data boundary
+
+Implemented:
+
+- Moved the individual product purchase action into the hero, directly after the product name, sensory introduction, and price.
+- Removed the duplicate downstream purchase module so secondary storytelling follows the primary purchase action.
+- Kept the existing $22 price format and avoided promotional price copy.
+- Added conditional size rendering, ready for verified product-volume data.
+
+Known boundary:
+
+- No product volume appears in the repository. The interface deliberately does not invent a size; the size line remains hidden until confirmed data is added.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/pages/product-detail.tsx
+```
+
+1.
+```
+feedback.md
+```
+
+Verification:
+
+- `corepack pnpm@10.11.1 --filter @workspace/serein run typecheck` passed on 2026-09-18.
+- Production Vite build passed on 2026-09-18; it retains the existing advisory for a JavaScript chunk above 500 kB.
+
+### Product Content-Model Foundation
+
+Status: Completed
+
+Implemented:
+
+- Added typed shared product fields for sensory introduction, size, fragrance, ritual, featured ingredients, full ingredients, details, and internal emotional territory.
+- Added controlled global `brandContent` for the Serein name and approved craftsmanship statement.
+- Added the three current scent territories. Future Restore is tracked in `feedback.md` and is not exposed as a storefront product.
+- Left size, INCI disclosure, and product details empty where the repository has no verified source data.
+
+Files affected:
+
+1.
+```
+artifacts/serein/src/data/products.ts
+```
+
+1.
+```
+feedback.md
+```
+
+Verification:
+
+- Source model review completed.
+- `corepack pnpm@10.11.1 --filter @workspace/serein run typecheck` passed on 2026-09-18.
+- Production Vite build passed on 2026-09-18; it retains the existing advisory for a JavaScript chunk above 500 kB.
 
 ### Build Log
 
