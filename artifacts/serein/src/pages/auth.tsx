@@ -6,12 +6,30 @@ import { useAuth } from "@/context/auth-context";
 
 type AuthMode = "sign-in" | "sign-up" | "reset";
 
+function googleAuthErrorMessage(code: string | null) {
+  switch (code) {
+    case "auth/unauthorized-domain":
+      return "Google sign-in is not enabled for this site domain yet. Please contact us or try again later.";
+    case "auth/operation-not-allowed":
+      return "Google sign-in is not enabled yet. Please use email or try again later.";
+    case "auth/invalid-api-key":
+    case "auth/app-not-authorized":
+      return "Account access is being refreshed. Please try again shortly.";
+    case "auth/popup-blocked":
+      return "Your browser blocked the Google sign-in window. Allow popups, then try again.";
+    case "auth/popup-closed-by-user":
+      return "Google sign-in was cancelled.";
+    default:
+      return "We could not complete Google authentication. Please try again.";
+  }
+}
+
 export default function Auth() {
   const {
     user,
     isReady,
     isConfigured,
-    hasGoogleAuthError,
+    googleAuthErrorCode,
     signIn,
     signUp,
     signInWithGoogle,
@@ -27,10 +45,10 @@ export default function Auth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    if (hasGoogleAuthError) {
-      setError("We could not complete Google authentication.");
+    if (googleAuthErrorCode) {
+      setError(googleAuthErrorMessage(googleAuthErrorCode));
     }
-  }, [hasGoogleAuthError]);
+  }, [googleAuthErrorCode]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -71,7 +89,7 @@ export default function Auth() {
       await signInWithGoogle();
       setStatus("You are signed in with Google.");
     } catch {
-      setError("We could not complete Google authentication.");
+      // The provider stores a safe, specific error state for the screen.
     } finally {
       setIsSubmitting(false);
     }

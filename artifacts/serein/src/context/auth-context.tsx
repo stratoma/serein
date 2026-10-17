@@ -17,6 +17,7 @@ import {
   sendPasswordResetEmail,
   setPersistence,
   signInWithEmailAndPassword,
+  signInWithPopup,
   signInWithRedirect,
   signOut as firebaseSignOut,
   type User,
@@ -27,7 +28,7 @@ type AuthContextValue = {
   user: User | null;
   isReady: boolean;
   isConfigured: boolean;
-  hasGoogleAuthError: boolean;
+  googleAuthErrorCode: string | null;
   missingConfig: string[];
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
@@ -38,10 +39,23 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function getAuthErrorCode(error: unknown) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    typeof error.code === "string"
+  ) {
+    return error.code;
+  }
+
+  return "auth/unknown";
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isReady, setIsReady] = useState(false);
-  const [hasGoogleAuthError, setHasGoogleAuthError] = useState(false);
+  const [googleAuthErrorCode, setGoogleAuthErrorCode] = useState<string | null>(null);
   const auth = getFirebaseAuth();
   const isConfigured = Boolean(auth);
 
@@ -53,8 +67,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     void setPersistence(auth, browserLocalPersistence);
 
-    void getRedirectResult(auth).catch(() => {
-      setHasGoogleAuthError(true);
+    void getRedirectResult(auth).catch((error: unknown) => {
+      setGoogleAuthErrorCode(getAuthErrorCode(error));
     });
 
     return onAuthStateChanged(auth, (nextUser) => {
@@ -92,10 +106,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!auth) throw new Error("Firebase is not configured.");
     const provider = new GoogleAuthProvider();
     provider.setCustomParameters({ prompt: "select_account" });
+
     try {
-      await signInWithRedirect(auth, provider);
-    } catch {
-      throw new Error("Google authentication could not be started.");
+      await signInWithPopup(auth, provider);
+      setGoogleAuthErrorCode(null);
+    } catch (error: unknown) {
+      const errorCode = getAuthErrorCode(error);
+
+      // Redirect is retained only for browsers that cannot open an OAuth popup,
+      // such as some mobile or embedded browser environments.
+      if (
+        errorCode === "auth/popup-blocked" ||
+        errorCode === "auth/operation-not-supported-in-this-environment"
+      ) {
+        try {
+          await signInWithRedirect(auth, provider);
+          return;
+        } catch (redirectError: unknown) {
+          setGoogleAuthErrorCode(getAuthErrorCode(redirectError));
+          throw redirectError;
+        }
+      }
+
+      setGoogleAuthErrorCode(errorCode);
+      throw error;
     }
   }, [auth]);
 
@@ -109,7 +143,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       user,
       isReady,
       isConfigured,
-      hasGoogleAuthError,
+      googleAuthErrorCode,
       missingConfig: missingFirebaseConfig,
       signIn,
       signUp,
@@ -117,7 +151,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       requestPasswordReset,
       signOut,
     }),
-    [hasGoogleAuthError, isConfigured, isReady, requestPasswordReset, signIn, signInWithGoogle, signOut, signUp, user],
+    [googleAuthErrorCode, isConfigured, isReady, requestPasswordReset, signIn, signInWithGoogle, signOut, signUp, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
