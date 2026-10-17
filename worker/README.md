@@ -14,11 +14,13 @@ The deployed Worker accepts test keys only. Hosted Checkout uses the server cata
 
 ## Deployed configuration
 
-Secrets: `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`. Database: `serein-orders`.
+Secrets: `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, and `ORDER_EMAIL_FROM` (for example, `Serein <orders@sereinskn.com>`). Database: `serein-orders`.
 Webhook: `https://serein.stratoma.workers.dev/api/stripe/webhook`.
 Subscribe to checkout.session.completed, checkout.session.async_payment_succeeded,
 checkout.session.async_payment_failed, checkout.session.expired. The first two confirm
-payment; the latter two provide terminal failure status. Keep test and live destinations separate.
+payment; the latter two provide terminal failure status. A confirmed payment sends one branded Resend order email to the email collected by Stripe Checkout, using the Checkout Session ID as an idempotency key. Keep test and live destinations separate.
+
+Before deploying order confirmations, verify `sereinskn.com` in Resend and configure the `RESEND_API_KEY` and `ORDER_EMAIL_FROM` Worker secrets. Apply the `0002_order_confirmation_email.sql` migration to the production D1 database before deploying the Worker.
 
 ## Verification and remaining launch work
 
