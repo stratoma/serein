@@ -1,8 +1,16 @@
 import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/cart-context";
+import { getProductById } from "@/data/products";
 
 const formatPrice = (value: number) => `$${value.toFixed(2)}`;
+
+function getCartItemImage(id: string, image?: string) {
+  if (image) return image;
+  if (id === "morrow-trio") return `${import.meta.env.BASE_URL}images/morrow-trio-gd.png`;
+  const product = getProductById(id);
+  return product?.cleanStill ?? product?.img;
+}
 
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart();
@@ -69,8 +77,17 @@ export default function Checkout() {
             ) : (
               <div className="mt-12 border-t border-foreground/10">
                 {items.map((item) => (
-                  <div key={item.id} className="flex justify-between gap-4 border-b border-foreground/10 py-6">
-                    <div><p className="font-serif text-xl text-primary">{item.name}</p><p className="mt-1 text-xs text-foreground/45">Quantity {item.quantity}</p></div>
+                  <div key={item.id} className="flex items-center justify-between gap-4 border-b border-foreground/10 py-6">
+                    <div className="flex min-w-0 items-center gap-4">
+                      {getCartItemImage(item.id, item.image) && (
+                        <img
+                          src={getCartItemImage(item.id, item.image)}
+                          alt={item.name}
+                          className="h-20 w-20 shrink-0 object-cover"
+                        />
+                      )}
+                      <div><p className="font-serif text-xl text-primary">{item.name}</p><p className="mt-1 text-xs text-foreground/45">Quantity {item.quantity}</p></div>
+                    </div>
                     <span className="text-sm text-foreground/55">{formatPrice(item.price * item.quantity)}</span>
                   </div>
                 ))}
