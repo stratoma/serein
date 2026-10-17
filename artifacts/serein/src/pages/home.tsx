@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "wouter";
 import { products } from "@/data/products";
+import { useCart } from "@/context/cart-context";
 import terracottaWall from "@assets/terracott_walls_1783048465994.png";
 
 const BASE = import.meta.env.BASE_URL;
@@ -67,6 +68,7 @@ function ParallaxHero() {
 }
 
 export default function Home() {
+  const { addItem } = useCart();
   const today = new Date();
   const upcomingMarkets = marketEvents.filter((event) => new Date(`${event.date}T23:59:59`) >= today);
   const pastMarkets = marketEvents.filter((event) => new Date(`${event.date}T23:59:59`) < today);
@@ -191,14 +193,28 @@ export default function Home() {
                       <p className="text-[10px] uppercase tracking-[0.2em] text-foreground/30 font-sans mt-3">{product.tagline}</p>
                     </FadeIn>
                     <FadeIn direction="none" delay={0.4}>
-                      <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
+                      <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-4 border-t border-foreground/10">
                         <span className="text-foreground/40 text-sm font-sans">{product.price}</span>
-                        <Link
-                          href={`/collection/${product.id}`}
-                          className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans"
-                        >
-                          Choose This Scent
-                        </Link>
+                        <div className="ml-auto flex items-center gap-5">
+                          <button
+                            type="button"
+                            onClick={() => addItem({
+                              id: product.id,
+                              name: product.name,
+                              price: Number(product.price.replace(/[^0-9.]/g, "")),
+                              image: product.cleanStill ?? product.img,
+                            })}
+                            className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans"
+                          >
+                            Add to Cart
+                          </button>
+                          <Link
+                            href={`/collection/${product.id}`}
+                            className="text-[10px] uppercase tracking-[0.25em] text-primary/60 border-b border-primary/20 pb-1 hover:text-primary hover:border-primary transition-all duration-400 font-sans"
+                          >
+                            Learn More
+                          </Link>
+                        </div>
                       </div>
                     </FadeIn>
                   </div>
@@ -259,14 +275,28 @@ export default function Home() {
                 </p>
               </FadeIn>
               <FadeIn direction="none" delay={0.4}>
-                <div className="flex items-center justify-between pt-4 border-t border-foreground/10">
+                <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-4 border-t border-foreground/10">
                   <span className="text-foreground/40 text-sm font-sans">$11</span>
-                  <Link
-                    href="/collection/morrow-trio"
-                    className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/30 pb-1 hover:border-primary transition-all duration-400 font-sans"
-                  >
-                    Bring It Home
-                  </Link>
+                  <div className="ml-auto flex items-center gap-5">
+                    <button
+                      type="button"
+                      onClick={() => addItem({
+                        id: "morrow-trio",
+                        name: "The Morrow Trio",
+                        price: 11,
+                        image: `${BASE}images/morrow-trio-gd.png`,
+                      })}
+                      className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans"
+                    >
+                      Add to Cart
+                    </button>
+                    <Link
+                      href="/collection/morrow-trio"
+                      className="text-[10px] uppercase tracking-[0.25em] text-primary/60 border-b border-primary/20 pb-1 hover:text-primary hover:border-primary transition-all duration-400 font-sans"
+                    >
+                      Learn More
+                    </Link>
+                  </div>
                 </div>
               </FadeIn>
             </div>
