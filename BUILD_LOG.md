@@ -614,3 +614,9 @@ Verification:
 - Each click now creates a fresh attempt token while retaining it through Stripe's return redirect for token-protected order confirmation.
 - Frontend and Worker typechecks passed; the production build passed with the existing sourcemap and large-chunk warnings; Wrangler dry run completed.
 - Deployed Worker version `435ebb4d-2650-42a1-88b8-e90be98c062c`. Two consecutive live sandbox requests for the same cart returned distinct Stripe Checkout Sessions.
+
+# Customer order portal — 2026-10-17
+
+- Added account order history, status and tracking display, and a staff-only fulfillment editor. New signed-in checkout orders retain a Firebase UID; payment and fulfillment states are separate. The Worker verifies Firebase ID tokens and checks an explicit staff UID allowlist.
+- Existing and guest orders cannot be automatically linked because the stored records do not contain a verified customer identity. Fulfillment updates do not send emails and do not automatically sync with a carrier. Checkout remains Stripe sandbox only.
+- Requires D1 migration 0003 and Worker Firebase project/staff UID configuration before deployment; see `worker/README.md`. No migration or deployment was performed in this change.

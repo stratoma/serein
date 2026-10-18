@@ -1,0 +1,29 @@
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { Link } from 'wouter';
+import { useAuth } from '@/context/auth-context';
+import { orderDate, orderItems, steps, type Order } from './account';
+
+function OrderEditor({ order, save }: { order: Order; save: (order: Order, fields: { status: string; carrier: string; trackingNumber: string; trackingUrl: string }) => Promise<void> }) {
+  const [status, setStatus] = useState(order.fulfillment_status);
+  const [carrier, setCarrier] = useState(order.tracking_carrier ?? '');
+  const [trackingNumber, setTrackingNumber] = useState(order.tracking_number ?? '');
+  const [trackingUrl, setTrackingUrl] = useState(order.tracking_url ?? '');
+  const [message, setMessage] = useState('');
+  const [busy, setBusy] = useState(false);
+  async function submit(event: FormEvent) {
+    event.preventDefault(); setBusy(true); setMessage('');
+    try { await save(order, { status, carrier, trackingNumber, trackingUrl }); setMessage('Saved. The update is visible for linked customer accounts.'); }
+    catch (e) { setMessage(e instanceof Error ? e.message : 'Unable to save.'); }
+    finally { setBusy(false); }
+  }
+  const input = 'mt-2 w-full border border-foreground/20 bg-background px-3 py-3 text-sm text-primary';
+  return <form onSubmit={submit} className="border border-foreground/10 bg-[#f9f5ee] p-6 md:p-8"><div className="flex flex-wrap justify-between gap-3"><div><h2 className="font-serif text-2xl text-primary">Order {order.session_id.slice(-12).toUpperCase()}</h2><p className="mt-2 text-sm text-foreground/60">{orderDate(order.created_at)} · {orderItems(order.items)}</p></div><p className="text-sm text-foreground/60">{new Intl.NumberFormat(undefined, { style: 'currency', currency: order.currency.toUpperCase() }).format(order.amount / 100)}</p></div><div className="mt-7 grid gap-5 md:grid-cols-2"><label className="text-xs text-foreground/70">Status<select className={input} value={status} onChange={e => setStatus(e.target.value)}>{steps.map(([value, label]) => <option value={value} key={value}>{label}</option>)}</select></label><label className="text-xs text-foreground/70">Carrier<input className={input} maxLength={500} value={carrier} onChange={e => setCarrier(e.target.value)} /></label><label className="text-xs text-foreground/70">Tracking number<input className={input} maxLength={500} value={trackingNumber} onChange={e => setTrackingNumber(e.target.value)} /></label><label className="text-xs text-foreground/70">Tracking link (HTTPS)<input className={input} type="url" maxLength={500} value={trackingUrl} onChange={e => setTrackingUrl(e.target.value)} /></label></div><button disabled={busy} className="mt-6 bg-primary px-7 py-4 text-[10px] uppercase tracking-[0.2em] text-primary-foreground disabled:opacity-50">{busy ? 'Saving…' : 'Save update'}</button>{message && <p role="status" className="mt-4 text-sm text-foreground/70">{message}</p>}</form>;
+}
+export default function ManageOrders() {
+  const { user, isReady } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]); const [error, setError] = useState(''); const [loading, setLoading] = useState(true);
+  const load = useCallback(async () => { if (!user) return; setLoading(true); setError(''); try { const response = await fetch('/api/admin/orders', { headers: { Authorization: `Bearer ${await user.getIdToken()}` }, cache: 'no-store' }); const result = await response.json(); if (!response.ok) throw new Error(result.error); setOrders(result.orders); } catch (e) { setError(e instanceof Error ? e.message : 'Unable to load orders.'); } finally { setLoading(false); } }, [user]);
+  useEffect(() => { setOrders([]); if (user) void load(); }, [user, load]);
+  async function save(order: Order, fields: { status: string; carrier: string; trackingNumber: string; trackingUrl: string }) { if (!user) throw new Error('Please sign in again.'); const response = await fetch('/api/admin/orders', { method: 'PATCH', headers: { Authorization: `Bearer ${await user.getIdToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: order.session_id, ...fields }) }); const result = await response.json(); if (!response.ok) throw new Error(result.error); }
+  return <main className="min-h-screen bg-background px-8 pb-24 pt-40 md:px-16"><div className="mx-auto max-w-5xl"><Link href="/account" className="text-[9px] uppercase tracking-[0.25em] text-foreground/40">← My account</Link><p className="mt-14 text-[10px] uppercase tracking-[0.25em] text-foreground/45">Serein fulfillment</p><h1 className="mt-4 font-serif text-5xl text-primary md:text-7xl">Manage orders.</h1><p className="mt-5 text-sm leading-7 text-foreground/55">Update an order’s progress and add tracking details for the customer portal.</p>{!isReady ? <p className="mt-8">Checking your account…</p> : !user ? <Link href="/auth?next=manage-orders" className="mt-8 inline-block underline">Sign in</Link> : loading ? <p className="mt-8">Loading orders…</p> : error ? <p className="mt-8 text-sm text-red-900" role="alert">{error}</p> : orders.length ? <div className="mt-10 space-y-5">{orders.map(order => <OrderEditor key={order.session_id} order={order} save={save} />)}</div> : <p className="mt-10 text-sm text-foreground/60">No paid orders yet.</p>}</div></main>;
+}

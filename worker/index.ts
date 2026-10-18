@@ -1,11 +1,14 @@
 import Stripe from 'stripe';
 import { catalog, validateCart } from './catalog';
+import { customerUid } from './customer-auth';
 
 type Bindings = Env & {
   STRIPE_API_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
   RESEND_API_KEY?: string;
   ORDER_EMAIL_FROM?: string;
+  FIREBASE_PROJECT_ID?: string;
+  ORDER_ADMIN_UIDS?: string;
 };
 const json = (value: unknown, status = 200) => Response.json(value, { status, headers: { 'Cache-Control': 'no-store' } });
 const hash = async (value: string) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))), b => b.toString(16).padStart(2, '0')).join('');
@@ -66,6 +69,38 @@ export default {
   async fetch(request: Request, env: Bindings): Promise<Response> {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    if (url.pathname === '/api/account/orders' || url.pathname === '/api/admin/orders') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Account orders are not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      const admin = url.pathname === '/api/admin/orders';
+      if (admin && !env.ORDER_ADMIN_UIDS?.split(',').map(value => value.trim()).includes(uid)) return json({ error: 'Not authorized.' }, 403);
+      try {
+        if (request.method === 'GET') {
+          const query = admin
+            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' ORDER BY created_at DESC")
+            : env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' AND customer_uid = ? ORDER BY created_at DESC").bind(uid);
+          const result = await query.all();
+          return json({ orders: result.results });
+        }
+        if (admin && request.method === 'PATCH') {
+          if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+          let data: Record<string, unknown>;
+          try { data = JSON.parse(await body(request, 8192)); } catch { return json({ error: 'Invalid request' }, 400); }
+          if (!data || typeof data.sessionId !== 'string' || !/^cs_test_[a-zA-Z0-9]+$/.test(data.sessionId) ||
+              typeof data.status !== 'string' || !['received', 'in_progress', 'shipped', 'delivered'].includes(data.status)) return json({ error: 'Invalid order or status.' }, 400);
+          const fields = [data.carrier, data.trackingNumber, data.trackingUrl];
+          if (fields.some(value => typeof value !== 'string' || value.length > 500)) return json({ error: 'Invalid tracking details.' }, 400);
+          const [carrier, trackingNumber, trackingUrl] = fields as string[];
+          if (trackingUrl) {
+            try { if (new URL(trackingUrl).protocol !== 'https:') throw new Error(); } catch { return json({ error: 'Tracking links must use HTTPS.' }, 400); }
+          }
+          const result = await env.ORDERS.prepare("UPDATE orders SET fulfillment_status = ?, tracking_carrier = ?, tracking_number = ?, tracking_url = ?, fulfillment_updated_at = CURRENT_TIMESTAMP WHERE session_id = ? AND status = 'paid'").bind(data.status, carrier.trim() || null, trackingNumber.trim() || null, trackingUrl.trim() || null, data.sessionId).run();
+          return result.meta.changes ? json({ updated: true }) : json({ error: 'Order not found.' }, 404);
+        }
+        return json({ error: 'Method not allowed' }, 405);
+      } catch { return json({ error: 'Unable to load or update orders right now.' }, 503); }
+    }
     if (!['/api/stripe/checkout', '/api/stripe/webhook', '/api/stripe/status'].includes(url.pathname)) return json({ error: 'Not found' }, 404);
     if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
     if (!env.STRIPE_API_KEY || !/^[sr]k_test_/.test(env.STRIPE_API_KEY) || !env.STRIPE_WEBHOOK_SECRET) {
@@ -109,6 +144,12 @@ export default {
       }
       let items;
       try { items = validateCart(input.items); } catch { return json({ error: 'Please check your cart. Limit: 10 of each product.' }, 400); }
+      let uid: string | null = null;
+      if (request.headers.has('Authorization')) {
+        if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Account orders are not configured yet.' }, 503);
+        uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+        if (!uid) return json({ error: 'Please sign in again before checkout.' }, 401);
+      }
       const amount = items.reduce((sum, item) => sum + catalog[item.id].amount * item.quantity, 0);
       const fingerprint = await hash(JSON.stringify(items));
       const session = await stripe.checkout.sessions.create({
@@ -124,7 +165,7 @@ export default {
         success_url: `${url.origin}/checkout?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${url.origin}/checkout?canceled=1`,
       }, { idempotencyKey: `serein-${tokenHash}-${fingerprint}` });
-      await env.ORDERS.prepare('INSERT OR IGNORE INTO orders (session_id, token_hash, amount, currency, items) VALUES (?, ?, ?, ?, ?)').bind(session.id, tokenHash, amount, 'usd', JSON.stringify(items)).run();
+      await env.ORDERS.prepare('INSERT OR IGNORE INTO orders (session_id, token_hash, amount, currency, items, customer_uid) VALUES (?, ?, ?, ?, ?, ?)').bind(session.id, tokenHash, amount, 'usd', JSON.stringify(items), uid).run();
       return json({ url: session.url });
     } catch (error) {
       console.error(JSON.stringify({ event: 'checkout_error', type: error instanceof Stripe.errors.StripeError ? error.type : 'internal' }));

@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Eye, EyeOff, KeyRound, Mail, ShieldCheck } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { useAuth } from "@/context/auth-context";
@@ -43,6 +43,12 @@ export default function Auth() {
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [, navigate] = useLocation();
+
+  useEffect(() => {
+    const next = new URLSearchParams(window.location.search).get('next');
+    if (isReady && user) navigate(next === 'checkout' ? '/checkout' : next === 'manage-orders' ? '/manage-orders' : '/account');
+  }, [isReady, user, navigate]);
 
   useEffect(() => {
     if (googleAuthErrorCode) {
@@ -109,7 +115,7 @@ export default function Auth() {
             Your ritual, remembered.
           </h1>
           <p className="mt-8 max-w-md text-sm leading-7 text-foreground/55">
-            Sign in or create an account to keep your Serein details close. Password reset is handled privately and never reveals whether an email is registered.
+            Sign in or create an account to see your orders and follow their progress.
           </p>
         </section>
 

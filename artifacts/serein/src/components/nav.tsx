@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Menu, X, ShoppingBag, UserRound } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/context/cart-context";
@@ -7,9 +7,11 @@ import { useAuth } from "@/context/auth-context";
 
 export function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [location] = useLocation();
+  const solidNav = isScrolled || ['/account', '/manage-orders', '/auth', '/checkout'].includes(location);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { itemCount, setIsOpen } = useCart();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,13 +41,13 @@ export function NavBar() {
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-700 ${
-        isScrolled
+        solidNav
         ? "bg-background/96 backdrop-blur-sm py-4"
           : "bg-black/15 py-7"
       }`}
     >
       <div className="container mx-auto px-8 md:px-14 flex items-center justify-between">
-        <Link href="/" className={`text-base font-serif tracking-[0.3em] z-50 relative uppercase ${isScrolled ? "text-primary" : "text-white"}`}>
+        <Link href="/" className={`text-base font-serif tracking-[0.3em] z-50 relative uppercase ${solidNav ? "text-primary" : "text-white"}`}>
           Serein
         </Link>
 
@@ -56,7 +58,7 @@ export function NavBar() {
               <a
                 key={link.name}
                 href={link.href}
-                className={`text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 font-sans ${isScrolled ? "text-foreground/70" : "text-white/80"}`}
+                className={`text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 font-sans ${solidNav ? "text-foreground/70" : "text-white/80"}`}
               >
                 {link.name}
               </a>
@@ -64,24 +66,24 @@ export function NavBar() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={`text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 font-sans ${isScrolled ? "text-foreground/70" : "text-white/80"}`}
+                className={`text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 font-sans ${solidNav ? "text-foreground/70" : "text-white/80"}`}
               >
                 {link.name}
               </Link>
             )
           )}
           {user ? (
-            <button type="button" onClick={() => void signOut()} className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
+            <Link href="/account" className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${solidNav ? "text-foreground/70" : "text-white/80"}`}>
               <UserRound className="w-3.5 h-3.5" strokeWidth={1.5} />
-              <span>Sign out</span>
-            </button>
+              <span>My account</span>
+            </Link>
           ) : (
-            <Link href="/auth" className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
+            <Link href="/auth" className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${solidNav ? "text-foreground/70" : "text-white/80"}`}>
               <UserRound className="w-3.5 h-3.5" strokeWidth={1.5} />
               <span>Sign in</span>
             </Link>
           )}
-          <button type="button" onClick={() => setIsOpen(true)} aria-label={`Open cart${itemCount ? `, ${itemCount} item${itemCount === 1 ? "" : "s"}` : ""}`} className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${isScrolled ? "text-foreground/70" : "text-white/80"}`}>
+          <button type="button" onClick={() => setIsOpen(true)} aria-label={`Open cart${itemCount ? `, ${itemCount} item${itemCount === 1 ? "" : "s"}` : ""}`} className={`flex items-center space-x-1.5 text-[10px] uppercase tracking-[0.2em] hover:text-primary transition-colors duration-300 ${solidNav ? "text-foreground/70" : "text-white/80"}`}>
             <ShoppingBag className="w-3.5 h-3.5" strokeWidth={1.5} />
             <span>Cart{itemCount > 0 ? ` (${itemCount})` : ""}</span>
           </button>
@@ -89,7 +91,7 @@ export function NavBar() {
 
         {/* Mobile Toggle */}
         <div className="md:hidden flex items-center space-x-5 z-50 relative">
-          <button type="button" aria-label={`Open cart${itemCount ? `, ${itemCount} item${itemCount === 1 ? "" : "s"}` : ""}`} onClick={() => setIsOpen(true)} className={`transition-colors ${isScrolled ? "text-primary/70" : "text-white/85"} hover:text-primary`}>
+          <button type="button" aria-label={`Open cart${itemCount ? `, ${itemCount} item${itemCount === 1 ? "" : "s"}` : ""}`} onClick={() => setIsOpen(true)} className={`transition-colors ${solidNav ? "text-primary/70" : "text-white/85"} hover:text-primary`}>
             <ShoppingBag className="w-4 h-4" strokeWidth={1.5} />
           </button>
           <button
@@ -98,7 +100,7 @@ export function NavBar() {
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-navigation"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary ${isScrolled ? "text-primary/70" : "text-white/85"} hover:text-primary`}
+            className={`transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary ${solidNav ? "text-primary/70" : "text-white/85"} hover:text-primary`}
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" strokeWidth={1.5} /> : <Menu className="w-5 h-5" strokeWidth={1.5} />}
           </button>
@@ -147,19 +149,14 @@ export function NavBar() {
               )
             )}
             {user ? (
-              <motion.button
-                type="button"
+              <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: navLinks.length * 0.07 + 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                onClick={() => {
-                  setIsMobileMenuOpen(false);
-                  void signOut();
-                }}
                 className="text-left text-4xl font-serif text-primary leading-none"
               >
-                Sign out
-              </motion.button>
+                <Link href="/account" onClick={() => setIsMobileMenuOpen(false)}>My account</Link>
+              </motion.div>
             ) : (
               <motion.div
                 initial={{ opacity: 0, y: 12 }}

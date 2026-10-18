@@ -22,6 +22,15 @@ payment; the latter two provide terminal failure status. A confirmed payment sen
 
 Before deploying order confirmations, verify `sereinskn.com` in Resend and configure the `RESEND_API_KEY` and `ORDER_EMAIL_FROM` Worker secrets. Apply the `0002_order_confirmation_email.sql` migration to the production D1 database before deploying the Worker.
 
+## Customer accounts and fulfillment
+
+- Apply `0003_customer_orders.sql` to D1 **before** deploying the Worker: the new checkout insert depends on its columns. Test the migration and a checkout in a separate environment first.
+- Set `FIREBASE_PROJECT_ID` on the Worker to the same Firebase project as the frontend `VITE_FIREBASE_PROJECT_ID`. Configure frontend Firebase variables as described in `.env.example`.
+- Set `ORDER_ADMIN_UIDS` on the Worker to a comma-separated list of trusted Firebase user IDs. Staff can then sign in and open `/manage-orders`; the Worker verifies the Firebase ID token and checks this allowlist for every request. An empty list grants no staff access. Removing a UID removes staff access; Firebase ID-token verification does not check revocation, so revoke compromised sessions separately.
+- The staff screen updates fulfillment separately from payment status. It does not send shipment emails or integrate with a carrier. The customer can refresh `/account` to see the saved status, tracking number, and HTTPS carrier link.
+- Only paid orders created while signed in are linked to that Firebase UID. Guest and previously created orders lack a stored customer identity and cannot be safely linked automatically. A verified recovery/reconciliation workflow is needed to include them. Staff can still see and update paid guest orders, but those updates do not appear in a customer account.
+- The existing integration accepts **Stripe test keys and test sessions only**. This feature does not enable live purchases or shipping. Confirm the D1 migration, Firebase configuration, staff access, customer isolation, and a sandbox checkout-to-update flow before considering a release.
+
 ## Verification and remaining launch work
 
 2026-09-14: Completed a $22 sandbox card payment through the deployed site's cart.

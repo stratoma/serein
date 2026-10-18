@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/cart-context";
 import { getProductById } from "@/data/products";
+import { useAuth } from "@/context/auth-context";
 
 const formatPrice = (value: number) => `$${value.toFixed(2)}`;
 
@@ -14,6 +15,7 @@ function getCartItemImage(id: string, image?: string) {
 
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart();
+  const { user, isReady } = useAuth();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -49,7 +51,9 @@ export default function Checkout() {
       // completed or expired Checkout Session can send Stripe an old session.
       const token = crypto.randomUUID();
       sessionStorage.setItem('serein-checkout-token', token);
-      const response = await fetch('/api/stripe/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token, items: items.map(({ id, quantity }) => ({ id, quantity })) }) });
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (user) headers.Authorization = `Bearer ${await user.getIdToken()}`;
+      const response = await fetch('/api/stripe/checkout', { method: 'POST', headers, body: JSON.stringify({ token, items: items.map(({ id, quantity }) => ({ id, quantity })) }) });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
       const destination = new URL(data.url);
@@ -66,6 +70,7 @@ export default function Checkout() {
           <section>
             <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/40">Checkout</span>
             <h1 className="mt-5 font-serif text-5xl leading-none text-primary md:text-7xl">Make it yours.</h1>
+            {!sessionId && isReady && <p className="mt-6 text-sm leading-6 text-foreground/60">{user ? <>Signed in as {user.email}. This order will appear in <Link href="/account" className="underline">your account</Link>.</> : <>To see this order in your account, <Link href="/auth?next=checkout" className="underline">sign in or create an account</Link> before checkout. Guest checkout is also available.</>}</p>}
             {sessionId && status === 'paid' && <div role="status" className="mt-8 border-y border-foreground/10 py-8"><p className="text-[10px] uppercase tracking-[0.25em] text-foreground/45">Order confirmed</p><p className="mt-3 font-serif text-2xl text-primary">Thank you. Your order is complete.</p><p className="mt-3 text-sm text-foreground/55">Order reference {sessionId.slice(-12).toUpperCase()}</p><p className="mt-2 text-xs text-foreground/45">Sandbox order — Stripe processed the full test transaction, but no money was charged and no package will ship.</p></div>}
             {sessionId && status !== 'paid' && <p role="status" className="mt-8 text-lg text-primary">{status === 'failed' || status === 'expired' ? 'This payment did not complete. Return to checkout to try again.' : 'Confirming your order. This can take a moment.'}</p>}
             {canceled && <p role="status" className="mt-8 text-primary">Checkout canceled. Your cart is still here.</p>}
@@ -99,7 +104,7 @@ export default function Checkout() {
             <div className="mt-8 flex justify-between border-t border-foreground/10 pt-5 font-serif text-2xl text-primary"><span>{status === 'paid' ? 'Total paid' : 'Subtotal'}</span><span>{formatPrice(status === 'paid' && confirmedTotal !== null ? confirmedTotal : subtotal)}</span></div>
             <p className="mt-5 text-sm leading-relaxed text-foreground/60">Complete the full order in Stripe’s sandbox with card 4242 4242 4242 4242, any future expiry, and any three-digit CVC. Billing, delivery, contact details, and payment confirmation work like a live order.</p>
             {error && <p role="alert" className="mt-5 text-sm text-red-800">{error}</p>}
-            {sessionId ? <Link href="/#collection" className="mt-8 inline-block text-primary underline" onClick={() => sessionStorage.removeItem('serein-checkout-token')}>Continue shopping</Link> : <button type="button" disabled={busy || !items.length} onClick={pay} className="mt-8 w-full bg-primary px-6 py-4 text-[10px] uppercase tracking-[0.25em] text-primary-foreground disabled:opacity-40">{busy ? 'Opening secure checkout…' : 'Place sandbox order'}</button>}
+            {sessionId ? <Link href="/#collection" className="mt-8 inline-block text-primary underline" onClick={() => sessionStorage.removeItem('serein-checkout-token')}>Continue shopping</Link> : <button type="button" disabled={busy || !isReady || !items.length} onClick={pay} className="mt-8 w-full bg-primary px-6 py-4 text-[10px] uppercase tracking-[0.25em] text-primary-foreground disabled:opacity-40">{busy ? 'Opening secure checkout…' : 'Place sandbox order'}</button>}
           </aside>
         </div>
       </div>

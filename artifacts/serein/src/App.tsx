@@ -17,6 +17,8 @@ import { CartProvider } from "@/context/cart-context";
 import { AuthProvider } from "@/context/auth-context";
 import { CartDrawer } from "@/components/cart-drawer";
 import Auth from "@/pages/auth";
+import Account from "@/pages/account";
+import ManageOrders from "@/pages/manage-orders";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,8 @@ function Router() {
           <Route path="/markets" component={Markets} />
           <Route path="/checkout" component={Checkout} />
           <Route path="/auth" component={Auth} />
+          <Route path="/account" component={Account} />
+          <Route path="/manage-orders" component={ManageOrders} />
           <Route path="/privacy" component={Privacy} />
           <Route path="/shipping" component={Shipping} />
           <Route path="/collection/morrow-trio" component={MorrowTrio} />
