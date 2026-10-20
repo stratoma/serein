@@ -44,7 +44,8 @@ async function sendOrderConfirmation(
   try { items = validateCart(JSON.parse(order.items)); } catch { throw new Error('Stored order items are invalid'); }
   const lines = items.map((item) => `${catalog[item.id].name} × ${item.quantity}`);
   const orderReference = session.id.slice(-12).toUpperCase();
-  const sandboxNote = session.livemode ? '' : '<p style="margin:24px 0 0;color:#766f69;font-size:14px;line-height:1.5">This is a sandbox test order. No payment was collected and no package will ship.</p>';
+  const firstName = session.customer_details?.name?.trim().split(/\s+/)[0] || 'there';
+  const orderItems = lines.join(', ');
   const response = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -55,9 +56,16 @@ async function sendOrderConfirmation(
     body: JSON.stringify({
       from: env.ORDER_EMAIL_FROM,
       to: [recipient],
-      subject: `Your Serein order is confirmed · ${orderReference}`,
-      text: `Your Serein order is confirmed. Order ${orderReference}. ${lines.join(', ')}. Total: ${formatUsd(order.amount)}.${session.livemode ? '' : ' This is a sandbox test order. No payment was collected and no package will ship.'}`,
-      html: `<main style="max-width:560px;margin:0 auto;padding:40px 24px;background:#f8f3eb;color:#2d211f;font-family:Arial,sans-serif"><p style="margin:0 0 28px;font-size:13px;letter-spacing:4px">S E R E I N</p><h1 style="margin:0;font-family:Georgia,serif;font-size:38px;font-weight:400">Make it yours.</h1><p style="margin:20px 0 0;font-size:16px;line-height:1.6">Your order is confirmed. Thank you for choosing a little more room for ritual.</p><p style="margin:28px 0 10px;font-size:12px;letter-spacing:2px;color:#766f69">ORDER ${escapeHtml(orderReference)}</p><section style="border-top:1px solid #d9d0c6;border-bottom:1px solid #d9d0c6;padding:18px 0">${lines.map((line) => `<p style="margin:0 0 10px;font-size:16px">${escapeHtml(line)}</p>`).join('')}<p style="margin:14px 0 0;font-size:18px"><strong>Total</strong> ${escapeHtml(formatUsd(order.amount))}</p></section>${sandboxNote}</main>`,
+      ...(!session.livemode ? { subject: `TEST ORDER — no payment or shipment · ${orderReference}` } : {}),
+      template: {
+        id: '5fdd8391-bae2-4cd7-868d-38237b293537',
+        variables: {
+          First_Name: escapeHtml(firstName),
+          ORDER_NUMBER: orderReference,
+          ORDER_ITEMS: escapeHtml(session.livemode ? orderItems : `${orderItems} — TEST ORDER: no payment was collected and no package will ship.`),
+          ORDER_TOTAL: formatUsd(order.amount),
+        },
+      },
     }),
   });
   if (!response.ok) throw new Error(`Order email delivery failed (${response.status})`);
