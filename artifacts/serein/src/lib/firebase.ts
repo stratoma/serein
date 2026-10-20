@@ -1,5 +1,13 @@
-import { initializeApp, type FirebaseApp } from "firebase/app";
-import { getAuth, type Auth } from "firebase/auth";
+import { deleteApp, initializeApp, type FirebaseApp } from "firebase/app";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  inMemoryPersistence,
+  setPersistence,
+  signInWithEmailAndPassword,
+  signOut,
+  type Auth,
+} from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -38,4 +46,36 @@ export function getFirebaseAuth() {
   }
 
   return firebaseAuth;
+}
+
+function firebaseErrorCode(error: unknown) {
+  return typeof error === "object" && error !== null && "code" in error && typeof error.code === "string"
+    ? error.code
+    : "auth/unknown";
+}
+
+/**
+ * Creates a separate, in-memory Firebase session so adding a dashboard user
+ * never signs the administrator out of their own browser session.
+ */
+export async function provisionAdminAccount(email: string, password: string) {
+  if (missingFirebaseConfig.length > 0) throw new Error("Firebase is not configured.");
+  const app = initializeApp(firebaseConfig, `admin-provision-${Date.now()}-${Math.random()}`);
+  const auth = getAuth(app);
+  try {
+    await setPersistence(auth, inMemoryPersistence);
+    let credential;
+    try {
+      credential = await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      // Retrying after a temporary API failure must be possible without asking
+      // an administrator to locate a Firebase user ID.
+      if (firebaseErrorCode(error) !== "auth/email-already-in-use") throw error;
+      credential = await signInWithEmailAndPassword(auth, email, password);
+    }
+    return credential.user.getIdToken();
+  } finally {
+    await signOut(auth).catch(() => undefined);
+    await deleteApp(app).catch(() => undefined);
+  }
 }

@@ -28,6 +28,8 @@ test('verified accounts see only their own orders and only staff can update fulf
     assert.equal((await manageUsers(alice)).status, 403);
     assert.equal((await manageUsers(staff, 'POST', { uid: 'alice', name: 'Alice', email: 'alice@example.com' }, 'https://other.test')).status, 403);
     assert.equal((await manageUsers(staff, 'DELETE', { uid: 'staff' })).status, 400);
+    assert.equal((await manageUsers(staff, 'POST', { userToken: alice, name: 'Alice', email: 'alice@example.com' })).status, 200);
+    assert.equal((await manageUsers(staff, 'POST', { userToken: 'not-a-token', name: 'Alice', email: 'alice@example.com' })).status, 400);
     assert.equal((await manageUsers(staff, 'POST', { uid: 'alice', name: 'Alice', email: 'alice@example.com' })).status, 200);
     assert.equal((await request('/api/admin/orders', alice)).status, 200);
     assert.equal((await manageUsers(alice)).status, 403);

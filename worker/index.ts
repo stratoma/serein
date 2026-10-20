@@ -96,15 +96,25 @@ export default {
         if (!['POST', 'DELETE'].includes(request.method)) return json({ error: 'Method not allowed' }, 405);
         if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
         let data: Record<string, unknown>;
-        try { data = JSON.parse(await body(request, 4096)); } catch { return json({ error: 'Invalid request.' }, 400); }
-        if (!data || typeof data.uid !== 'string' || !/^[^\s]{1,128}$/.test(data.uid)) return json({ error: 'Enter a valid Firebase user ID.' }, 400);
-        if (owners.includes(data.uid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
+        try { data = JSON.parse(await body(request, 16384)); } catch { return json({ error: 'Invalid request.' }, 400); }
+        if (!data) return json({ error: 'Invalid request.' }, 400);
         if (request.method === 'DELETE') {
+          if (typeof data.uid !== 'string' || !/^[^\s]{1,128}$/.test(data.uid)) return json({ error: 'Enter a valid user.' }, 400);
+          if (owners.includes(data.uid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
           await env.ORDERS.prepare('DELETE FROM staff_users WHERE uid = ?').bind(data.uid).run();
           return json({ saved: true });
         }
         if (typeof data.name !== 'string' || data.name.length > 120 || typeof data.email !== 'string' || data.email.length > 254 || (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))) return json({ error: 'Check the name and email.' }, 400);
-        await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email) VALUES (?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email').bind(data.uid, data.name.trim(), data.email.trim()).run();
+        let staffUid: string | null = null;
+        if (typeof data.userToken === 'string' && data.userToken.length <= 12000) {
+          staffUid = await customerUid(new Request(url.origin, { headers: { Authorization: `Bearer ${data.userToken}` } }), env.FIREBASE_PROJECT_ID);
+        } else if (typeof data.uid === 'string' && /^[^\s]{1,128}$/.test(data.uid)) {
+          // Editing profile labels retains support for staff added before account creation was available.
+          staffUid = data.uid;
+        }
+        if (!staffUid) return json({ error: 'The new account could not be verified. Please try again.' }, 400);
+        if (owners.includes(staffUid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
+        await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email) VALUES (?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email').bind(staffUid, data.name.trim(), data.email.trim()).run();
         return json({ saved: true });
       } catch { return json({ error: 'Unable to manage users right now.' }, 503); }
     }
