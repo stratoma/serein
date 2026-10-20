@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link } from 'wouter';
 import { useAuth } from '@/context/auth-context';
+import { products as editorialProducts } from '@/data/products';
+import { ImageOff, Pencil, Plus, Search, X } from 'lucide-react';
 
 export type ManagedProduct = { id: string; name: string; amount: number; description: string; image_url: string; stock: number | null; low_stock_threshold: number; active: number };
 
@@ -42,6 +44,9 @@ export default function ManageProducts() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [version, setVersion] = useState(0);
+  const [search, setSearch] = useState('');
+  const [filter, setFilter] = useState<'all' | 'active' | 'draft' | 'out'>('all');
+  const [editing, setEditing] = useState<string | null>(null);
   const load = useCallback(async () => {
     if (!user) return;
     setLoading(true); setError('');
@@ -50,6 +55,20 @@ export default function ManageProducts() {
     finally { setLoading(false); }
   }, [user]);
   useEffect(() => { setProducts([]); if (user) void load(); }, [user, load]);
-  async function save(data: object) { if (!user) throw new Error('Please sign in again.'); const response = await fetch('/api/admin/products', { method: 'POST', headers: { Authorization: `Bearer ${await user.getIdToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); const result = await response.json(); if (!response.ok) throw new Error(result.error); await load(); }
-  return <main className="min-h-screen bg-background px-6 pb-24 pt-40 md:px-16"><div className="mx-auto max-w-5xl"><Link href="/dashboard" className="text-[10px] uppercase tracking-[0.2em] underline">← Dashboard</Link><h1 className="mt-12 font-serif text-5xl text-primary">Products & inventory.</h1><p className="mt-4 text-sm leading-6 text-foreground/60">Enter your actual stock counts. Paid sandbox orders deduct stock automatically. Blank stock is untracked. New products start unpublished.</p><p className="mt-3 text-sm text-foreground/60">Stock is checked when checkout starts but is not reserved; simultaneous checkouts can result in a negative quantity.</p>{!isReady ? <p className="mt-8">Checking your account…</p> : !user ? <Link href="/auth?next=manage-products" className="mt-8 inline-block underline">Sign in</Link> : loading ? <p className="mt-8">Loading products…</p> : error ? <p role="alert" className="mt-8 text-red-900">{error}</p> : <div className="mt-8 space-y-5"><ProductForm key={`new-${version}`} save={save} />{products.map(product => <ProductForm key={`${product.id}-${version}`} product={product} save={save} />)}</div>}</div></main>;
+  async function save(data: object) { if (!user) throw new Error('Please sign in again.'); const response = await fetch('/api/admin/products', { method: 'POST', headers: { Authorization: `Bearer ${await user.getIdToken()}`, 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); const result = await response.json(); if (!response.ok) throw new Error(result.error); await load(); setEditing(null); }
+  const visible = products.filter(product => {
+    const matchesSearch = `${product.name} ${product.id}`.toLowerCase().includes(search.trim().toLowerCase());
+    return matchesSearch && (filter === 'all' || (filter === 'active' && !!product.active) || (filter === 'draft' && !product.active) || (filter === 'out' && product.stock !== null && product.stock <= 0));
+  });
+  const selected = products.find(product => product.id === editing);
+  return <main className="min-h-screen px-6 pb-24 pt-10 md:px-10"><div className="mx-auto max-w-7xl">
+    <div className="flex flex-wrap items-end justify-between gap-4"><div><p className="text-[10px] uppercase tracking-[0.2em] text-foreground/45">Serein administration</p><h1 className="mt-3 font-serif text-5xl text-primary">Products.</h1><p className="mt-3 text-sm text-foreground/60">Manage your product catalog and inventory.</p></div>{user && !loading && !error && <button onClick={() => setEditing('new')} className="flex items-center gap-2 bg-primary px-5 py-3 text-sm text-primary-foreground"><Plus size={17} /> Add product</button>}</div>
+    <p className="mt-5 text-xs leading-5 text-foreground/55">Blank stock is untracked. Paid sandbox orders deduct stock automatically; stock is not reserved during checkout.</p>
+    {!isReady ? <p className="mt-8">Checking your account…</p> : !user ? <Link href="/auth?next=manage-products" className="mt-8 inline-block underline">Sign in</Link> : loading ? <p className="mt-8" role="status">Loading products…</p> : error ? <p role="alert" className="mt-8 text-red-900">{error}</p> : <>
+      {editing && <section className="mt-8" aria-label={editing === 'new' ? 'Add product' : 'Edit product'}><div className="mb-3 flex justify-end"><button onClick={() => setEditing(null)} className="flex items-center gap-1 text-sm text-foreground/60"><X size={16} /> Close</button></div><ProductForm key={`${editing}-${version}`} product={selected} save={save} /></section>}
+      <div className="mt-8 overflow-hidden rounded-lg border border-foreground/10 bg-[#fdfbf7]"><div className="flex flex-wrap items-center justify-between gap-4 border-b border-foreground/10 p-4"><label className="flex min-w-[220px] flex-1 items-center gap-2 rounded border border-foreground/20 px-3 py-2 sm:max-w-sm"><Search size={17} className="text-foreground/50" /><span className="sr-only">Search products</span><input className="w-full bg-transparent text-sm outline-none" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} /></label><div className="flex flex-wrap gap-2" aria-label="Filter products">{([['all', 'All'], ['active', 'Active'], ['draft', 'Draft'], ['out', 'Out of stock']] as const).map(([value, label]) => <button key={value} onClick={() => setFilter(value)} aria-pressed={filter === value} className={`rounded border px-3 py-2 text-xs ${filter === value ? 'border-primary bg-primary text-primary-foreground' : 'border-foreground/20 text-foreground/75'}`}>{label}</button>)}</div></div>
+        <div className="overflow-x-auto"><table className="w-full min-w-[620px] text-left text-sm"><thead className="bg-foreground/[0.03] text-xs text-foreground/55"><tr><th className="p-4 font-normal">Image</th><th className="p-4 font-normal">Product</th><th className="p-4 font-normal">Status</th><th className="p-4 font-normal">Price</th><th className="p-4 font-normal">Stock</th><th className="p-4 font-normal"><span className="sr-only">Actions</span></th></tr></thead><tbody>{visible.map(product => { const image = editorialProducts.find(item => item.id === product.id)?.img || product.image_url; return <tr key={product.id} className="border-t border-foreground/10"><td className="p-4">{image ? <img src={image} alt="" className="h-12 w-12 rounded object-cover" /> : <span className="flex h-12 w-12 items-center justify-center rounded bg-foreground/5 text-foreground/35"><ImageOff size={18} /></span>}</td><td className="p-4 font-medium text-primary">{product.name}</td><td className="p-4"><span className={`rounded-full px-3 py-1 text-xs ${product.active ? 'bg-primary text-primary-foreground' : 'bg-foreground/10 text-foreground/70'}`}>{product.active ? 'Active' : 'Draft'}</span></td><td className="p-4">{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(product.amount / 100)}</td><td className={`p-4 ${product.stock !== null && product.stock <= product.low_stock_threshold ? 'text-red-700' : 'text-foreground/70'}`}>{product.stock === null ? 'Unknown' : product.stock}</td><td className="p-4 text-right"><button onClick={() => { setEditing(product.id); window.scrollTo({ top: 0, behavior: 'smooth' }); }} aria-label={`Edit ${product.name}`} className="rounded p-2 text-foreground/60 hover:bg-foreground/5 hover:text-primary"><Pencil size={17} /></button></td></tr>; })}</tbody></table>{!visible.length && <p className="p-6 text-sm text-foreground/60">No products match your search and filters.</p>}</div>
+      </div>
+    </>}
+  </div></main>;
 }

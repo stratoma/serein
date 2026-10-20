@@ -1,4 +1,4 @@
-import { Switch, Route, Router as WouterRouter } from "wouter";
+import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,10 +21,14 @@ import Account from "@/pages/account";
 import ManageOrders from "@/pages/manage-orders";
 import AdminDashboard from "@/pages/admin-dashboard";
 import ManageProducts from "@/pages/manage-products";
+import { AdminLayout } from "@/components/admin-layout";
 
 const queryClient = new QueryClient();
 
 function Router() {
+  const [location] = useLocation();
+  const isAdmin = ['/dashboard', '/manage-products', '/manage-orders'].includes(location);
+  if (isAdmin) return <><ScrollToTop /><AdminLayout><Switch><Route path="/manage-orders" component={ManageOrders} /><Route path="/dashboard" component={AdminDashboard} /><Route path="/manage-products" component={ManageProducts} /></Switch></AdminLayout></>;
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />

@@ -64,7 +64,21 @@ export default defineConfig({
     host: "0.0.0.0",
     allowedHosts: true,
     proxy: {
-      "/api": "http://127.0.0.1:8787",
+      "/api": {
+        target: "http://127.0.0.1:8787",
+        changeOrigin: true,
+        configure(proxy) {
+          proxy.on("proxyReq", (proxyRequest, request) => {
+            // Preserve the Worker's same-origin check when the browser's local
+            // Vite origin differs from the local Worker origin.
+            if (request.headers.origin === `http://${request.headers.host}`) {
+              proxyRequest.setHeader("origin", "http://127.0.0.1:8787");
+            } else if (request.headers.origin) {
+              proxyRequest.setHeader("origin", "null");
+            }
+          });
+        },
+      },
     },
     fs: {
       strict: true,
