@@ -31,6 +31,9 @@ test('verified accounts see only their own orders and only staff can update fulf
     assert.equal((await manageUsers(staff, 'POST', { userToken: alice, name: 'Alice', email: 'alice@example.com' })).status, 200);
     assert.equal((await manageUsers(staff, 'POST', { userToken: 'not-a-token', name: 'Alice', email: 'alice@example.com' })).status, 400);
     assert.equal((await manageUsers(staff, 'POST', { uid: 'alice', name: 'Alice', email: 'alice@example.com' })).status, 200);
+    const emailLogs = (query: string) => worker.fetch(new Request(`https://serein.test/api/admin/email-logs?${query}`, { headers: { Authorization: `Bearer ${staff}` } }), env as unknown as Parameters<typeof worker.fetch>[1]);
+    assert.equal((await emailLogs('type=all&status=all')).status, 200);
+    assert.equal((await emailLogs('type=invalid&status=all')).status, 400);
     assert.equal((await request('/api/admin/orders', alice)).status, 200);
     assert.equal((await manageUsers(alice)).status, 403);
     assert.equal((await manageUsers(staff, 'DELETE', { uid: 'alice' })).status, 200);

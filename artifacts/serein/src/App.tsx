@@ -23,14 +23,15 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import ManageProducts from "@/pages/manage-products";
 import ManageCustomers from "@/pages/manage-customers";
 import ManageUsers from "@/pages/manage-users";
+import EmailLogs from "@/pages/email-logs";
 import { AdminLayout } from "@/components/admin-layout";
 
 const queryClient = new QueryClient();
 
 function Router() {
   const [location] = useLocation();
-  const isAdmin = ['/dashboard', '/manage-products', '/manage-orders', '/manage-customers', '/manage-users'].includes(location);
-  if (isAdmin) return <><ScrollToTop /><AdminLayout><Switch><Route path="/manage-orders" component={ManageOrders} /><Route path="/dashboard" component={AdminDashboard} /><Route path="/manage-products" component={ManageProducts} /><Route path="/manage-customers" component={ManageCustomers} /><Route path="/manage-users" component={ManageUsers} /></Switch></AdminLayout></>;
+  const isAdmin = ['/dashboard', '/manage-products', '/manage-orders', '/manage-customers', '/manage-users', '/email-logs'].includes(location);
+  if (isAdmin) return <><ScrollToTop /><AdminLayout><Switch><Route path="/manage-orders" component={ManageOrders} /><Route path="/dashboard" component={AdminDashboard} /><Route path="/manage-products" component={ManageProducts} /><Route path="/manage-customers" component={ManageCustomers} /><Route path="/manage-users" component={ManageUsers} /><Route path="/email-logs" component={EmailLogs} /></Switch></AdminLayout></>;
   return (
     <div className="flex flex-col min-h-screen">
       <ScrollToTop />

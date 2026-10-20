@@ -118,6 +118,24 @@ export default {
         return json({ saved: true });
       } catch { return json({ error: 'Unable to manage users right now.' }, 503); }
     }
+    if (url.pathname === '/api/admin/email-logs' && request.method === 'GET') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      try {
+        if (!await staffAccess(env, uid)) return json({ error: 'Not authorized.' }, 403);
+        const type = url.searchParams.get('type') ?? 'all';
+        const status = url.searchParams.get('status') ?? 'all';
+        const types = ['all', 'order_confirmation', 'payment_confirmation', 'shipping_confirmation', 'cancellation', 'refund'];
+        const statuses = ['all', 'sent', 'pending', 'failed'];
+        if (!types.includes(type) || !statuses.includes(status)) return json({ error: 'Invalid email log filter.' }, 400);
+        const where = ['1 = 1']; const values: string[] = [];
+        if (type !== 'all') { where.push('email_type = ?'); values.push(type); }
+        if (status !== 'all') { where.push('status = ?'); values.push(status); }
+        const result = await env.ORDERS.prepare(`SELECT id, recipient, subject, email_type, status, sent_at FROM email_logs WHERE ${where.join(' AND ')} ORDER BY sent_at DESC LIMIT 250`).bind(...values).all();
+        return json({ emails: result.results });
+      } catch { return json({ error: 'Unable to load email logs right now.' }, 503); }
+    }
     const imageMatch = url.pathname.match(/^\/api\/product-images\/([0-9a-f-]{36})$/);
     if (imageMatch && request.method === 'GET') {
       try {
@@ -234,6 +252,8 @@ export default {
           if (!order.confirmation_email_id) {
             const emailId = await sendOrderConfirmation(env, session, order);
             await env.ORDERS.prepare('UPDATE orders SET confirmation_email_id = ?, confirmation_email_sent_at = CURRENT_TIMESTAMP WHERE session_id = ? AND confirmation_email_id IS NULL').bind(emailId, session.id).run();
+            const recipient = session.customer_details?.email ?? session.customer_email;
+            if (recipient) await env.ORDERS.prepare("INSERT OR IGNORE INTO email_logs (id, recipient, subject, email_type, status, provider_id, order_session_id) VALUES (?, ?, ?, 'order_confirmation', 'sent', ?, ?)").bind(`resend-${emailId}`, recipient, session.livemode ? 'Order confirmation' : 'TEST ORDER — no payment or shipment', emailId, session.id).run();
           }
         } else if (event.type === 'checkout.session.async_payment_failed' || event.type === 'checkout.session.expired') {
           await env.ORDERS.prepare("UPDATE orders SET status = ? WHERE session_id = ? AND status != 'paid'").bind(event.type.endsWith('expired') ? 'expired' : 'failed', session.id).run();

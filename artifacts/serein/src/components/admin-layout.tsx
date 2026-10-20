@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingBag, Store, Users, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Mail, Package, ShoppingBag, Store, Users, ShieldCheck } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import type { ReactNode } from 'react';
 
@@ -8,6 +8,7 @@ const links = [
   { href: '/manage-orders', label: 'Orders', icon: ShoppingBag },
   { href: '/manage-customers', label: 'Customers', icon: Users },
   { href: '/manage-users', label: 'Users', icon: ShieldCheck },
+  { href: '/email-logs', label: 'Email logs', icon: Mail },
 ];
 
 export function AdminLayout({ children }: { children: ReactNode }) {
