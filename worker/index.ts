@@ -112,7 +112,7 @@ export default {
       try {
         if (request.method === 'GET') {
           const query = admin
-            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at, customer_uid, customer_name, customer_email FROM orders WHERE status = 'paid' ORDER BY created_at DESC")
+            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at, customer_uid, customer_name, customer_email, delivery_name, delivery_address FROM orders WHERE status = 'paid' ORDER BY created_at DESC")
             : env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' AND customer_uid = ? ORDER BY created_at DESC").bind(uid);
           const result = await query.all();
           return json({ orders: result.results });
@@ -156,7 +156,12 @@ export default {
         if (order.amount !== session.amount_total || order.currency !== session.currency) return json({ error: 'Order total mismatch' }, 400);
         const paid = session.payment_status === 'paid';
         if (paid) {
-          await env.ORDERS.prepare("UPDATE orders SET status = 'paid', paid_at = COALESCE(paid_at, CURRENT_TIMESTAMP), customer_name = COALESCE(customer_name, ?), customer_email = COALESCE(customer_email, ?) WHERE session_id = ?").bind(session.customer_details?.name ?? null, session.customer_details?.email ?? session.customer_email ?? null, session.id).run();
+          // Webhook destinations can be pinned to an older Stripe API version.
+          const legacySession = session as Stripe.Checkout.Session & { shipping_details?: Stripe.Checkout.Session.CollectedInformation.ShippingDetails | null };
+          const shipping = session.collected_information?.shipping_details ?? legacySession.shipping_details;
+          const address = shipping?.address;
+          const deliveryAddress = address ? JSON.stringify({ line1: address.line1, line2: address.line2, city: address.city, state: address.state, postal_code: address.postal_code, country: address.country }) : null;
+          await env.ORDERS.prepare("UPDATE orders SET status = 'paid', paid_at = COALESCE(paid_at, CURRENT_TIMESTAMP), customer_name = COALESCE(customer_name, ?), customer_email = COALESCE(customer_email, ?), delivery_name = COALESCE(delivery_name, ?), delivery_address = COALESCE(delivery_address, ?) WHERE session_id = ?").bind(session.customer_details?.name ?? null, session.customer_details?.email ?? session.customer_email ?? null, shipping?.name ?? null, deliveryAddress, session.id).run();
           if (!order.confirmation_email_id) {
             const emailId = await sendOrderConfirmation(env, session, order);
             await env.ORDERS.prepare('UPDATE orders SET confirmation_email_id = ?, confirmation_email_sent_at = CURRENT_TIMESTAMP WHERE session_id = ? AND confirmation_email_id IS NULL').bind(emailId, session.id).run();

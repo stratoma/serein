@@ -625,3 +625,7 @@ Verification:
 
 - Added a staff-only dashboard using paid order records, linked account counts, order status and pending fulfillment navigation. Checkout remains test-only; guest and historical customer identities are not available.
 - Added staff product and inventory management, managed checkout prices, and a database trigger that deducts tracked stock once when a verified webhook marks an order paid. Existing stock starts unknown; concurrent sessions can oversell because stock is not reserved. Revenue is gross paid sandbox orders; refunds and guest customer counts are not reconciled. No migration or deployment was performed.
+
+# Order delivery details — 2026-10-20
+
+- Record the delivery recipient and address from verified paid Checkout events and show them with the customer name in staff order views. Older orders do not gain address details automatically. Migration 0005 is required before deployment.
