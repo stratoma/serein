@@ -1,5 +1,5 @@
 import Stripe from 'stripe';
-import { catalog, validateCart } from './catalog';
+import { catalog } from './catalog';
 import { customerUid } from './customer-auth';
 
 type Bindings = Env & {
@@ -40,9 +40,9 @@ async function sendOrderConfirmation(
   if (!env.RESEND_API_KEY || !env.ORDER_EMAIL_FROM) throw new Error('Order email is not configured');
   const recipient = session.customer_details?.email ?? session.customer_email;
   if (!recipient) throw new Error('Checkout customer email is missing');
-  let items: { id: string; quantity: number }[];
-  try { items = validateCart(JSON.parse(order.items)); } catch { throw new Error('Stored order items are invalid'); }
-  const lines = items.map((item) => `${catalog[item.id].name} × ${item.quantity}`);
+  let items: { id: string; name?: string; quantity: number }[];
+  try { items = JSON.parse(order.items); if (!Array.isArray(items)) throw new Error(); } catch { throw new Error('Stored order items are invalid'); }
+  const lines = items.map((item) => `${item.name ?? catalog[item.id]?.name ?? item.id} × ${item.quantity}`);
   const orderReference = session.id.slice(-12).toUpperCase();
   const firstName = session.customer_details?.name?.trim().split(/\s+/)[0] || 'there';
   const orderItems = lines.join(', ');
@@ -77,6 +77,32 @@ export default {
   async fetch(request: Request, env: Bindings): Promise<Response> {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    if (url.pathname === '/api/products' && request.method === 'GET') {
+      try { const result = await env.ORDERS.prepare('SELECT id, name, amount, description, image_url, stock FROM products WHERE active = 1 ORDER BY name').all(); return json({ products: result.results }); }
+      catch { return json({ error: 'Products are temporarily unavailable.' }, 503); }
+    }
+    if (url.pathname === '/api/admin/products') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      if (!env.ORDER_ADMIN_UIDS?.split(',').map(value => value.trim()).includes(uid)) return json({ error: 'Not authorized.' }, 403);
+      try {
+        if (request.method === 'GET') { const result = await env.ORDERS.prepare('SELECT * FROM products ORDER BY name').all(); return json({ products: result.results }); }
+        if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+        if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+        let data: Record<string, unknown>;
+        try { data = JSON.parse(await body(request, 8192)); } catch { return json({ error: 'Invalid request' }, 400); }
+        if (!data || typeof data.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.id) || data.id.length > 80 || typeof data.name !== 'string' || !data.name.trim() || data.name.length > 120 || !Number.isInteger(data.amount) || (data.amount as number) < 0 || (data.amount as number) > 10000000 || typeof data.description !== 'string' || data.description.length > 2000 || typeof data.imageUrl !== 'string' || data.imageUrl.length > 500 || (data.stock !== null && (!Number.isInteger(data.stock) || (data.stock as number) < 0 || (data.stock as number) > 1000000)) || !Number.isInteger(data.threshold) || (data.threshold as number) < 0 || (data.threshold as number) > 1000000 || typeof data.active !== 'boolean') return json({ error: 'Please check product details and stock.' }, 400);
+        if (data.imageUrl && !/^\/images\/[a-zA-Z0-9._/-]+$/.test(data.imageUrl)) { try { if (new URL(data.imageUrl).protocol !== 'https:') throw new Error(); } catch { return json({ error: 'Image must be an HTTPS URL or a local /images/ path.' }, 400); } }
+        if (data.create === true) {
+          const result = await env.ORDERS.prepare('INSERT OR IGNORE INTO products (id, name, amount, description, image_url, stock, low_stock_threshold, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(data.id, data.name.trim(), data.amount, data.description, data.imageUrl, data.stock, data.threshold, data.active ? 1 : 0).run();
+          return result.meta.changes ? json({ saved: true }) : json({ error: 'A product with this ID already exists.' }, 409);
+        }
+        // Stock updates are deliberate absolute counts; checkout deductions remain atomic.
+        const result = await env.ORDERS.prepare('UPDATE products SET name = ?, amount = ?, description = ?, image_url = ?, stock = ?, low_stock_threshold = ?, active = ? WHERE id = ? AND stock IS ?').bind(data.name.trim(), data.amount, data.description, data.imageUrl, data.stock, data.threshold, data.active ? 1 : 0, data.id, data.previousStock).run();
+        return result.meta.changes ? json({ saved: true }) : json({ error: 'Product or stock changed. Refresh and try again.' }, 409);
+      } catch { return json({ error: 'Unable to load or save products.' }, 503); }
+    }
     if (url.pathname === '/api/account/orders' || url.pathname === '/api/admin/orders') {
       if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Account orders are not configured yet.' }, 503);
       const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
@@ -86,7 +112,7 @@ export default {
       try {
         if (request.method === 'GET') {
           const query = admin
-            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' ORDER BY created_at DESC")
+            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at, customer_uid, customer_name, customer_email FROM orders WHERE status = 'paid' ORDER BY created_at DESC")
             : env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' AND customer_uid = ? ORDER BY created_at DESC").bind(uid);
           const result = await query.all();
           return json({ orders: result.results });
@@ -130,7 +156,7 @@ export default {
         if (order.amount !== session.amount_total || order.currency !== session.currency) return json({ error: 'Order total mismatch' }, 400);
         const paid = session.payment_status === 'paid';
         if (paid) {
-          await env.ORDERS.prepare("UPDATE orders SET status = 'paid', paid_at = COALESCE(paid_at, CURRENT_TIMESTAMP) WHERE session_id = ?").bind(session.id).run();
+          await env.ORDERS.prepare("UPDATE orders SET status = 'paid', paid_at = COALESCE(paid_at, CURRENT_TIMESTAMP), customer_name = COALESCE(customer_name, ?), customer_email = COALESCE(customer_email, ?) WHERE session_id = ?").bind(session.customer_details?.name ?? null, session.customer_details?.email ?? session.customer_email ?? null, session.id).run();
           if (!order.confirmation_email_id) {
             const emailId = await sendOrderConfirmation(env, session, order);
             await env.ORDERS.prepare('UPDATE orders SET confirmation_email_id = ?, confirmation_email_sent_at = CURRENT_TIMESTAMP WHERE session_id = ? AND confirmation_email_id IS NULL').bind(emailId, session.id).run();
@@ -150,15 +176,23 @@ export default {
         const order = await env.ORDERS.prepare('SELECT status, amount, currency FROM orders WHERE session_id = ? AND token_hash = ?').bind(input.sessionId, tokenHash).first();
         return order ? json(order) : json({ error: 'Order not found in this browser' }, 404);
       }
-      let items;
-      try { items = validateCart(input.items); } catch { return json({ error: 'Please check your cart. Limit: 10 of each product.' }, 400); }
+      if (!Array.isArray(input.items) || !input.items.length || input.items.length > 50) return json({ error: 'Please check your cart.' }, 400);
+      const seen = new Set<string>();
+      const items: { id: string; quantity: number; name: string; amount: number }[] = [];
+      for (const item of input.items) {
+        if (!item || typeof item.id !== 'string' || seen.has(item.id) || !Number.isInteger(item.quantity) || item.quantity < 1 || item.quantity > 10) return json({ error: 'Please check your cart. Limit: 10 of each product.' }, 400);
+        seen.add(item.id);
+        const product = await env.ORDERS.prepare('SELECT id, name, amount, stock FROM products WHERE id = ? AND active = 1').bind(item.id).first<{ id: string; name: string; amount: number; stock: number | null }>();
+        if (!product || (product.stock !== null && product.stock < item.quantity)) return json({ error: 'A product is unavailable or has insufficient stock. Please update your cart.' }, 409);
+        items.push({ id: product.id, name: product.name, amount: product.amount, quantity: item.quantity });
+      }
       let uid: string | null = null;
       if (request.headers.has('Authorization')) {
         if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Account orders are not configured yet.' }, 503);
         uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
         if (!uid) return json({ error: 'Please sign in again before checkout.' }, 401);
       }
-      const amount = items.reduce((sum, item) => sum + catalog[item.id].amount * item.quantity, 0);
+      const amount = items.reduce((sum, item) => sum + item.amount * item.quantity, 0);
       const fingerprint = await hash(JSON.stringify(items));
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
@@ -168,7 +202,7 @@ export default {
         invoice_creation: { enabled: true },
         phone_number_collection: { enabled: true },
         shipping_address_collection: { allowed_countries: ['US'] },
-        line_items: items.map(item => ({ quantity: item.quantity, price_data: { currency: 'usd', unit_amount: catalog[item.id].amount, product_data: { name: catalog[item.id].name } } })),
+        line_items: items.map(item => ({ quantity: item.quantity, price_data: { currency: 'usd', unit_amount: item.amount, product_data: { name: item.name } } })),
         metadata: { app: 'serein' },
         success_url: `${url.origin}/checkout?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${url.origin}/checkout?canceled=1`,

@@ -620,3 +620,8 @@ Verification:
 - Added account order history, status and tracking display, and a staff-only fulfillment editor. New signed-in checkout orders retain a Firebase UID; payment and fulfillment states are separate. The Worker verifies Firebase ID tokens and checks an explicit staff UID allowlist.
 - Existing and guest orders cannot be automatically linked because the stored records do not contain a verified customer identity. Fulfillment updates do not send emails and do not automatically sync with a carrier. Checkout remains Stripe sandbox only.
 - Requires D1 migration 0003 and Worker Firebase project/staff UID configuration before deployment; see `worker/README.md`. No migration or deployment was performed in this change.
+
+# Staff dashboard — 2026-10-20
+
+- Added a staff-only dashboard using paid order records, linked account counts, order status and pending fulfillment navigation. Checkout remains test-only; guest and historical customer identities are not available.
+- Added staff product and inventory management, managed checkout prices, and a database trigger that deducts tracked stock once when a verified webhook marks an order paid. Existing stock starts unknown; concurrent sessions can oversell because stock is not reserved. Revenue is gross paid sandbox orders; refunds and guest customer counts are not reconciled. No migration or deployment was performed.

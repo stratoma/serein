@@ -2,6 +2,7 @@ import { useParams, Link } from "wouter";
 import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
 import { getProductById } from "@/data/products";
+import { useManagedCatalog, catalogPrice, available } from "@/data/managed-catalog";
 import { ProductCarousel, CarouselImage } from "@/components/product-carousel";
 import { useCart } from "@/context/cart-context";
 import { useToast } from "@/hooks/use-toast";
@@ -10,7 +11,9 @@ const BASE = import.meta.env.BASE_URL;
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const product = getProductById(slug ?? "");
+  const originalProduct = getProductById(slug ?? "");
+  const managed = useManagedCatalog()?.find(item => item.id === slug);
+  const product = originalProduct && { ...originalProduct, name: managed?.name ?? originalProduct.name };
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -36,7 +39,7 @@ export default function ProductDetail() {
   ].filter(Boolean) as CarouselImage[];
 
   const addToCart = () => {
-    addItem({ id: product.id, name: product.name, price: Number(product.price.replace(/[^0-9.]/g, "")), image: product.cleanStill ?? product.img });
+    addItem({ id: product.id, name: product.name, price: (managed?.amount ?? 0) / 100, image: product.cleanStill ?? product.img });
     toast({ title: `${product.name} added`, description: "A considered ritual, saved for you." });
   };
 
@@ -68,11 +71,12 @@ export default function ProductDetail() {
               {product.productSensoryIntro}
             </p>
             <div className="mt-7 flex flex-col items-start gap-4">
-              <span className="text-[#F3EBDD] text-base font-sans tracking-wide">{product.price}</span>
+              <span className="text-[#F3EBDD] text-base font-sans tracking-wide">{managed ? catalogPrice(managed.amount) : 'Unavailable'}</span>
               {product.size && <span className="text-[#F3EBDD]/70 text-[10px] uppercase tracking-[0.2em] font-sans">Size: {product.size}</span>}
               <button
                 type="button"
                 onClick={addToCart}
+                disabled={!available(managed)}
                 className="text-[11px] uppercase tracking-[0.3em] text-[#F3EBDD] border border-[#F3EBDD]/60 px-8 py-3.5 hover:bg-[#F3EBDD] hover:text-primary transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#F3EBDD]"
               >
                 Add to Cart

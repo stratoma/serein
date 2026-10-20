@@ -12,6 +12,8 @@ The deployed Worker accepts test keys only. Hosted Checkout uses the server cata
 - `corepack pnpm@10.11.1 exec tsx --test worker/payments.test.ts`
 - `corepack pnpm@10.11.1 exec tsc -p worker/tsconfig.json`
 
+For local dashboard access, put Firebase web configuration in the ignored `artifacts/serein/.env.local` and set the matching `FIREBASE_PROJECT_ID` and trusted Firebase UID in the ignored root `.dev.vars` as `ORDER_ADMIN_UIDS`. Start the local Worker on port 8787 and the Vite server on port 4173; Vite proxies `/api` to the local Worker. Apply local migrations first. The local D1 database is separate from production and does not contain production orders or inventory. Restart the Worker when changing `.dev.vars`. Never put Stripe or other server secrets in Vite environment variables.
+
 ## Deployed configuration
 
 Secrets: `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, and `ORDER_EMAIL_FROM` (for example, `Serein <orders@sereinskn.com>`). Database: `serein-orders`.
@@ -30,6 +32,14 @@ Before deploying order confirmations, verify `sereinskn.com` in Resend and confi
 - The staff screen updates fulfillment separately from payment status. It does not send shipment emails or integrate with a carrier. The customer can refresh `/account` to see the saved status, tracking number, and HTTPS carrier link.
 - Only paid orders created while signed in are linked to that Firebase UID. Guest and previously created orders lack a stored customer identity and cannot be safely linked automatically. A verified recovery/reconciliation workflow is needed to include them. Staff can still see and update paid guest orders, but those updates do not appear in a customer account.
 - The existing integration accepts **Stripe test keys and test sessions only**. This feature does not enable live purchases or shipping. Confirm the D1 migration, Firebase configuration, staff access, customer isolation, and a sandbox checkout-to-update flow before considering a release.
+
+## Managed catalog and inventory
+
+- Apply migration `0004_catalog_inventory.sql` before deploying this version. It creates the managed catalog and adds customer details to orders. Existing products are seeded with unknown stock; enter actual counts in `/manage-products` before relying on inventory figures. Blank stock means untracked, not zero.
+- Staff can add products, set their price, description, image URL, stock and low-stock threshold, and choose whether they are available in the shop. Existing editorial product descriptions and images remain in the site source. Added products appear in the collection when active.
+- Checkout reads prices from the database. The signed paid webhook updates the order and deducts inventory atomically; repeated events do not deduct again. Stock is checked at checkout creation but not reserved, so simultaneous or delayed payments can oversell; a negative stock count flags a shortage. Returns and refunds are not automatically restocked or deducted from the dashboard revenue figure.
+- Customer names and emails are recorded from new paid Checkout Sessions. Older orders retain whatever data they already had; the dashboard customer metric counts unique linked Firebase accounts with paid orders, not all guest buyers or all registered customers.
+- Test migration and a complete sandbox purchase, duplicate webhook, product edit, and concurrent checkout behavior before deployment. Production is not updated by these local changes.
 
 ## Verification and remaining launch work
 

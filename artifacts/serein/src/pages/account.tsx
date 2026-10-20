@@ -7,8 +7,8 @@ export type Order = { session_id: string; amount: number; currency: string; item
 export const steps = [ ['received', 'Received'], ['in_progress', 'In progress'], ['shipped', 'Shipped'], ['delivered', 'Delivered'] ] as const;
 export function orderItems(value: string) {
   try {
-    const items = JSON.parse(value) as { id: string; quantity: number }[];
-    return items.map(item => `${item.id === 'morrow-trio' ? 'The Morrow Trio' : getProductById(item.id)?.name ?? item.id} × ${item.quantity}`).join(', ');
+    const items = JSON.parse(value) as { id: string; name?: string; quantity: number }[];
+    return items.map(item => `${item.name ?? (item.id === 'morrow-trio' ? 'The Morrow Trio' : getProductById(item.id)?.name ?? item.id)} × ${item.quantity}`).join(', ');
   } catch { return 'Order details unavailable'; }
 }
 export function orderDate(value: string) {
@@ -50,6 +50,7 @@ export default function Account() {
     <Link href="/" className="text-[9px] uppercase tracking-[0.25em] text-foreground/40 hover:text-primary">← Back to Serein</Link>
     {!isReady ? <p className="mt-12 text-sm text-foreground/55">Checking your account…</p> : !user ? <div className="mt-16"><h1 className="font-serif text-5xl text-primary">Your account.</h1><p className="mt-5 text-sm text-foreground/60">Sign in to see your orders.</p><Link href="/auth" className="mt-8 inline-block bg-primary px-8 py-4 text-[10px] uppercase tracking-[0.2em] text-primary-foreground">Sign in</Link></div> : <>
       <div className="mt-14 flex flex-wrap items-end justify-between gap-6 border-b border-foreground/10 pb-9"><div><p className="text-[10px] uppercase tracking-[0.25em] text-foreground/45">Your Serein account</p><h1 className="mt-4 font-serif text-5xl text-primary md:text-7xl">Your orders.</h1><p className="mt-4 break-all text-sm text-foreground/55">{user.email}</p></div><button onClick={() => void signOut()} className="border-b border-primary/30 pb-1 text-[10px] uppercase tracking-[0.2em] text-primary">Sign out</button></div>
+      <Link href="/dashboard" className="mt-6 inline-block text-[10px] uppercase tracking-[0.2em] text-foreground/55 underline">Staff dashboard</Link>
       <div className="mt-10 flex items-center justify-between"><h2 className="font-serif text-3xl text-primary">Order history</h2><button onClick={() => void load()} className="text-[10px] uppercase tracking-[0.2em] text-foreground/55 underline">Refresh</button></div>
       {loading ? <p className="mt-8 text-sm text-foreground/55" role="status">Loading your orders…</p> : error ? <p className="mt-8 text-sm text-red-900" role="alert">{error}</p> : orders.length ? <div className="mt-8 space-y-5">{orders.map(order => <OrderCard key={order.session_id} order={order} />)}</div> : <div className="mt-8 bg-[#f9f5ee] p-8"><p className="font-serif text-2xl text-primary">Nothing here yet.</p><p className="mt-3 text-sm leading-7 text-foreground/55">Orders placed while signed in will appear here. Guest orders and orders placed before account tracking was added are not linked automatically.</p><Link href="/#collection" className="mt-6 inline-block border-b border-primary/30 pb-1 text-[10px] uppercase tracking-[0.2em] text-primary">Explore the collection</Link></div>}
     </>}

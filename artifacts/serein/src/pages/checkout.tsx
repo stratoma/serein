@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/context/cart-context";
 import { getProductById } from "@/data/products";
 import { useAuth } from "@/context/auth-context";
+import { useManagedCatalog } from "@/data/managed-catalog";
 
 const formatPrice = (value: number) => `$${value.toFixed(2)}`;
 
@@ -16,6 +17,8 @@ function getCartItemImage(id: string, image?: string) {
 export default function Checkout() {
   const { items, subtotal, clearCart } = useCart();
   const { user, isReady } = useAuth();
+  const catalog = useManagedCatalog();
+  const currentSubtotal = items.reduce((total, item) => total + (catalog?.find(product => product.id === item.id)?.amount ?? Math.round(item.price * 100)) * item.quantity / 100, 0);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [status, setStatus] = useState("");
@@ -93,7 +96,7 @@ export default function Checkout() {
                       )}
                       <div><p className="font-serif text-xl text-primary">{item.name}</p><p className="mt-1 text-xs text-foreground/45">Quantity {item.quantity}</p></div>
                     </div>
-                    <span className="text-sm text-foreground/55">{formatPrice(item.price * item.quantity)}</span>
+                    <span className="text-sm text-foreground/55">{formatPrice((catalog?.find(product => product.id === item.id)?.amount ?? Math.round(item.price * 100)) * item.quantity / 100)}</span>
                   </div>
                 ))}
               </div>
@@ -101,7 +104,7 @@ export default function Checkout() {
           </section>
           <aside className="self-start bg-[#f5efe6] p-8 md:p-10">
             <p className="text-[10px] uppercase tracking-[0.25em] text-foreground/40">Order summary</p>
-            <div className="mt-8 flex justify-between border-t border-foreground/10 pt-5 font-serif text-2xl text-primary"><span>{status === 'paid' ? 'Total paid' : 'Subtotal'}</span><span>{formatPrice(status === 'paid' && confirmedTotal !== null ? confirmedTotal : subtotal)}</span></div>
+            <div className="mt-8 flex justify-between border-t border-foreground/10 pt-5 font-serif text-2xl text-primary"><span>{status === 'paid' ? 'Total paid' : 'Subtotal'}</span><span>{formatPrice(status === 'paid' && confirmedTotal !== null ? confirmedTotal : catalog ? currentSubtotal : subtotal)}</span></div>
             <p className="mt-5 text-sm leading-relaxed text-foreground/60">Complete the full order in Stripe’s sandbox with card 4242 4242 4242 4242, any future expiry, and any three-digit CVC. Billing, delivery, contact details, and payment confirmation work like a live order.</p>
             {error && <p role="alert" className="mt-5 text-sm text-red-800">{error}</p>}
             {sessionId ? <Link href="/#collection" className="mt-8 inline-block text-primary underline" onClick={() => sessionStorage.removeItem('serein-checkout-token')}>Continue shopping</Link> : <button type="button" disabled={busy || !isReady || !items.length} onClick={pay} className="mt-8 w-full bg-primary px-6 py-4 text-[10px] uppercase tracking-[0.25em] text-primary-foreground disabled:opacity-40">{busy ? 'Opening secure checkout…' : 'Place sandbox order'}</button>}

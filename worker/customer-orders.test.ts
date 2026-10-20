@@ -25,6 +25,8 @@ test('verified accounts see only their own orders and only staff can update fulf
     assert.equal((await request('/api/account/orders', await token('alice', 'wrong-project'))).status, 401);
     assert.deepEqual((await (await request('/api/account/orders', alice)).json() as { orders: { session_id: string }[] }).orders.map(order => order.session_id), ['cs_test_one']);
     assert.equal((await request('/api/admin/orders', alice)).status, 403);
+    assert.equal((await request('/api/admin/products')).status, 401);
+    assert.equal((await request('/api/admin/products', alice)).status, 403);
     const update = { sessionId: 'cs_test_one', status: 'shipped', carrier: 'Carrier', trackingNumber: '123', trackingUrl: 'https://carrier.example/123' };
     assert.equal((await request('/api/admin/orders', alice, update)).status, 403);
     assert.equal((await request('/api/admin/orders', staff, { ...update, trackingUrl: 'javascript:alert(1)' })).status, 400);

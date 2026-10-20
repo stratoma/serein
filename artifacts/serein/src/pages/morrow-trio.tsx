@@ -3,12 +3,14 @@ import { motion } from "framer-motion";
 import { FadeIn } from "@/components/ui/fade-in";
 import { products } from "@/data/products";
 import { useCart } from "@/context/cart-context";
+import { useManagedCatalog, catalogPrice, available } from "@/data/managed-catalog";
 import { useToast } from "@/hooks/use-toast";
 
 const BASE = import.meta.env.BASE_URL;
 
 export default function MorrowTrio() {
   const { addItem } = useCart();
+  const trio = useManagedCatalog()?.find(item => item.id === 'morrow-trio');
   const { toast } = useToast();
   const trioImage = `${BASE}images/product-trio.png`;
 
@@ -99,14 +101,15 @@ export default function MorrowTrio() {
 
           <FadeIn direction="none" delay={0.2}>
             <div className="flex flex-col items-center gap-5 pt-1">
-              <span className="text-foreground/55 text-sm font-sans tracking-wide">$11</span>
+              <span className="text-foreground/55 text-sm font-sans tracking-wide">{trio ? catalogPrice(trio.amount) : 'Unavailable'}</span>
               <button
                 type="button"
+                disabled={!available(trio)}
                 onClick={() => {
-                  addItem({ id: "morrow-trio", name: "The Morrow Trio", price: 11, image: trioImage });
+                  addItem({ id: "morrow-trio", name: trio?.name ?? "The Morrow Trio", price: (trio?.amount ?? 0) / 100, image: trioImage });
                   toast({ title: "The Morrow Trio added", description: "Your discovery set is saved in the cart." });
                 }}
-                className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                className="text-[11px] uppercase tracking-[0.3em] text-primary border border-primary/30 px-10 py-4 hover:bg-primary hover:text-primary-foreground transition-all duration-500 font-sans focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary disabled:opacity-40"
               >
                 Bring It Home
               </button>

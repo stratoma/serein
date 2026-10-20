@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { Link } from "wouter";
 import { products } from "@/data/products";
+import { useManagedCatalog, catalogPrice, available } from "@/data/managed-catalog";
 import { useCart } from "@/context/cart-context";
 import terracottaWall from "@assets/terracott_walls_1783048465994.png";
 
@@ -69,6 +70,8 @@ function ParallaxHero() {
 
 export default function Home() {
   const { addItem } = useCart();
+  const managed = useManagedCatalog();
+  const trio = managed?.find(item => item.id === 'morrow-trio');
   const today = new Date();
   const upcomingMarkets = marketEvents.filter((event) => new Date(`${event.date}T23:59:59`) >= today);
   const pastMarkets = marketEvents.filter((event) => new Date(`${event.date}T23:59:59`) < today);
@@ -180,7 +183,7 @@ export default function Home() {
                     <FadeIn direction="none" delay={0.2}>
                       <span className="text-[10px] uppercase tracking-[0.25em] text-foreground/35 font-sans">{product.pillar}</span>
                       <h3 className="text-3xl md:text-4xl font-serif text-primary leading-none mt-2">
-                        {product.name}
+                        {managed?.find(item => item.id === product.id)?.name ?? product.name}
                       </h3>
                     </FadeIn>
                     <FadeIn direction="none" delay={0.3}>
@@ -194,17 +197,18 @@ export default function Home() {
                     </FadeIn>
                     <FadeIn direction="none" delay={0.4}>
                       <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-4 border-t border-foreground/10">
-                        <span className="text-foreground/40 text-sm font-sans">{product.price}</span>
+                        <span className="text-foreground/40 text-sm font-sans">{managed?.find(item => item.id === product.id) ? catalogPrice(managed.find(item => item.id === product.id)!.amount) : 'Unavailable'}</span>
                         <div className="ml-auto flex items-center gap-5">
                           <button
                             type="button"
+                            disabled={!available(managed?.find(item => item.id === product.id))}
                             onClick={() => addItem({
                               id: product.id,
-                              name: product.name,
-                              price: Number(product.price.replace(/[^0-9.]/g, "")),
+                              name: managed?.find(item => item.id === product.id)?.name ?? product.name,
+                              price: (managed?.find(item => item.id === product.id)?.amount ?? 0) / 100,
                               image: product.cleanStill ?? product.img,
                             })}
-                            className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans"
+                            className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans disabled:opacity-40"
                           >
                             Add to Cart
                           </button>
@@ -222,6 +226,7 @@ export default function Home() {
               </FadeIn>
             ))}
           </div>
+          {managed?.filter(item => !['supple-oud', 'mint-moss', 'lithe-bloom', 'morrow-trio'].includes(item.id)).map(item => <article key={item.id} className="mt-20 flex flex-wrap items-center gap-8 border-t border-foreground/10 pt-10">{item.image_url && <img src={item.image_url} alt={item.name} className="h-48 w-40 object-cover" />}<div><h3 className="font-serif text-3xl text-primary">{item.name}</h3><p className="mt-3 max-w-md text-sm text-foreground/60">{item.description}</p><p className="mt-4">{catalogPrice(item.amount)}</p><button disabled={!available(item)} onClick={() => addItem({ id: item.id, name: item.name, price: item.amount / 100, image: item.image_url || undefined })} className="mt-4 border-b border-primary text-xs uppercase tracking-widest text-primary disabled:opacity-40">{available(item) ? 'Add to cart' : 'Out of stock'}</button></div></article>)}
         </div>
       </section>
 
@@ -276,14 +281,15 @@ export default function Home() {
               </FadeIn>
               <FadeIn direction="none" delay={0.4}>
                 <div className="flex flex-wrap items-center gap-x-5 gap-y-3 pt-4 border-t border-foreground/10">
-                  <span className="text-foreground/40 text-sm font-sans">$11</span>
+                  <span className="text-foreground/40 text-sm font-sans">{trio ? catalogPrice(trio.amount) : 'Unavailable'}</span>
                   <div className="ml-auto flex items-center gap-5">
                     <button
                       type="button"
+                      disabled={!available(trio)}
                       onClick={() => addItem({
                         id: "morrow-trio",
-                        name: "The Morrow Trio",
-                        price: 11,
+                        name: trio?.name ?? "The Morrow Trio",
+                        price: (trio?.amount ?? 0) / 100,
                         image: `${BASE}images/morrow-trio-gd.png`,
                       })}
                       className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans"
