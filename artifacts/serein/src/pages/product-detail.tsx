@@ -34,12 +34,12 @@ export default function ProductDetail() {
   }
 
   const carouselImages: CarouselImage[] = [
-    { src: product.img, alt: `${product.name} — editorial still`, variant: "product" as const },
+    { src: managed?.image_url || product.img, alt: `${product.name} — editorial still`, variant: "product" as const },
     product.scentCard && { src: product.scentCard, alt: `${product.name} — scent notes`, variant: "card" as const },
   ].filter(Boolean) as CarouselImage[];
 
   const addToCart = () => {
-    addItem({ id: product.id, name: product.name, price: (managed?.amount ?? 0) / 100, image: product.cleanStill ?? product.img });
+    addItem({ id: product.id, name: product.name, price: (managed?.amount ?? 0) / 100, image: managed?.image_url || product.cleanStill || product.img });
     toast({ title: `${product.name} added`, description: "A considered ritual, saved for you." });
   };
 
@@ -55,7 +55,7 @@ export default function ProductDetail() {
           className="absolute inset-0 will-change-transform"
         >
           <img
-            src={product.cleanStill ?? product.img}
+            src={managed?.image_url || product.cleanStill || product.img}
             alt={product.name}
             className="w-full h-full object-cover [object-position:center_45%]"
           />

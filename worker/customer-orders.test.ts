@@ -29,6 +29,11 @@ test('verified accounts see only their own orders and only staff can update fulf
     assert.equal((await request('/api/admin/orders', alice)).status, 403);
     assert.equal((await request('/api/admin/products')).status, 401);
     assert.equal((await request('/api/admin/products', alice)).status, 403);
+    const imageRequest = (jwt: string | undefined, origin: string, data: object) => worker.fetch(new Request('https://serein.test/api/admin/product-images', { method: 'POST', headers: { ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}), Origin: origin, 'Content-Type': 'application/json' }, body: JSON.stringify(data) }), env as unknown as Parameters<typeof worker.fetch>[1]);
+    assert.equal((await imageRequest(undefined, 'https://serein.test', {})).status, 401);
+    assert.equal((await imageRequest(alice, 'https://serein.test', {})).status, 403);
+    assert.equal((await imageRequest(staff, 'https://other.test', {})).status, 403);
+    assert.equal((await imageRequest(staff, 'https://serein.test', { mime: 'image/png', data: 'PHN2Zz4=' })).status, 400);
     const update = { sessionId: 'cs_test_one', status: 'shipped', carrier: 'Carrier', trackingNumber: '123', trackingUrl: 'https://carrier.example/123' };
     assert.equal((await request('/api/admin/orders', alice, update)).status, 403);
     assert.equal((await request('/api/admin/orders', staff, { ...update, trackingUrl: 'javascript:alert(1)' })).status, 400);

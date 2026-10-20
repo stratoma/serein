@@ -77,6 +77,34 @@ export default {
   async fetch(request: Request, env: Bindings): Promise<Response> {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    const imageMatch = url.pathname.match(/^\/api\/product-images\/([0-9a-f-]{36})$/);
+    if (imageMatch && request.method === 'GET') {
+      try {
+        const image = await env.ORDERS.prepare('SELECT mime_type, data FROM product_images WHERE id = ?').bind(imageMatch[1]).first<{ mime_type: string; data: string }>();
+        if (!image) return json({ error: 'Image not found.' }, 404);
+        const bytes = Uint8Array.from(atob(image.data), char => char.charCodeAt(0));
+        return new Response(bytes, { headers: { 'Content-Type': image.mime_type, 'Cache-Control': 'public, max-age=31536000, immutable', 'X-Content-Type-Options': 'nosniff' } });
+      } catch { return json({ error: 'Image unavailable.' }, 503); }
+    }
+    if (url.pathname === '/api/admin/product-images' && request.method === 'POST') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      if (!env.ORDER_ADMIN_UIDS?.split(',').map(value => value.trim()).includes(uid)) return json({ error: 'Not authorized.' }, 403);
+      if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+      try {
+        const data = JSON.parse(await body(request, 710000)) as { mime?: unknown; data?: unknown };
+        if (typeof data.data !== 'string' || typeof data.mime !== 'string' || !['image/jpeg', 'image/png', 'image/webp'].includes(data.mime) || data.data.length > 699052 || !/^[A-Za-z0-9+/]+={0,2}$/.test(data.data)) return json({ error: 'Choose a JPEG, PNG, or WebP image up to 512 KB.' }, 400);
+        let bytes: string;
+        try { bytes = atob(data.data); } catch { return json({ error: 'Invalid image.' }, 400); }
+        const signature = (offset: number, expected: number[]) => expected.every((value, i) => bytes.charCodeAt(offset + i) === value);
+        const valid = data.mime === 'image/jpeg' ? signature(0, [255, 216, 255]) : data.mime === 'image/png' ? signature(0, [137, 80, 78, 71, 13, 10, 26, 10]) : signature(0, [82, 73, 70, 70]) && signature(8, [87, 69, 66, 80]);
+        if (!valid || bytes.length > 524288) return json({ error: 'Invalid image or image larger than 512 KB.' }, 400);
+        const id = crypto.randomUUID();
+        await env.ORDERS.prepare('INSERT INTO product_images (id, mime_type, data) VALUES (?, ?, ?)').bind(id, data.mime, data.data).run();
+        return json({ url: `/api/product-images/${id}` });
+      } catch { return json({ error: 'Unable to upload image. Check its size and try again.' }, 400); }
+    }
     if (url.pathname === '/api/products' && request.method === 'GET') {
       try { const result = await env.ORDERS.prepare('SELECT id, name, amount, description, image_url, stock FROM products WHERE active = 1 ORDER BY name').all(); return json({ products: result.results }); }
       catch { return json({ error: 'Products are temporarily unavailable.' }, 503); }
@@ -93,7 +121,7 @@ export default {
         let data: Record<string, unknown>;
         try { data = JSON.parse(await body(request, 8192)); } catch { return json({ error: 'Invalid request' }, 400); }
         if (!data || typeof data.id !== 'string' || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.id) || data.id.length > 80 || typeof data.name !== 'string' || !data.name.trim() || data.name.length > 120 || !Number.isInteger(data.amount) || (data.amount as number) < 0 || (data.amount as number) > 10000000 || typeof data.description !== 'string' || data.description.length > 2000 || typeof data.imageUrl !== 'string' || data.imageUrl.length > 500 || (data.stock !== null && (!Number.isInteger(data.stock) || (data.stock as number) < 0 || (data.stock as number) > 1000000)) || !Number.isInteger(data.threshold) || (data.threshold as number) < 0 || (data.threshold as number) > 1000000 || typeof data.active !== 'boolean') return json({ error: 'Please check product details and stock.' }, 400);
-        if (data.imageUrl && !/^\/images\/[a-zA-Z0-9._/-]+$/.test(data.imageUrl)) { try { if (new URL(data.imageUrl).protocol !== 'https:') throw new Error(); } catch { return json({ error: 'Image must be an HTTPS URL or a local /images/ path.' }, 400); } }
+        if (data.imageUrl && !/^\/images\/[a-zA-Z0-9._/-]+$/.test(data.imageUrl) && !/^\/api\/product-images\/[0-9a-f-]{36}$/.test(data.imageUrl)) { try { if (new URL(data.imageUrl).protocol !== 'https:') throw new Error(); } catch { return json({ error: 'Image must be an HTTPS URL or an uploaded image.' }, 400); } }
         if (data.create === true) {
           const result = await env.ORDERS.prepare('INSERT OR IGNORE INTO products (id, name, amount, description, image_url, stock, low_stock_threshold, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)').bind(data.id, data.name.trim(), data.amount, data.description, data.imageUrl, data.stock, data.threshold, data.active ? 1 : 0).run();
           return result.meta.changes ? json({ saved: true }) : json({ error: 'A product with this ID already exists.' }, 409);

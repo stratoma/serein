@@ -170,7 +170,7 @@ export default function Home() {
                 <div id={product.id} className={`flex flex-col ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"} gap-10 md:gap-20 items-center`}>
                   <div className="w-full md:w-[58%] relative overflow-hidden group">
                     <img
-                      src={product.cleanStill ?? product.img}
+                      src={managed?.find(item => item.id === product.id)?.image_url || product.cleanStill || product.img}
                       alt={product.name}
                       className="w-full aspect-[4/5] object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                     />
@@ -206,7 +206,7 @@ export default function Home() {
                               id: product.id,
                               name: managed?.find(item => item.id === product.id)?.name ?? product.name,
                               price: (managed?.find(item => item.id === product.id)?.amount ?? 0) / 100,
-                              image: product.cleanStill ?? product.img,
+                              image: managed?.find(item => item.id === product.id)?.image_url || product.cleanStill || product.img,
                             })}
                             className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans disabled:opacity-40"
                           >
@@ -261,7 +261,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-10 md:gap-20 items-center">
             <div className="w-full md:w-[58%] relative overflow-hidden group">
               <img
-                src={`${BASE}images/morrow-trio-gd.png`}
+                src={trio?.image_url || `${BASE}images/morrow-trio-gd.png`}
                 alt="The Morrow Trio — three travel-sized body butters"
                 className="w-full aspect-[4/5] object-cover object-center transition-transform duration-[1400ms] ease-out group-hover:scale-[1.03]"
                 style={{ filter: "brightness(1.12) contrast(0.94) saturate(0.78) hue-rotate(-6deg)" }}
@@ -290,7 +290,7 @@ export default function Home() {
                         id: "morrow-trio",
                         name: trio?.name ?? "The Morrow Trio",
                         price: (trio?.amount ?? 0) / 100,
-                        image: `${BASE}images/morrow-trio-gd.png`,
+                        image: trio?.image_url || `${BASE}images/morrow-trio-gd.png`,
                       })}
                       className="text-[10px] uppercase tracking-[0.25em] text-primary border-b border-primary/70 pb-1 hover:border-primary transition-all duration-400 font-sans"
                     >

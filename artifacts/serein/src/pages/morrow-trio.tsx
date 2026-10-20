@@ -12,7 +12,7 @@ export default function MorrowTrio() {
   const { addItem } = useCart();
   const trio = useManagedCatalog()?.find(item => item.id === 'morrow-trio');
   const { toast } = useToast();
-  const trioImage = `${BASE}images/product-trio.png`;
+  const trioImage = trio?.image_url || `${BASE}images/product-trio.png`;
 
   return (
     <main className="w-full bg-background overflow-hidden">
@@ -26,7 +26,7 @@ export default function MorrowTrio() {
           className="absolute inset-0 will-change-transform"
         >
           <img
-            src={`${BASE}images/product-trio.png`}
+            src={trioImage}
             alt="The Morrow Trio — three travel-sized body butters"
             className="w-full h-full object-cover object-center"
           />
@@ -201,7 +201,7 @@ export default function MorrowTrio() {
           <FadeIn direction="none" className="w-full md:w-1/2">
             <div className="aspect-square overflow-hidden">
               <img
-                src={`${BASE}images/product-trio.png`}
+                src={trioImage}
                 alt="The Morrow Trio packaging"
                 className="w-full h-full object-cover"
               />
