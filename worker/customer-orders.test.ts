@@ -12,15 +12,26 @@ test('verified accounts see only their own orders and only staff can update fulf
     { session_id: 'cs_test_one', customer_uid: 'alice', status: 'paid', fulfillment_status: 'received', tracking_carrier: null, tracking_number: null, tracking_url: null, delivery_address: 'fixture address' },
     { session_id: 'cs_test_two', customer_uid: 'bob', status: 'paid', fulfillment_status: 'received', tracking_carrier: null, tracking_number: null, tracking_url: null, delivery_address: 'other address' },
   ];
+  const staffUsers = new Map<string, { uid: string; name: string; email: string }>();
   const env = { FIREBASE_PROJECT_ID: 'test-project', ORDER_ADMIN_UIDS: 'staff', ORDERS: { prepare(sql: string) { return { bind(...args: string[]) { return statement(sql, args); }, ...statement(sql, []) }; } } };
   function statement(sql: string, args: string[]) { return {
-    all: async () => ({ results: data.filter(order => order.status === 'paid' && (!sql.includes('customer_uid = ?') || order.customer_uid === args[0])).map(({ customer_uid, status, delivery_address, ...order }) => sql.includes('delivery_address') ? { ...order, delivery_address } : order) }),
-    run: async () => { const order = data.find(item => item.session_id === args[4] && item.status === 'paid'); if (order) Object.assign(order, { fulfillment_status: args[0], tracking_carrier: args[1], tracking_number: args[2], tracking_url: args[3] }); return { meta: { changes: order ? 1 : 0 } }; },
+    first: async () => staffUsers.get(args[0]) ?? null,
+    all: async () => ({ results: sql.includes('FROM staff_users') ? [...staffUsers.values()] : data.filter(order => order.status === 'paid' && (!sql.includes('customer_uid = ?') || order.customer_uid === args[0])).map(({ customer_uid, status, delivery_address, ...order }) => sql.includes('delivery_address') ? { ...order, delivery_address } : order) }),
+    run: async () => { if (sql.startsWith('INSERT INTO staff_users')) { staffUsers.set(args[0], { uid: args[0], name: args[1], email: args[2] }); return { meta: { changes: 1 } }; } if (sql.startsWith('DELETE FROM staff_users')) { staffUsers.delete(args[0]); return { meta: { changes: 1 } }; } const order = data.find(item => item.session_id === args[4] && item.status === 'paid'); if (order) Object.assign(order, { fulfillment_status: args[0], tracking_carrier: args[1], tracking_number: args[2], tracking_url: args[3] }); return { meta: { changes: order ? 1 : 0 } }; },
   }; }
   async function token(uid: string, audience = 'test-project') { return new SignJWT({ auth_time: Math.floor(Date.now() / 1000) - 1 }).setProtectedHeader({ alg: 'RS256', kid: 'fixture' }).setSubject(uid).setAudience(audience).setIssuer('https://securetoken.google.com/test-project').setIssuedAt().setExpirationTime('1h').sign(privateKey); }
   async function request(path: string, jwt?: string, update?: object) { return worker.fetch(new Request(`https://serein.test${path}`, { method: update ? 'PATCH' : 'GET', headers: { ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}), ...(update ? { Origin: 'https://serein.test', 'Content-Type': 'application/json' } : {}) }, ...(update ? { body: JSON.stringify(update) } : {}) }), env as unknown as Parameters<typeof worker.fetch>[1]); }
   try {
     const alice = await token('alice'); const staff = await token('staff');
+    const manageUsers = (jwt: string | undefined, method = 'GET', payload?: object, origin = 'https://serein.test') => worker.fetch(new Request('https://serein.test/api/admin/users', { method, headers: { ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}), Origin: origin, ...(payload ? { 'Content-Type': 'application/json' } : {}) }, ...(payload ? { body: JSON.stringify(payload) } : {}) }), env as unknown as Parameters<typeof worker.fetch>[1]);
+    assert.equal((await manageUsers()).status, 401);
+    assert.equal((await manageUsers(alice)).status, 403);
+    assert.equal((await manageUsers(staff, 'POST', { uid: 'alice', name: 'Alice', email: 'alice@example.com' }, 'https://other.test')).status, 403);
+    assert.equal((await manageUsers(staff, 'DELETE', { uid: 'staff' })).status, 400);
+    assert.equal((await manageUsers(staff, 'POST', { uid: 'alice', name: 'Alice', email: 'alice@example.com' })).status, 200);
+    assert.equal((await request('/api/admin/orders', alice)).status, 200);
+    assert.equal((await manageUsers(alice)).status, 403);
+    assert.equal((await manageUsers(staff, 'DELETE', { uid: 'alice' })).status, 200);
     assert.equal((await request('/api/account/orders')).status, 401);
     assert.equal((await request('/api/account/orders', await token('alice', 'wrong-project'))).status, 401);
     assert.deepEqual((await (await request('/api/account/orders', alice)).json() as { orders: { session_id: string }[] }).orders.map(order => order.session_id), ['cs_test_one']);

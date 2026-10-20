@@ -14,6 +14,11 @@ const json = (value: unknown, status = 200) => Response.json(value, { status, he
 const hash = async (value: string) => Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value))), b => b.toString(16).padStart(2, '0')).join('');
 const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]!);
 const formatUsd = (amount: number) => `$${(amount / 100).toFixed(2)}`;
+const configuredAdmins = (env: Bindings) => (env.ORDER_ADMIN_UIDS ?? '').split(',').map(value => value.trim()).filter(Boolean);
+async function staffAccess(env: Bindings, uid: string): Promise<boolean> {
+  if (configuredAdmins(env).includes(uid)) return true;
+  return !!await env.ORDERS.prepare('SELECT uid FROM staff_users WHERE uid = ?').bind(uid).first();
+}
 async function body(request: Request, limit: number) {
   const reader = request.body?.getReader();
   if (!reader) return '';
@@ -77,6 +82,32 @@ export default {
   async fetch(request: Request, env: Bindings): Promise<Response> {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    if (url.pathname === '/api/admin/users') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      const owners = configuredAdmins(env);
+      if (!owners.includes(uid)) return json({ error: 'Only configured administrators can manage users.' }, 403);
+      try {
+        if (request.method === 'GET') {
+          const result = await env.ORDERS.prepare('SELECT uid, name, email, added_at FROM staff_users ORDER BY added_at DESC').all();
+          return json({ users: result.results, configured: owners, currentUid: uid });
+        }
+        if (!['POST', 'DELETE'].includes(request.method)) return json({ error: 'Method not allowed' }, 405);
+        if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+        let data: Record<string, unknown>;
+        try { data = JSON.parse(await body(request, 4096)); } catch { return json({ error: 'Invalid request.' }, 400); }
+        if (!data || typeof data.uid !== 'string' || !/^[^\s]{1,128}$/.test(data.uid)) return json({ error: 'Enter a valid Firebase user ID.' }, 400);
+        if (owners.includes(data.uid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
+        if (request.method === 'DELETE') {
+          await env.ORDERS.prepare('DELETE FROM staff_users WHERE uid = ?').bind(data.uid).run();
+          return json({ saved: true });
+        }
+        if (typeof data.name !== 'string' || data.name.length > 120 || typeof data.email !== 'string' || data.email.length > 254 || (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))) return json({ error: 'Check the name and email.' }, 400);
+        await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email) VALUES (?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email').bind(data.uid, data.name.trim(), data.email.trim()).run();
+        return json({ saved: true });
+      } catch { return json({ error: 'Unable to manage users right now.' }, 503); }
+    }
     const imageMatch = url.pathname.match(/^\/api\/product-images\/([0-9a-f-]{36})$/);
     if (imageMatch && request.method === 'GET') {
       try {
@@ -90,7 +121,7 @@ export default {
       if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
       const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
       if (!uid) return json({ error: 'Please sign in again.' }, 401);
-      if (!env.ORDER_ADMIN_UIDS?.split(',').map(value => value.trim()).includes(uid)) return json({ error: 'Not authorized.' }, 403);
+      try { if (!await staffAccess(env, uid)) return json({ error: 'Not authorized.' }, 403); } catch { return json({ error: 'Staff access is temporarily unavailable.' }, 503); }
       if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
       try {
         const data = JSON.parse(await body(request, 710000)) as { mime?: unknown; data?: unknown };
@@ -113,7 +144,7 @@ export default {
       if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
       const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
       if (!uid) return json({ error: 'Please sign in again.' }, 401);
-      if (!env.ORDER_ADMIN_UIDS?.split(',').map(value => value.trim()).includes(uid)) return json({ error: 'Not authorized.' }, 403);
+      try { if (!await staffAccess(env, uid)) return json({ error: 'Not authorized.' }, 403); } catch { return json({ error: 'Staff access is temporarily unavailable.' }, 503); }
       try {
         if (request.method === 'GET') { const result = await env.ORDERS.prepare('SELECT * FROM products ORDER BY name').all(); return json({ products: result.results }); }
         if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -136,7 +167,7 @@ export default {
       const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
       if (!uid) return json({ error: 'Please sign in again.' }, 401);
       const admin = url.pathname === '/api/admin/orders';
-      if (admin && !env.ORDER_ADMIN_UIDS?.split(',').map(value => value.trim()).includes(uid)) return json({ error: 'Not authorized.' }, 403);
+      if (admin) { try { if (!await staffAccess(env, uid)) return json({ error: 'Not authorized.' }, 403); } catch { return json({ error: 'Staff access is temporarily unavailable.' }, 503); } }
       try {
         if (request.method === 'GET') {
           const query = admin

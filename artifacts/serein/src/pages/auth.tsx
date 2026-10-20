@@ -47,7 +47,7 @@ export default function Auth() {
 
   useEffect(() => {
     const next = new URLSearchParams(window.location.search).get('next');
-    if (isReady && user) navigate(next === 'checkout' ? '/checkout' : next === 'manage-orders' ? '/manage-orders' : next === 'manage-products' ? '/manage-products' : next === 'dashboard' ? '/dashboard' : '/account');
+    if (isReady && user) navigate(next === 'checkout' ? '/checkout' : next === 'manage-orders' ? '/manage-orders' : next === 'manage-products' ? '/manage-products' : next === 'manage-customers' ? '/manage-customers' : next === 'manage-users' ? '/manage-users' : next === 'dashboard' ? '/dashboard' : '/account');
   }, [isReady, user, navigate]);
 
   useEffect(() => {

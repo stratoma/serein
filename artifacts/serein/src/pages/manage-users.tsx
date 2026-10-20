@@ -1,0 +1,35 @@
+import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { Link } from 'wouter';
+import { Pencil, Plus, Trash2, X } from 'lucide-react';
+import { useAuth } from '@/context/auth-context';
+import { orderDate } from './account';
+
+type Staff = { uid: string; name: string; email: string; added_at: string };
+
+export default function ManageUsers() {
+  const { user, isReady } = useAuth();
+  const [users, setUsers] = useState<Staff[]>([]);
+  const [configured, setConfigured] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [editing, setEditing] = useState<Staff | 'new' | null>(null);
+  const [uid, setUid] = useState(''); const [name, setName] = useState(''); const [email, setEmail] = useState('');
+  const [busy, setBusy] = useState(false); const [message, setMessage] = useState('');
+  const request = useCallback(async (method = 'GET', data?: object) => {
+    if (!user) throw new Error('Please sign in again.');
+    const response = await fetch('/api/admin/users', { method, headers: { Authorization: `Bearer ${await user.getIdToken()}`, ...(data ? { 'Content-Type': 'application/json' } : {}) }, ...(data ? { body: JSON.stringify(data) } : {}), cache: 'no-store' });
+    const result = await response.json(); if (!response.ok) throw new Error(result.error || 'Unable to manage users.'); return result;
+  }, [user]);
+  const load = useCallback(async () => { if (!user) return; setLoading(true); setError(''); try { const result = await request(); setUsers(result.users); setConfigured(result.configured); } catch (e) { setError(e instanceof Error ? e.message : 'Unable to load users.'); } finally { setLoading(false); } }, [user, request]);
+  useEffect(() => { setUsers([]); setConfigured([]); if (user) void load(); }, [user, load]);
+  function edit(staff: Staff | 'new') { setEditing(staff); setUid(staff === 'new' ? '' : staff.uid); setName(staff === 'new' ? '' : staff.name); setEmail(staff === 'new' ? '' : staff.email); setMessage(''); }
+  async function submit(event: FormEvent) { event.preventDefault(); setBusy(true); setMessage(''); try { await request('POST', { uid: uid.trim(), name, email }); setEditing(null); await load(); } catch (e) { setMessage(e instanceof Error ? e.message : 'Unable to save user.'); } finally { setBusy(false); } }
+  async function remove(staff: Staff) { if (!window.confirm(`Remove dashboard access for ${staff.name || staff.email || staff.uid}?`)) return; setBusy(true); setError(''); try { await request('DELETE', { uid: staff.uid }); await load(); } catch (e) { setError(e instanceof Error ? e.message : 'Unable to remove user.'); } finally { setBusy(false); } }
+  const input = 'mt-2 w-full border border-foreground/20 bg-background px-3 py-3 text-sm';
+  return <main className="min-h-screen px-6 pb-24 pt-10 md:px-10"><div className="mx-auto max-w-7xl"><p className="text-[10px] uppercase tracking-[0.2em] text-foreground/45">Serein administration</p><div className="flex flex-wrap items-end justify-between gap-4"><div><h1 className="mt-3 font-serif text-5xl text-primary">Users.</h1><p className="mt-3 text-sm text-foreground/60">Manage who can access the admin dashboard.</p></div>{user && !loading && !error && <button onClick={() => edit('new')} className="flex items-center gap-2 bg-primary px-5 py-3 text-sm text-primary-foreground"><Plus size={17} /> Add user</button>}</div><p className="mt-5 text-xs leading-5 text-foreground/55">Added staff can manage products, orders and customers. Only configured administrators can manage users. Add an existing Firebase user by their exact user ID; name and email are labels only and do not grant access.</p>
+    {!isReady ? <p className="mt-8">Checking your account…</p> : !user ? <Link href="/auth?next=manage-users" className="mt-8 inline-block underline">Sign in</Link> : loading ? <p className="mt-8">Loading users…</p> : error ? <p className="mt-8 text-sm text-red-900" role="alert">{error}</p> : <>
+      {editing && <section className="mt-8"><div className="mb-3 flex justify-end"><button onClick={() => setEditing(null)} className="flex items-center gap-1 text-sm text-foreground/60"><X size={16} /> Close</button></div><form onSubmit={submit} className="border border-foreground/10 bg-[#f9f5ee] p-6"><h2 className="font-serif text-2xl text-primary">{editing === 'new' ? 'Add user' : 'Edit user'}</h2><div className="mt-5 grid gap-4 sm:grid-cols-2"><label className="text-xs">Firebase user ID<input className={input} required maxLength={128} disabled={editing !== 'new'} value={uid} onChange={e => setUid(e.target.value)} /></label><label className="text-xs">Name (optional)<input className={input} maxLength={120} value={name} onChange={e => setName(e.target.value)} /></label><label className="text-xs">Email (optional)<input className={input} type="email" maxLength={254} value={email} onChange={e => setEmail(e.target.value)} /></label></div><p className="mt-4 text-xs text-foreground/60">The person must already have a Serein account. Find their user ID in Firebase Authentication.</p><button disabled={busy} className="mt-5 bg-primary px-6 py-3 text-xs text-primary-foreground disabled:opacity-50">{busy ? 'Saving…' : 'Save user'}</button>{message && <p role="alert" className="mt-3 text-sm text-red-900">{message}</p>}</form></section>}
+      <div className="mt-8 overflow-x-auto rounded-lg border border-foreground/10 bg-[#fdfbf7]"><table className="w-full min-w-[680px] text-left text-sm"><thead className="bg-foreground/[0.03] text-xs text-foreground/55"><tr>{['Name / Firebase ID', 'Email', 'Role', 'Added', ''].map((label, index) => <th key={index} className="p-4 font-normal">{label}</th>)}</tr></thead><tbody>{configured.map(id => <tr key={id} className="border-t border-foreground/10"><td className="break-all p-4">{id}{user.uid === id && ' (you)'}</td><td className="p-4 text-foreground/50">Unavailable</td><td className="p-4"><span className="rounded bg-primary px-3 py-1 text-xs text-primary-foreground">Configured administrator</span></td><td className="p-4 text-foreground/50">Unavailable</td><td className="p-4" /></tr>)}{users.map(staff => <tr key={staff.uid} className="border-t border-foreground/10"><td className="p-4"><span className="block">{staff.name || 'Name unavailable'}</span><span className="break-all text-xs text-foreground/50">{staff.uid}</span></td><td className="break-all p-4 text-foreground/65">{staff.email || 'Unavailable'}</td><td className="p-4"><span className="rounded bg-foreground/5 px-3 py-1 text-xs">Staff</span></td><td className="p-4 text-foreground/60">{orderDate(staff.added_at)}</td><td className="whitespace-nowrap p-4 text-right"><button onClick={() => edit(staff)} aria-label={`Edit ${staff.name || staff.uid}`} className="p-2"><Pencil size={17} /></button><button disabled={busy} onClick={() => void remove(staff)} aria-label={`Remove ${staff.name || staff.uid}`} className="p-2"><Trash2 size={17} /></button></td></tr>)}</tbody></table></div>
+    </>}
+  </div></main>;
+}
