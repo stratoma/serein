@@ -20,10 +20,29 @@ async function staffAccess(env: Bindings, uid: string): Promise<boolean> {
   return !!await env.ORDERS.prepare('SELECT uid FROM staff_users WHERE uid = ?').bind(uid).first();
 }
 type StaffRole = 'admin' | 'super_admin';
+type StaffUser = { uid: string; name: string; email: string; role: StaffRole; added_at: string };
+function roleColumnMissing(error: unknown) {
+  return error instanceof Error && /no such column: role|has no column named role/i.test(error.message);
+}
+async function staffUsers(env: Bindings): Promise<{ users: StaffUser[]; groupsReady: boolean }> {
+  try {
+    const result = await env.ORDERS.prepare('SELECT uid, name, email, role, added_at FROM staff_users ORDER BY added_at DESC').all<StaffUser>();
+    return { users: result.results, groupsReady: true };
+  } catch (error) {
+    if (!roleColumnMissing(error)) throw error;
+    const result = await env.ORDERS.prepare('SELECT uid, name, email, added_at FROM staff_users ORDER BY added_at DESC').all<Omit<StaffUser, 'role'>>();
+    return { users: result.results.map(staff => ({ ...staff, role: 'admin' })), groupsReady: false };
+  }
+}
 async function userManagementRole(env: Bindings, uid: string): Promise<StaffRole | null> {
   if (configuredAdmins(env).includes(uid)) return 'super_admin';
-  const staff = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(uid).first<{ role: string }>();
-  return staff?.role === 'super_admin' || staff?.role === 'admin' ? staff.role : null;
+  try {
+    const staff = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(uid).first<{ role: string }>();
+    return staff?.role === 'super_admin' || staff?.role === 'admin' ? staff.role : null;
+  } catch (error) {
+    if (!roleColumnMissing(error)) throw error;
+    return await env.ORDERS.prepare('SELECT uid FROM staff_users WHERE uid = ?').bind(uid).first() ? 'admin' : null;
+  }
 }
 async function body(request: Request, limit: number) {
   const reader = request.body?.getReader();
@@ -97,8 +116,8 @@ export default {
         const managerRole = await userManagementRole(env, uid);
         if (!managerRole) return json({ error: 'Not authorized.' }, 403);
         if (request.method === 'GET') {
-          const result = await env.ORDERS.prepare('SELECT uid, name, email, role, added_at FROM staff_users ORDER BY added_at DESC').all();
-          return json({ users: result.results, configured: owners, currentUid: uid, managerRole });
+          const staff = await staffUsers(env);
+          return json({ users: staff.users, configured: owners, currentUid: uid, managerRole, groupsReady: staff.groupsReady });
         }
         if (!['POST', 'DELETE'].includes(request.method)) return json({ error: 'Method not allowed' }, 405);
         if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
@@ -109,7 +128,8 @@ export default {
           if (typeof data.uid !== 'string' || !/^[^\s]{1,128}$/.test(data.uid)) return json({ error: 'Enter a valid user.' }, 400);
           if (owners.includes(data.uid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
           if (data.uid === uid) return json({ error: 'You cannot remove your own access.' }, 400);
-          const target = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(data.uid).first<{ role: string }>();
+          let target: { role: string } | null = null;
+          try { target = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(data.uid).first<{ role: string }>(); } catch (error) { if (!roleColumnMissing(error)) throw error; }
           if (managerRole !== 'super_admin' && target?.role === 'super_admin') return json({ error: 'Only a Super Admin can manage Super Admin users.' }, 403);
           await env.ORDERS.prepare('DELETE FROM staff_users WHERE uid = ?').bind(data.uid).run();
           return json({ saved: true });
@@ -128,9 +148,16 @@ export default {
         if (!staffUid) return json({ error: 'The new account could not be verified. Please try again.' }, 400);
         if (owners.includes(staffUid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
         if (staffUid === uid && role !== managerRole) return json({ error: 'You cannot change your own group.' }, 400);
-        const target = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(staffUid).first<{ role: string }>();
+        let target: { role: string } | null = null;
+        try { target = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(staffUid).first<{ role: string }>(); } catch (error) { if (!roleColumnMissing(error)) throw error; }
         if (managerRole !== 'super_admin' && target?.role === 'super_admin') return json({ error: 'Only a Super Admin can manage Super Admin users.' }, 403);
-        await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email, role) VALUES (?, ?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email, role = excluded.role').bind(staffUid, data.name.trim(), data.email.trim(), role).run();
+        try {
+          await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email, role) VALUES (?, ?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email, role = excluded.role').bind(staffUid, data.name.trim(), data.email.trim(), role).run();
+        } catch (error) {
+          if (!roleColumnMissing(error)) throw error;
+          if (role !== 'admin') return json({ error: 'User groups are being activated. Please try again once the database migration is complete.' }, 503);
+          await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email) VALUES (?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email').bind(staffUid, data.name.trim(), data.email.trim()).run();
+        }
         return json({ saved: true });
       } catch { return json({ error: 'Unable to manage users right now.' }, 503); }
     }
