@@ -19,6 +19,12 @@ async function staffAccess(env: Bindings, uid: string): Promise<boolean> {
   if (configuredAdmins(env).includes(uid)) return true;
   return !!await env.ORDERS.prepare('SELECT uid FROM staff_users WHERE uid = ?').bind(uid).first();
 }
+type StaffRole = 'admin' | 'super_admin';
+async function userManagementRole(env: Bindings, uid: string): Promise<StaffRole | null> {
+  if (configuredAdmins(env).includes(uid)) return 'super_admin';
+  const staff = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(uid).first<{ role: string }>();
+  return staff?.role === 'super_admin' || staff?.role === 'admin' ? staff.role : null;
+}
 async function body(request: Request, limit: number) {
   const reader = request.body?.getReader();
   if (!reader) return '';
@@ -87,11 +93,12 @@ export default {
       const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
       if (!uid) return json({ error: 'Please sign in again.' }, 401);
       const owners = configuredAdmins(env);
-      if (!owners.includes(uid)) return json({ error: 'Only configured administrators can manage users.' }, 403);
       try {
+        const managerRole = await userManagementRole(env, uid);
+        if (!managerRole) return json({ error: 'Not authorized.' }, 403);
         if (request.method === 'GET') {
-          const result = await env.ORDERS.prepare('SELECT uid, name, email, added_at FROM staff_users ORDER BY added_at DESC').all();
-          return json({ users: result.results, configured: owners, currentUid: uid });
+          const result = await env.ORDERS.prepare('SELECT uid, name, email, role, added_at FROM staff_users ORDER BY added_at DESC').all();
+          return json({ users: result.results, configured: owners, currentUid: uid, managerRole });
         }
         if (!['POST', 'DELETE'].includes(request.method)) return json({ error: 'Method not allowed' }, 405);
         if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
@@ -101,10 +108,16 @@ export default {
         if (request.method === 'DELETE') {
           if (typeof data.uid !== 'string' || !/^[^\s]{1,128}$/.test(data.uid)) return json({ error: 'Enter a valid user.' }, 400);
           if (owners.includes(data.uid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
+          if (data.uid === uid) return json({ error: 'You cannot remove your own access.' }, 400);
+          const target = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(data.uid).first<{ role: string }>();
+          if (managerRole !== 'super_admin' && target?.role === 'super_admin') return json({ error: 'Only a Super Admin can manage Super Admin users.' }, 403);
           await env.ORDERS.prepare('DELETE FROM staff_users WHERE uid = ?').bind(data.uid).run();
           return json({ saved: true });
         }
         if (typeof data.name !== 'string' || data.name.length > 120 || typeof data.email !== 'string' || data.email.length > 254 || (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email))) return json({ error: 'Check the name and email.' }, 400);
+        if (data.role !== undefined && data.role !== 'admin' && data.role !== 'super_admin') return json({ error: 'Choose a valid group.' }, 400);
+        const role: StaffRole = data.role === 'super_admin' ? 'super_admin' : 'admin';
+        if (managerRole !== 'super_admin' && role === 'super_admin') return json({ error: 'Only a Super Admin can assign the Super Admin group.' }, 403);
         let staffUid: string | null = null;
         if (typeof data.userToken === 'string' && data.userToken.length <= 12000) {
           staffUid = await customerUid(new Request(url.origin, { headers: { Authorization: `Bearer ${data.userToken}` } }), env.FIREBASE_PROJECT_ID);
@@ -114,7 +127,10 @@ export default {
         }
         if (!staffUid) return json({ error: 'The new account could not be verified. Please try again.' }, 400);
         if (owners.includes(staffUid)) return json({ error: 'Configured administrators are managed in the Worker settings.' }, 400);
-        await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email) VALUES (?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email').bind(staffUid, data.name.trim(), data.email.trim()).run();
+        if (staffUid === uid && role !== managerRole) return json({ error: 'You cannot change your own group.' }, 400);
+        const target = await env.ORDERS.prepare('SELECT role FROM staff_users WHERE uid = ?').bind(staffUid).first<{ role: string }>();
+        if (managerRole !== 'super_admin' && target?.role === 'super_admin') return json({ error: 'Only a Super Admin can manage Super Admin users.' }, 403);
+        await env.ORDERS.prepare('INSERT INTO staff_users (uid, name, email, role) VALUES (?, ?, ?, ?) ON CONFLICT(uid) DO UPDATE SET name = excluded.name, email = excluded.email, role = excluded.role').bind(staffUid, data.name.trim(), data.email.trim(), role).run();
         return json({ saved: true });
       } catch { return json({ error: 'Unable to manage users right now.' }, 503); }
     }
