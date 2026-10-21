@@ -161,6 +161,66 @@ export default {
         return json({ saved: true });
       } catch { return json({ error: 'Unable to manage users right now.' }, 503); }
     }
+    if (url.pathname === '/api/admin/settings') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      try { if (!await staffAccess(env, uid)) return json({ error: 'Not authorized.' }, 403); } catch { return json({ error: 'Staff access is temporarily unavailable.' }, 503); }
+      try {
+        if (request.method === 'GET') {
+          const settings = await env.ORDERS.prepare('SELECT store_name AS storeName, support_email AS supportEmail, phone_number AS phoneNumber, street_address AS streetAddress, shipping_rate_cents AS shippingRateCents, free_shipping_threshold_cents AS freeShippingThresholdCents, display_tax_rate_basis_points AS displayTaxRateBasisPoints, transactional_from_email AS transactionalFromEmail FROM store_settings WHERE id = 1').first();
+          return json({ settings: settings ?? { storeName: 'Serein', supportEmail: '', phoneNumber: '', streetAddress: '', shippingRateCents: 0, freeShippingThresholdCents: 0, displayTaxRateBasisPoints: 0, transactionalFromEmail: '' } });
+        }
+        if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
+        if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+        let data: Record<string, unknown>;
+        try { data = JSON.parse(await body(request, 8192)); } catch { return json({ error: 'Invalid request.' }, 400); }
+        const text = (value: unknown, maximum: number) => typeof value === 'string' && value.length <= maximum ? value.trim() : null;
+        const storeName = text(data.storeName, 120);
+        const supportEmail = text(data.supportEmail, 254);
+        const phoneNumber = text(data.phoneNumber, 64);
+        const streetAddress = text(data.streetAddress, 300);
+        const fromEmail = text(data.transactionalFromEmail, 254);
+        const email = (value: string) => !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        if (!storeName || supportEmail === null || phoneNumber === null || streetAddress === null || fromEmail === null || !email(supportEmail) || !email(fromEmail) || typeof data.shippingRateCents !== 'number' || typeof data.freeShippingThresholdCents !== 'number' || typeof data.displayTaxRateBasisPoints !== 'number' || !Number.isInteger(data.shippingRateCents) || !Number.isInteger(data.freeShippingThresholdCents) || !Number.isInteger(data.displayTaxRateBasisPoints) || data.shippingRateCents < 0 || data.shippingRateCents > 10000000 || data.freeShippingThresholdCents < 0 || data.freeShippingThresholdCents > 100000000 || data.displayTaxRateBasisPoints < 0 || data.displayTaxRateBasisPoints > 10000) return json({ error: 'Check the store details and numeric values.' }, 400);
+        await env.ORDERS.prepare('INSERT INTO store_settings (id, store_name, support_email, phone_number, street_address, shipping_rate_cents, free_shipping_threshold_cents, display_tax_rate_basis_points, transactional_from_email, updated_at) VALUES (1, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP) ON CONFLICT(id) DO UPDATE SET store_name = excluded.store_name, support_email = excluded.support_email, phone_number = excluded.phone_number, street_address = excluded.street_address, shipping_rate_cents = excluded.shipping_rate_cents, free_shipping_threshold_cents = excluded.free_shipping_threshold_cents, display_tax_rate_basis_points = excluded.display_tax_rate_basis_points, transactional_from_email = excluded.transactional_from_email, updated_at = CURRENT_TIMESTAMP').bind(storeName, supportEmail, phoneNumber, streetAddress, data.shippingRateCents, data.freeShippingThresholdCents, data.displayTaxRateBasisPoints, fromEmail).run();
+        return json({ saved: true });
+      } catch { return json({ error: 'Unable to load or save settings.' }, 503); }
+    }
+    if (url.pathname === '/api/markets' && request.method === 'GET') {
+      try {
+        const result = await env.ORDERS.prepare('SELECT id, name, location, event_date AS eventDate FROM market_events ORDER BY event_date ASC, name ASC').all();
+        return json({ events: result.results });
+      } catch { return json({ error: 'Market calendar is temporarily unavailable.' }, 503); }
+    }
+    if (url.pathname === '/api/admin/markets') {
+      if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
+      const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
+      if (!uid) return json({ error: 'Please sign in again.' }, 401);
+      try { if (!await staffAccess(env, uid)) return json({ error: 'Not authorized.' }, 403); } catch { return json({ error: 'Staff access is temporarily unavailable.' }, 503); }
+      try {
+        if (request.method === 'GET') {
+          const result = await env.ORDERS.prepare('SELECT id, name, location, event_date AS eventDate FROM market_events ORDER BY event_date ASC, name ASC').all();
+          return json({ events: result.results });
+        }
+        if (!['POST', 'DELETE'].includes(request.method)) return json({ error: 'Method not allowed' }, 405);
+        if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+        let data: Record<string, unknown>;
+        try { data = JSON.parse(await body(request, 4096)); } catch { return json({ error: 'Invalid request.' }, 400); }
+        if (request.method === 'DELETE') {
+          if (typeof data.id !== 'string' || !/^[a-z0-9-]{1,80}$/.test(data.id)) return json({ error: 'Choose a valid market.' }, 400);
+          await env.ORDERS.prepare('DELETE FROM market_events WHERE id = ?').bind(data.id).run();
+          return json({ saved: true });
+        }
+        const eventId = typeof data.id === 'string' && /^[a-z0-9-]{1,80}$/.test(data.id) ? data.id : crypto.randomUUID();
+        const name = typeof data.name === 'string' ? data.name.trim() : '';
+        const location = typeof data.location === 'string' ? data.location.trim() : '';
+        const eventDate = typeof data.eventDate === 'string' ? data.eventDate : '';
+        if (!name || name.length > 160 || !location || location.length > 240 || !/^\d{4}-\d{2}-\d{2}$/.test(eventDate) || Number.isNaN(Date.parse(`${eventDate}T12:00:00Z`))) return json({ error: 'Enter a market name, location, and valid date.' }, 400);
+        await env.ORDERS.prepare('INSERT INTO market_events (id, name, location, event_date, updated_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP) ON CONFLICT(id) DO UPDATE SET name = excluded.name, location = excluded.location, event_date = excluded.event_date, updated_at = CURRENT_TIMESTAMP').bind(eventId, name, location, eventDate).run();
+        return json({ saved: true, id: eventId });
+      } catch { return json({ error: 'Unable to load or save markets.' }, 503); }
+    }
     if (url.pathname === '/api/admin/email-logs' && request.method === 'GET') {
       if (!env.FIREBASE_PROJECT_ID) return json({ error: 'Staff access is not configured yet.' }, 503);
       const uid = await customerUid(request, env.FIREBASE_PROJECT_ID);
