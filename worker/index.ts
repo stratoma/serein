@@ -302,8 +302,8 @@ export default {
       try {
         if (request.method === 'GET') {
           const query = admin
-            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at, customer_uid, customer_name, customer_email, delivery_name, delivery_address FROM orders WHERE status = 'paid' ORDER BY created_at DESC")
-            : env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' AND customer_uid = ? ORDER BY created_at DESC").bind(uid);
+            ? env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at, customer_uid, customer_name, customer_email, delivery_name, delivery_address FROM orders WHERE status = 'paid' AND deleted_at IS NULL ORDER BY created_at DESC")
+            : env.ORDERS.prepare("SELECT session_id, amount, currency, items, created_at, fulfillment_status, tracking_carrier, tracking_number, tracking_url, fulfillment_updated_at FROM orders WHERE status = 'paid' AND deleted_at IS NULL AND customer_uid = ? ORDER BY created_at DESC").bind(uid);
           const result = await query.all();
           return json({ orders: result.results });
         }
@@ -321,6 +321,15 @@ export default {
           }
           const result = await env.ORDERS.prepare("UPDATE orders SET fulfillment_status = ?, tracking_carrier = ?, tracking_number = ?, tracking_url = ?, fulfillment_updated_at = CURRENT_TIMESTAMP WHERE session_id = ? AND status = 'paid'").bind(data.status, carrier.trim() || null, trackingNumber.trim() || null, trackingUrl.trim() || null, data.sessionId).run();
           return result.meta.changes ? json({ updated: true }) : json({ error: 'Order not found.' }, 404);
+        }
+        if (admin && request.method === 'DELETE') {
+          if (request.headers.get('origin') !== url.origin) return json({ error: 'Invalid origin' }, 403);
+          let data: Record<string, unknown>;
+          try { data = JSON.parse(await body(request, 4096)); } catch { return json({ error: 'Invalid request' }, 400); }
+          if (!data || typeof data.sessionId !== 'string' || !/^cs_test_[a-zA-Z0-9]+$/.test(data.sessionId)) return json({ error: 'Invalid order.' }, 400);
+          // Keep a financial audit record while removing the order from admin and customer views.
+          const result = await env.ORDERS.prepare("UPDATE orders SET deleted_at = CURRENT_TIMESTAMP WHERE session_id = ? AND status = 'paid' AND deleted_at IS NULL").bind(data.sessionId).run();
+          return result.meta.changes ? json({ deleted: true }) : json({ error: 'Order not found.' }, 404);
         }
         return json({ error: 'Method not allowed' }, 405);
       } catch { return json({ error: 'Unable to load or update orders right now.' }, 503); }

@@ -9,15 +9,15 @@ test('verified accounts see only their own orders and only staff can update fulf
   const originalFetch = globalThis.fetch;
   globalThis.fetch = async (input, init) => String(input).includes('/service_accounts/v1/jwk/') ? Response.json({ keys: [jwk] }) : originalFetch(input, init);
   const data = [
-    { session_id: 'cs_test_one', customer_uid: 'alice', status: 'paid', fulfillment_status: 'received', tracking_carrier: null, tracking_number: null, tracking_url: null, delivery_address: 'fixture address' },
-    { session_id: 'cs_test_two', customer_uid: 'bob', status: 'paid', fulfillment_status: 'received', tracking_carrier: null, tracking_number: null, tracking_url: null, delivery_address: 'other address' },
+    { session_id: 'cs_test_one', customer_uid: 'alice', status: 'paid', fulfillment_status: 'received', tracking_carrier: null, tracking_number: null, tracking_url: null, delivery_address: 'fixture address', deleted_at: null },
+    { session_id: 'cs_test_two', customer_uid: 'bob', status: 'paid', fulfillment_status: 'received', tracking_carrier: null, tracking_number: null, tracking_url: null, delivery_address: 'other address', deleted_at: null },
   ];
   const staffUsers = new Map<string, { uid: string; name: string; email: string; role: string }>();
   const env = { FIREBASE_PROJECT_ID: 'test-project', ORDER_ADMIN_UIDS: 'staff', ORDERS: { prepare(sql: string) { return { bind(...args: string[]) { return statement(sql, args); }, ...statement(sql, []) }; } } };
   function statement(sql: string, args: string[]) { return {
     first: async () => staffUsers.get(args[0]) ?? null,
-    all: async () => ({ results: sql.includes('FROM staff_users') ? [...staffUsers.values()] : data.filter(order => order.status === 'paid' && (!sql.includes('customer_uid = ?') || order.customer_uid === args[0])).map(({ customer_uid, status, delivery_address, ...order }) => sql.includes('delivery_address') ? { ...order, delivery_address } : order) }),
-    run: async () => { if (sql.startsWith('INSERT INTO staff_users')) { staffUsers.set(args[0], { uid: args[0], name: args[1], email: args[2], role: args[3] ?? 'admin' }); return { meta: { changes: 1 } }; } if (sql.startsWith('DELETE FROM staff_users')) { staffUsers.delete(args[0]); return { meta: { changes: 1 } }; } const order = data.find(item => item.session_id === args[4] && item.status === 'paid'); if (order) Object.assign(order, { fulfillment_status: args[0], tracking_carrier: args[1], tracking_number: args[2], tracking_url: args[3] }); return { meta: { changes: order ? 1 : 0 } }; },
+    all: async () => ({ results: sql.includes('FROM staff_users') ? [...staffUsers.values()] : data.filter(order => order.status === 'paid' && !order.deleted_at && (!sql.includes('customer_uid = ?') || order.customer_uid === args[0])).map(({ customer_uid, status, delivery_address, deleted_at, ...order }) => sql.includes('delivery_address') ? { ...order, delivery_address } : order) }),
+    run: async () => { if (sql.startsWith('INSERT INTO staff_users')) { staffUsers.set(args[0], { uid: args[0], name: args[1], email: args[2], role: args[3] ?? 'admin' }); return { meta: { changes: 1 } }; } if (sql.startsWith('DELETE FROM staff_users')) { staffUsers.delete(args[0]); return { meta: { changes: 1 } }; } if (sql.startsWith('UPDATE orders SET deleted_at')) { const order = data.find(item => item.session_id === args[0] && item.status === 'paid' && !item.deleted_at); if (order) order.deleted_at = 'now'; return { meta: { changes: order ? 1 : 0 } }; } const order = data.find(item => item.session_id === args[4] && item.status === 'paid' && !item.deleted_at); if (order) Object.assign(order, { fulfillment_status: args[0], tracking_carrier: args[1], tracking_number: args[2], tracking_url: args[3] }); return { meta: { changes: order ? 1 : 0 } }; },
   }; }
   async function token(uid: string, audience = 'test-project') { return new SignJWT({ auth_time: Math.floor(Date.now() / 1000) - 1 }).setProtectedHeader({ alg: 'RS256', kid: 'fixture' }).setSubject(uid).setAudience(audience).setIssuer('https://securetoken.google.com/test-project').setIssuedAt().setExpirationTime('1h').sign(privateKey); }
   async function request(path: string, jwt?: string, update?: object) { return worker.fetch(new Request(`https://serein.test${path}`, { method: update ? 'PATCH' : 'GET', headers: { ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}), ...(update ? { Origin: 'https://serein.test', 'Content-Type': 'application/json' } : {}) }, ...(update ? { body: JSON.stringify(update) } : {}) }), env as unknown as Parameters<typeof worker.fetch>[1]); }
@@ -59,5 +59,11 @@ test('verified accounts see only their own orders and only staff can update fulf
     const orders = (await (await request('/api/account/orders', alice)).json() as { orders: { fulfillment_status: string; tracking_number: string }[] }).orders;
     assert.equal(orders[0].fulfillment_status, 'shipped'); assert.equal(orders[0].tracking_number, '123');
     assert.equal(data[1].fulfillment_status, 'received');
+    const deleteOrder = (jwt: string, origin = 'https://serein.test') => worker.fetch(new Request('https://serein.test/api/admin/orders', { method: 'DELETE', headers: { Authorization: `Bearer ${jwt}`, Origin: origin, 'Content-Type': 'application/json' }, body: JSON.stringify({ sessionId: 'cs_test_one' }) }), env as unknown as Parameters<typeof worker.fetch>[1]);
+    assert.equal((await deleteOrder(alice)).status, 403);
+    assert.equal((await deleteOrder(staff, 'https://other.test')).status, 403);
+    assert.equal((await deleteOrder(staff)).status, 200);
+    assert.deepEqual((await (await request('/api/account/orders', alice)).json() as { orders: { session_id: string }[] }).orders, []);
+    assert.equal((await deleteOrder(staff)).status, 404);
   } finally { globalThis.fetch = originalFetch; }
 });
